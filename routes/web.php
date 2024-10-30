@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
 Route::get('/', function () {
-    return view('auth.password.reset');
+    return view('layout.DashboardAdmin');
 });
 
 use Illuminate\Support\Facades\Mail;
