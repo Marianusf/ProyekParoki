@@ -24,4 +24,9 @@ class peminjam extends Authenticatable
     protected $hidden = [
         'password',
     ];
+
+    public function pendingRequests()
+    {
+        return self::where('is_approved', false)->get();
+    }
 }

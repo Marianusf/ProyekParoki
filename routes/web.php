@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
 Route::get('/', function () {
-    return view('layout.DashboardAdmin');
+    return view('layout.TemplateAdmin');
 });
 
 use Illuminate\Support\Facades\Mail;
@@ -31,3 +31,9 @@ Route::get('/login', function () {
 })->name('login.form');
 
 Route::post('/login', [AuthController::class, 'login'])->name('login');
+
+
+// Rute POST untuk memproses persetujuan akun peminjam
+Route::post('/approve/{id}', [AuthController::class, 'approve'])->name('approve.peminjam');
+Route::get('/requests', [AuthController::class, 'showApprovalRequests'])->name('requests');
+Route::post('/peminjam/tolak/{id}', [AuthController::class, 'rejectAccount'])->name('reject.peminjam');
