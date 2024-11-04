@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
 Route::get('/', function () {
-    return view('layout.TemplateAdmin');
+    return view('layout.AdminView.HomeAdmin');
 });
 
 use Illuminate\Support\Facades\Mail;
