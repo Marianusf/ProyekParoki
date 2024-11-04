@@ -40,6 +40,14 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'admin' => [
+            'driver' => 'session',
+            'provider' => 'admin', // Provider untuk admin
+        ],
+        'peminjam' => [
+            'driver' => 'session',
+            'provider' => 'peminjam',
+        ],
     ],
 
     /*
@@ -67,6 +75,10 @@ return [
         'peminjam' => [
             'driver' => 'eloquent',
             'model' => App\Models\peminjam::class, // Pastikan nama model sudah benar
+        ],
+        'admin' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Admin::class,
         ],
 
 
@@ -105,6 +117,19 @@ return [
         'peminjam' => [
             'provider' => 'peminjam',
             'table' => 'password_reset_tokens',
+            'expire' => 100,
+            'throttle' => 100,
+        ],
+        'admin' => [
+            'provider' => 'admin',
+            'table' => 'password_resets',
+            'expire' => 1,
+            'throttle' => 1,
+        ],
+
+        'peminjam' => [
+            'provider' => 'peminjam',
+            'table' => 'password_resets',
             'expire' => 1,
             'throttle' => 1,
         ],

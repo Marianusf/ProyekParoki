@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\peminjam;
+use App\Models\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -19,34 +20,66 @@ class AuthController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|regex:/^[\w\.\-]+@gmail\.com$/i|',
+            'email' => 'required|email|regex:/^[\w\.\-]+@gmail\.com$/i|unique:peminjam,email',
             'tanggal_lahir' => 'required|date',
             'alamat' => 'required|string',
             'nomor_telepon' => 'required|string|max:15',
             'password' => 'required|string|min:8|confirmed',
+        ], [
+            'email.unique' => 'Email ini sudah terdaftar, silakan gunakan email lain.',
+            'name.required' => 'Nama Anda wajib untuk diisi!!',
+            'email.required' => 'Email Anda wajib diisi !',
+            'tanggal_lahir' => 'Tanggal Lahir Wajib Untuk diisi!!',
+            'nomor_telepon' => 'Nomor Telepon Anda Wajib Diisi !',
+            'email.email' => 'Format email tidak valid. example@gmail.com',
+            'password.confirmed' => 'Konfirmasi kata sandi tidak sama !!',
         ]);
 
+        // Hash password sebelum menyimpannya di database
         $validated['password'] = Hash::make($validated['password']);
+
+        // Buat data baru di tabel `peminjam`
         peminjam::create($validated);
+
         return redirect()->back()->with('message', 'Registrasi berhasil, menunggu persetujuan admin');
-        // return response()->json(['message' => 'Registrasi berhasil, menunggu persetujuan admin']);
     }
 
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
-        $borrower = peminjam::where('email', $request->email)->first();
+
+        // Cek apakah user adalah admin atau sekretariat terlebih dahulu
+        $admin = Admin::where('email', $request->email)->first();
+
+        if ($admin && Hash::check($request->password, $admin->password)) {
+            Auth::guard('admin')->login($admin);
+
+            // Cek role dan arahkan ke dashboard yang sesuai
+            if ($admin->role === 'admin') {
+                return redirect()->route('admin.dashboard')->with('message', 'Login berhasil sebagai Admin');
+            } elseif ($admin->role === 'sekretariat') {
+                return redirect()->route('sekretariat.dashboard')->with('message', 'Login berhasil sebagai Sekretariat');
+            }
+        }
+
+        // Jika bukan admin atau sekretariat, cek peminjam
+        $borrower = Peminjam::where('email', $request->email)->first();
 
         if ($borrower && Hash::check($request->password, $borrower->password)) {
             if (!$borrower->is_approved) {
                 return response()->json(['message' => 'Akun belum disetujui oleh admin'], 403);
             }
-            Auth::login($borrower);
-            return response()->json(['message' => 'Login berhasil']);
+
+            Auth::guard('peminjam')->login($borrower);
+            return redirect()->route('borrower.dashboard')->with('message', 'Login berhasil sebagai Peminjam');
         }
+
+        // Jika tidak ada yang cocok, tampilkan pesan error
         return redirect()->back()->with('message', 'Username atau Password Anda Salah!');
-        // return response()->json(['message' => 'Email atau kata sandi salah'], 401);
     }
+
+
+
     public function showLinkRequestForm()
     {
         return view('auth.passwords.email');
@@ -62,7 +95,7 @@ class AuthController extends Controller
         // Check if the user exists and is approved
         $peminjam = peminjam::where('email', $request->email)->first();
         if (!$peminjam || !$peminjam->is_approved) {
-            return back()->withErrors(['email' => 'Email ini tidak terdaftar atau belum disetujui.']);
+            return back()->withErrors(['email' => 'Email ini tidak terdaftar atau belum disetujui,sehingga tidak dapat diproses!!']);
         }
 
         // Send the password reset email
@@ -101,7 +134,7 @@ class AuthController extends Controller
         );
 
         return $status === Password::PASSWORD_RESET
-            ? redirect()->route('login')->with('status', __($status))
+            ? redirect()->route('login')->with('message', 'Password berhasil direset, silakan login dengan password baru Anda.')
             : back()->withErrors(['email' => __($status)]);
     }
     public function showApprovalRequests() //untuk menampilkan bagian peminjam yang belum di acc
