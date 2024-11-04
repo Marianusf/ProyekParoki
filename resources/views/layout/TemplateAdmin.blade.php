@@ -77,7 +77,7 @@
                 <i class="bi bi-x ml-20 cursor-pointer" onclick="toggleSidebar()"></i>
             </div>
             <hr class="my-2 text-gray-600">
-            <a href="/"
+            <a href="{{ route('admin.dashboard') }}"
                 class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600">
                 <i class="bi bi-house-door-fill"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Home</span>
