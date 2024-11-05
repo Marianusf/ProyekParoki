@@ -4,9 +4,21 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Auth;
 
-Route::get('/profil', function () {
-    return view('layout.PeminjamView.Profile');
+Route::prefix('/profile')->group(function(){
+
+    Route::get('/', function () {
+        return view('layout.PeminjamView.Profile');
+    });
+    
+    Route::get('/barang-jasa', function () {
+        return view('layout.PeminjamView.Barang-Jasa.barang-jasa');
+    });
 });
+
+
+
+
+
 
 // Rute untuk lupa password
 Route::get('password/reset', [AuthController::class, 'showLinkRequestForm'])->name('password.request');
