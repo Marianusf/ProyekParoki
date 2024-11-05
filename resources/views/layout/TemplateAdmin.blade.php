@@ -162,7 +162,7 @@
         };
     </script>
     <script>
-        @yield('scripts')
+       // @yield('scripts')
     </script>
 </body>
 
