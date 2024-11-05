@@ -4,6 +4,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Auth;
 
+Route::get('/profil', function () {
+    return view('layout.PeminjamView.Profile');
+});
+
 // Rute untuk lupa password
 Route::get('password/reset', [AuthController::class, 'showLinkRequestForm'])->name('password.request');
 Route::post('password/email', [AuthController::class, 'sendResetLinkEmail'])->name('password.email');
