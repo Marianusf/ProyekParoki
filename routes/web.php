@@ -7,6 +7,7 @@ Route::get('/', function () {
     return view('layout.TemplateAdmin');
 });
 
+
 use Illuminate\Support\Facades\Mail;
 
 
@@ -37,3 +38,15 @@ Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/approve/{id}', [AuthController::class, 'approve'])->name('approve.peminjam');
 Route::get('/requests', [AuthController::class, 'showApprovalRequests'])->name('requests');
 Route::post('/peminjam/tolak/{id}', [AuthController::class, 'rejectAccount'])->name('reject.peminjam');
+
+Route::get('/peminjam', function () {
+    return view('layoutPeminjam');
+});
+
+Route::get('/ruangan', function () {
+    return view('ruangan');
+});
+
+Route::get('/navbar', function () {
+    return view('navbar');
+});
