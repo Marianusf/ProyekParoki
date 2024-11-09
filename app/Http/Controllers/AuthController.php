@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Mail;
 
 use App\Mail\AccountRejectionMail;
 use App\Mail\MailPenolakanAkun;
+use App\Mail\MailTerimaPendaftaran;
 
 class AuthController extends Controller
 {
@@ -154,7 +155,7 @@ class AuthController extends Controller
         // Update status peminjam menjadi approved (misal, `is_approved` jadi `1`)
         $peminjam->is_approved = 1;
         $peminjam->save();
-
+        Mail::to($peminjam->email)->send(new MailTerimaPendaftaran($peminjam));
         // Redirect dengan pesan sukses
         return redirect()->back()->with('success', 'Akun peminjam berhasil disetujui.');
     }

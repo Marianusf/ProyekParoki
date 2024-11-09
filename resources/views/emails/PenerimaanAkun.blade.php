@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pendaftaran Akun Ditolak</title>
+    <title>Pendaftaran Akun Disetujui</title>
     <style>
         /* Basic reset */
         body {
@@ -26,8 +26,8 @@
 
         /* Header styling */
         .header {
-            background-color: #f41f1f;
-            color: #000000;
+            background-color: #4CAF50;
+            color: #ffffff;
             text-align: center;
             padding: 20px;
         }
@@ -51,7 +51,7 @@
         .btn {
             display: inline-block;
             padding: 10px 15px;
-            background-color: #002D74;
+            background-color: #4CAF50;
             color: white;
             text-decoration: none;
             border-radius: 5px;
@@ -60,7 +60,7 @@
         }
 
         .btn:hover {
-            background-color: #206ab1;
+            background-color: #388E3C;
         }
     </style>
 </head>
@@ -68,12 +68,18 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Pendaftaran Akun Ditolak</h1>
+            <h1>Pendaftaran Akun Disetujui</h1>
         </div>
         <div class="content">
-            <p>Maaf, pendaftaran akun Anda tidak dapat disetujui. Berikut adalah alasan penolakan:</p>
-            <p><strong>Alasan:</strong> {{ $reason }}</p>
-            <p>Jika Anda memiliki pertanyaan lebih lanjut, silakan hubungi kami.</p>
+            <p>Selamat! Pendaftaran akun Anda telah disetujui. Anda sekarang memiliki akses untuk menggunakan layanan
+                kami.</p>
+            <p><strong>Detail Akun:</strong></p>
+            <ul>
+                <li><strong>Nama:</strong> {{ $name }}</li>
+                <li><strong>Email:</strong> {{ $email }}</li>
+            </ul>
+            <p>Silakan klik tombol di bawah ini untuk login ke akun Anda:</p>
+            <a href="{{ url('/login') }}" class="btn">Login Sekarang</a>
         </div>
         <div class="footer">
             <p>&copy; {{ date('Y') }} Paroki Babadan. Semua Hak Dilindungi.</p>

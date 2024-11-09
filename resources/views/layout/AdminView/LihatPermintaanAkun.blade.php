@@ -6,6 +6,8 @@
     <section class="p-6 bg-blue-100 min-h-screen">
         <div class="container mx-auto">
             <h2 class="text-2xl font-semibold text-gray-700 mb-4">Daftar Peminjam yang Belum Disetujui</h2>
+
+            {{-- Tampilkan notifikasi sukses jika ada --}}
             @if (session('success'))
                 <div class="bg-green-500 text-white p-2 rounded mb-4">
                     {{ session('success') }}
@@ -59,6 +61,7 @@
             const setujuButtons = document.querySelectorAll('.setujuButton');
             const tolakButtons = document.querySelectorAll('.tolakButton');
 
+            // Event untuk tombol Setujui
             setujuButtons.forEach((button) => {
                 button.addEventListener('click', function(event) {
                     event.preventDefault();
@@ -80,6 +83,7 @@
                 });
             });
 
+            // Event untuk tombol Tolak
             tolakButtons.forEach((button) => {
                 button.addEventListener('click', function(event) {
                     event.preventDefault();
