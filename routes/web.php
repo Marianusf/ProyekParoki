@@ -39,14 +39,18 @@ Route::post('/approve/{id}', [AuthController::class, 'approve'])->name('approve.
 Route::get('/requests', [AuthController::class, 'showApprovalRequests'])->name('requests');
 Route::post('/peminjam/tolak/{id}', [AuthController::class, 'rejectAccount'])->name('reject.peminjam');
 
-Route::get('/peminjam', function () {
-    return view('layoutPeminjam');
-});
-
 Route::get('/ruangan', function () {
     return view('ruangan');
 });
 
-Route::get('/navbar', function () {
-    return view('navbar');
+Route::get('/layoutPeminjam', function () {
+    return view('layout.layoutpeminjam');
+});
+
+Route::get('/layoutPeminjam', function () {
+    return view('layout.layoutpeminjam');
+});
+
+Route::get('/pengembalian', function () {
+    return view('pengembalian');
 });
