@@ -23,6 +23,7 @@
                             <th class="py-3 px-6 text-left">Tanggal Lahir</th>
                             <th class="py-3 px-6 text-left">Alamat</th>
                             <th class="py-3 px-6 text-left">Nomor Telepon</th>
+                            <th class="py-3 px-6 text-left">Lingkungan</th>
                             <th class="py-3 px-6 text-left">Waktu Permintaan</th>
                             <th class="py-3 px-6 text-center">Aksi</th>
                         </tr>
@@ -35,6 +36,7 @@
                                 <td class="py-3 px-6 text-left">{{ $peminjam->tanggal_lahir }}</td>
                                 <td class="py-3 px-6 text-left">{{ $peminjam->alamat }}</td>
                                 <td class="py-3 px-6 text-left">{{ $peminjam->nomor_telepon }}</td>
+                                <td class="py-3 px-6 text-left">{{ $peminjam->lingkungan }}</td>
                                 <td class="py-3 px-6 text-left">{{ $peminjam->created_at }}</td>
                                 <td class="py-3 px-6 text-center">
                                     <form class="setujuForm" method="POST"

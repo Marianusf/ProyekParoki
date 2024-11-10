@@ -25,6 +25,7 @@ class AuthController extends Controller
             'tanggal_lahir' => 'required|date',
             'alamat' => 'required|string',
             'nomor_telepon' => 'required|string|max:15',
+            'lingkungan' => 'required|string',
             'password' => 'required|string|min:8|confirmed',
         ], [
             'email.unique' => 'Email ini sudah terdaftar, silakan gunakan email lain.',
@@ -32,6 +33,7 @@ class AuthController extends Controller
             'email.required' => 'Email Anda wajib diisi !',
             'tanggal_lahir' => 'Tanggal Lahir Wajib Untuk diisi!!',
             'nomor_telepon' => 'Nomor Telepon Anda Wajib Diisi !',
+            'nomor_telepon' => 'Nama lingkungan Harus diisi dengan benar!',
             'email.email' => 'Format email tidak valid. example@gmail.com',
             'password.confirmed' => 'Konfirmasi kata sandi tidak sama !!',
         ]);
@@ -42,7 +44,7 @@ class AuthController extends Controller
         // Buat data baru di tabel `peminjam`
         peminjam::create($validated);
 
-        return redirect()->back()->with('message', 'Registrasi berhasil, menunggu persetujuan admin');
+        return redirect()->back()->with('message', 'Permintaan Registrasi berhasil !,Silahkan Lihat Gmail untuk Informasi Lebih Lanjut');
     }
 
     public function login(Request $request)
