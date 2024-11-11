@@ -13,6 +13,10 @@ Route::prefix('/peminjam')->group(function(){
     Route::get('/barang-jasa', function () {
         return view('layout.PeminjamView.Barang-Jasa.barang-jasa');
     });
+
+    Route::get('/lihat-aset', function () {
+        return view('layout.PeminjamView.lihat-aset');
+    });
 });
 
 

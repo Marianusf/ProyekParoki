@@ -21,6 +21,9 @@
 </section>
 @endsection
 
+
+
+
 @section('scripts')
 <script>
 // Additional JavaScript specific to this page
