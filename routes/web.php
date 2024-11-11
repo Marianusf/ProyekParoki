@@ -8,6 +8,7 @@ Route::get('/profil', function () {
     return view('layout.PeminjamView.Profile');
 });
 
+
 // Rute untuk lupa password
 Route::get('password/reset', [AuthController::class, 'showLinkRequestForm'])->name('password.request');
 Route::post('password/email', [AuthController::class, 'sendResetLinkEmail'])->name('password.email');
@@ -59,4 +60,25 @@ Route::middleware('auth:peminjam')->group(function () {
 Route::middleware('auth:admin')->group(function () {
     Route::get('/requests', [AuthController::class, 'showApprovalRequests'])->name('requests');
     Route::post('/peminjam/tolak/{id}', [AuthController::class, 'rejectAccount'])->name('reject.peminjam');
+});
+
+// Rute POST untuk memproses persetujuan akun peminjam
+Route::post('/approve/{id}', [AuthController::class, 'approve'])->name('approve.peminjam');
+Route::get('/requests', [AuthController::class, 'showApprovalRequests'])->name('requests');
+Route::post('/peminjam/tolak/{id}', [AuthController::class, 'rejectAccount'])->name('reject.peminjam');
+
+Route::get('/ruangan', function () {
+    return view('ruangan');
+});
+
+Route::get('/layoutPeminjam', function () {
+    return view('layout.layoutpeminjam');
+});
+
+Route::get('/layoutPeminjam', function () {
+    return view('layout.layoutpeminjam');
+});
+
+Route::get('/pengembalian', function () {
+    return view('pengembalian');
 });
