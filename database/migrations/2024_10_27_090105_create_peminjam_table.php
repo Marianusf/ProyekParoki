@@ -18,6 +18,7 @@ return new class extends Migration
             $table->date('tanggal_lahir'); // Tanggal lahir peminjam
             $table->string('alamat'); // Alamat peminjam
             $table->string('nomor_telepon'); // Nomor telepon peminjam
+            $table->string('lingkungan'); // nama lingkungan
             $table->string('password'); // Kata sandi
             $table->boolean('is_approved')->default(false); // Status persetujuan dari admin
             $table->timestamps();

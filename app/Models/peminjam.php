@@ -17,6 +17,7 @@ class peminjam extends Authenticatable
         'tanggal_lahir',
         'alamat',
         'nomor_telepon',
+        'lingkungan',
         'password',
         'is_approved',
     ];

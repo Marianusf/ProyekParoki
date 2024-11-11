@@ -36,6 +36,8 @@
                     type="text" name="alamat" placeholder="Alamat" required>
                 <input class="p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#002D74]"
                     type="text" name="nomor_telepon" placeholder="Nomor Telepon" required>
+                <input class="p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#002D74]"
+                    type="text" name="lingkungan" placeholder="Nama Lingkungan" required>
                 <!-- Input password dengan ikon mata -->
                 <div class="relative">
                     <input
