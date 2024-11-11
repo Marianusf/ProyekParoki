@@ -4,9 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Auth;
 
-Route::prefix('/profile')->group(function(){
+Route::prefix('/peminjam')->group(function(){
 
-    Route::get('/', function () {
+    Route::get('/profile', function () {
         return view('layout.PeminjamView.Profile');
     });
     
