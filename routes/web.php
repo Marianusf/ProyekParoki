@@ -75,10 +75,6 @@ Route::get('/layoutPeminjam', function () {
     return view('layout.layoutpeminjam');
 });
 
-Route::get('/layoutPeminjam', function () {
-    return view('layout.layoutpeminjam');
-});
-
 Route::get('/pengembalian', function () {
     return view('pengembalian');
 });
