@@ -1,4 +1,4 @@
-@extends('layout.layoutPeminjam')
+@extends('layout.TemplatePeminjam')
 
 
 @section('title', 'Pengembalian')

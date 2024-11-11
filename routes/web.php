@@ -71,8 +71,8 @@ Route::get('/ruangan', function () {
     return view('ruangan');
 });
 
-Route::get('/layoutPeminjam', function () {
-    return view('layout.layoutpeminjam');
+Route::get('/TemplatePeminjam', function () {
+    return view('layout.TemplatePeminjam');
 });
 
 Route::get('/pengembalian', function () {
