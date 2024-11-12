@@ -98,20 +98,15 @@
                 <span class="text-[15px] ml-4 text-gray-200">Persetujuan Pengembalian Aset</span>
             </a>
 
-            <a href="/add-asset"
+            <a href="/admin/asset/tambah"
                 class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600">
                 <i class="bi bi-plus-circle"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Tambah Aset</span>
             </a>
-            <a href="/view-assets"
+            <a href="/admin/asset"
                 class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600">
                 <i class="bi bi-list-ul"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Lihat Aset</span>
-            </a>
-            <a href="/delete-asset"
-                class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600">
-                <i class="bi bi-trash-fill"></i>
-                <span class="text-[15px] ml-4 text-gray-200">Hapus Aset</span>
             </a>
             <a href="/check-availability"
                 class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600">
