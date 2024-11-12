@@ -51,9 +51,9 @@ Route::middleware('auth:admin')->group(function () {
 
 // Rute dengan middleware untuk peminjam
 Route::middleware('auth:peminjam')->group(function () {
-    Route::get('/borrower/dashboard', function () {
-        return view('borrower.dashboard');
-    })->name('borrower.dashboard');
+    Route::get('/peminjam/dashboard', function () {
+        return view('layout.PeminjamView.HomePeminjam');
+    })->name('peminjam.dashboard');
 });
 
 // Rute untuk requests (memerlukan autentikasi admin)
