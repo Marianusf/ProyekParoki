@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\AssetController;
 
 Route::get('/profil', function () {
     return view('layout.PeminjamView.Profile');
@@ -57,16 +58,28 @@ Route::middleware('auth:peminjam')->group(function () {
 });
 
 // Rute untuk requests (memerlukan autentikasi admin)
-Route::middleware('auth:admin')->group(function () {
-    Route::get('/requests', [AuthController::class, 'showApprovalRequests'])->name('requests');
-    Route::post('/peminjam/tolak/{id}', [AuthController::class, 'rejectAccount'])->name('reject.peminjam');
-});
-
+// Route::middleware('auth:admin')->group(function () {
+Route::get('/requests', [AuthController::class, 'showApprovalRequests'])->name('requests');
+Route::post('/peminjam/tolak/{id}', [AuthController::class, 'rejectAccount'])->name('reject.peminjam');
 // Rute POST untuk memproses persetujuan akun peminjam
 Route::post('/approve/{id}', [AuthController::class, 'approve'])->name('approve.peminjam');
 Route::get('/requests', [AuthController::class, 'showApprovalRequests'])->name('requests');
 Route::post('/peminjam/tolak/{id}', [AuthController::class, 'rejectAccount'])->name('reject.peminjam');
 
+// Route untuk menampilkan form tambah asset
+Route::get('/admin/asset/tambah', [AssetController::class, 'create'])->name('asset.create');
+
+// Route untuk menampilkan daftar asset
+Route::get('/admin/asset', [AssetController::class, 'index'])->name('asset.index');
+
+// Route untuk menyimpan asset yang baru ditambahkan
+Route::post('/admin/asset', [AssetController::class, 'store'])->name('asset.store');
+
+// Route::middleware(['auth'])->group(function () {
+Route::get('/admin/asset/edit/{id}', [AssetController::class, 'edit'])->name('asset.edit');
+Route::delete('/admin/asset/{id}', [AssetController::class, 'destroy'])->name('asset.delete');
+// });
+// });
 Route::get('/ruangan', function () {
     return view('ruangan');
 });
