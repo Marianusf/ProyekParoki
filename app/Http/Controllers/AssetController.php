@@ -22,6 +22,7 @@ class AssetController extends Controller
             'jenis_barang' => 'required|string|max:255',
             'jumlah_barang' => 'required|integer',
             'kondisi' => 'required|string|max:255',
+            'deskripsi' => 'required|string|max:255',
             'gambar' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
         ]);
 
@@ -38,6 +39,7 @@ class AssetController extends Controller
             'jenis_barang' => $request->jenis_barang,
             'jumlah_barang' => $request->jumlah_barang,
             'kondisi' => $request->kondisi,
+            'deskripsi' => $request->deskripsi,
             'gambar' => $gambarPath,
         ]);
 

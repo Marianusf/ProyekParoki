@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AssetController;
+use App\Http\Controllers\AdminController;
 
 Route::get('/profil', function () {
     return view('layout.PeminjamView.Profile');
@@ -33,7 +34,7 @@ Route::post('/login', [AuthController::class, 'login'])->name('login');
 // Rute untuk logout
 Route::post('/logout', function () {
     Auth::logout();
-    return redirect('/');
+    return redirect('/login');
 })->name('logout');
 
 // Rute dengan middleware untuk admin dan sekretariat
@@ -75,6 +76,7 @@ Route::get('/admin/asset', [AssetController::class, 'index'])->name('asset.index
 // Route untuk menyimpan asset yang baru ditambahkan
 Route::post('/admin/asset', [AssetController::class, 'store'])->name('asset.store');
 
+Route::get('/peminjamaktif', [AdminController::class, 'listPeminjamAktif'])->name('lihat.peminjam.aktif');
 // Route::middleware(['auth'])->group(function () {
 Route::get('/admin/asset/edit/{id}', [AssetController::class, 'edit'])->name('asset.edit');
 Route::delete('/admin/asset/{id}', [AssetController::class, 'destroy'])->name('asset.delete');

@@ -15,6 +15,7 @@ class CreateAssetsTable extends Migration
             $table->string('jenis_barang');
             $table->integer('jumlah_barang');
             $table->enum('kondisi', ['baik', 'rusak', 'perlu_perbaikan']);
+            $table->text('deskripsi');
             $table->string('gambar')->nullable(); // Kolom untuk menyimpan nama file gambar
             $table->timestamps();
         });
