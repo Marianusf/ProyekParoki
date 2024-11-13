@@ -25,6 +25,10 @@
                 <label for="kondisi" class="form-label">Kondisi Barang</label>
                 <input type="text" class="form-control" id="kondisi" name="kondisi" required>
             </div>
+            <div class="mb-3">
+                <label for="deskripsi" class="form-label">Deskripsi Barang</label>
+                <textarea class="form-control" id="deskripsi" name="deskripsi" rows="4" required></textarea>
+            </div>
 
             <div class="mb-3">
                 <label for="gambar" class="form-label">Gambar Barang</label>

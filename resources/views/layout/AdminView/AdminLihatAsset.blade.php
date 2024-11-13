@@ -17,13 +17,14 @@
                 <table class="min-w-full bg-white border border-gray-200 rounded-lg">
                     <thead>
                         <tr class="w-full bg-blue-600 text-white uppercase text-sm leading-normal">
-                            <th class="py-3 px-6 text-left">Nama Barang</th>
-                            <th class="py-3 px-6 text-left">Jenis Barang</th>
-                            <th class="py-3 px-6 text-left">Jumlah Barang</th>
-                            <th class="py-3 px-6 text-left">Kondisi</th>
-                            <th class="py-3 px-6 text-left">Gambar</th>
-                            <th class="py-3 px-6 text-left">Tanggal Ditambahkan</th>
-                            <th class="py-3 px-6 text-center">Aksi</th>
+                            <th scope="py-3 px-6 text-left">Nama Barang</th>
+                            <th scope="py-3 px-6 text-left">Jenis Barang</th>
+                            <th scope="py-3 px-6 text-left">Jumlah Barang</th>
+                            <th scope="py-3 px-6 text-left">Kondisi</th>
+                            <th scope="py-3 px-6 text-left">Deskripsi</th>
+                            <th scope="py-3 px-6 text-left">Gambar</th>
+                            <th scope="py-3 px-6 text-left">Tanggal Ditambahkan</th>
+                            <th scope="py-3 px-6 text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="text-gray-700 text-sm font-light">
@@ -33,6 +34,7 @@
                                 <td class="py-3 px-6 text-left">{{ $asset->jenis_barang }}</td>
                                 <td class="py-3 px-6 text-left">{{ $asset->jumlah_barang }}</td>
                                 <td class="py-3 px-6 text-left">{{ $asset->kondisi }}</td>
+                                <td class="py-3 px-6 text-left">{{ $asset->deskripsi }}</td>
                                 <td class="py-3 px-6 text-left">
                                     @if ($asset->gambar)
                                         <img src="{{ asset('storage/' . $asset->gambar) }}"
@@ -42,17 +44,19 @@
                                         <span class="text-gray-500">Tidak ada gambar</span>
                                     @endif
                                 </td>
+
                                 <td class="py-3 px-6 text-left">{{ $asset->created_at->format('d-m-Y') }}</td>
                                 <td class="py-3 px-6 text-center">
                                     <a href="{{ route('asset.edit', $asset->id) }}"
                                         class="bg-yellow-500 text-white py-1 px-3 rounded hover:bg-yellow-700">Edit</a>
-                                    <form action="{{ route('asset.delete', $asset->id) }}" method="POST"
-                                        class="inline-block ml-2">
+                                    <button type="button" onclick="deleteAsset({{ $asset->id }})"
+                                        class="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-700">Hapus</button>
+                                    <form id="delete-form-{{ $asset->id }}"
+                                        action="{{ route('asset.delete', $asset->id) }}" method="POST" class="hidden">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit"
-                                            class="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-700">Hapus</button>
                                     </form>
+
                                 </td>
                             </tr>
                         @endforeach
@@ -66,4 +70,21 @@
     <div class="mt-4">
         {{ $assets->links() }}
     </div>
+    <script>
+        function deleteAsset(assetId) {
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: 'Tindakan ini tidak dapat dibatalkan!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Hapus',
+                cancelButtonText: 'Batal',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Lakukan penghapusan jika dikonfirmasi
+                    document.getElementById('delete-form-' + assetId).submit();
+                }
+            });
+        }
+    </script>
 @endsection
