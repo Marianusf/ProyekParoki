@@ -3,9 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PeminjamController;
+
 Route::get('/', function () {
     return view('layout.TemplateAdmin');
 });
+
 
 use Illuminate\Support\Facades\Mail;
 
@@ -38,7 +40,17 @@ Route::post('/approve/{id}', [AuthController::class, 'approve'])->name('approve.
 Route::get('/requests', [AuthController::class, 'showApprovalRequests'])->name('requests');
 Route::post('/peminjam/tolak/{id}', [AuthController::class, 'rejectAccount'])->name('reject.peminjam');
 
+Route::get('/peminjam', function () {
+    return view('layoutPeminjam');
+});
 
+Route::get('/ruangan', function () {
+    return view('ruangan');
+});
+
+Route::get('/navbar', function () {
+    return view('navbar');
+});
 
 Route::get('/dashboard', [PeminjamController::class, 'Dashboard'])->name('dashboard.DashbaordRuangan');
 
@@ -47,10 +59,11 @@ Route::get('/pinjam', [PeminjamController::class, 'index'])->name('pinjam.ViewRu
 Route::get('/pinjam/ruangan', [PeminjamController::class, 'DaftarRuangan'])->name('pinjam.Ruangan');
 Route::get('/pinjam/ruangan/informasiRuangan', [PeminjamController::class, 'InformasiRuangan'])->name('pinjam.InformasiRuangan');
 
-
-
+Route::get('/edit', [PeminjamController::class, 'EditAdmin'])->name('sdit.AdminEdit');
 
 
 
 //Menyimpan data ruangan yang akan disimpan ke dalam database
 Route::post('/masuk/save', [PeminjamanController::class, 'saveDataRuangan'])->name('masuk.SaveDataRuangan');
+
+Route::get('/peminjaman', [PeminjamController::class, 'Peminjaman'])->name('peminjaman.Peminjaman');

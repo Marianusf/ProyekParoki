@@ -20,16 +20,16 @@
 
 <!--Memulai sesion-->
 <section class="w-full h-full min-h-screen flex justify-center items-center">
-    <div class="container mx-auto">
-        <div class="bg-cover bg-white bg-center w-full min-h-screen" style="background-image: url('/Gambar/.png');">
+    <div class="container mx-auto ">
+        <div class="bg-cover bg-center w-full min-h-screen" style="background-image: url('/Gambar/.png');">
             <div id="main-content" class="main-content p-4 md:p-8 relative pt-16 min-h-screen">
-                <div class="flex justify-center items-center p-9">
-                    <div class="border-4 border-gray-800 rounded-full py-4 px-8 inline-block text-center">
+                <div class="flex justify-center items-center p-9 ">
+                    <div class="border-4 border-gray-800  rounded-full py-4 px-8 inline-block text-center">
                         <h1 id="room-title" class="text-3xl md:text-6xl font-semibold text-gray-700">Ruangan</h1>
                     </div>
                 </div>
             <!-- Menampilkan daftar Ruangan-->
-                <div class="bg-blue-200 rounded-3xl shadow-lg md:p-6 text-center">
+                <div class="bg-gray-600 rounded-3xl shadow-lg md:p-6 text-center">
                     <div class="mt-8">
                         <div id="room-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                             @php

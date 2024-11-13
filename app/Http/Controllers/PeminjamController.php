@@ -8,19 +8,22 @@ class PeminjamController extends Controller
 {
     public function index()
     {
-        return view('auth.ViewRuangan'); // Ensure this view exists
+        return view('PeminjamView.ViewRuangan'); // Ensure this view exists
     }
   
 public function DaftarRuangan(){
-    return View('Ruangan');
+    return View('PeminjamView.Ruangan');
 }
 public function Dashboard(){
-    return View('DashboardPeminjam');
+    return View('PeminjamView.DashboardPeminjam');
 }
 public function InformasiRuangan(){
-    return view('InformasiRuangan');
+    return view('PeminjamView.InformasiRuangan');
 }
 
+public function EditAdmin(){
+    return view('PeminjamView.AdminEdit');
+}
 
 
 
@@ -38,8 +41,7 @@ public function SaveDataRuangan(Request $request)
             'keperluan' => 'required|string',
         ]);
 
-        // Konversi tanggal ke format yang benar
-        $tanggal = Carbon::createFromFormat('d/m/Y', $request->tanggal)->format('Y-m-d');
+
 
         // Simpan data ke dalam database
         Peminjaman::create([
