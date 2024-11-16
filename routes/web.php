@@ -80,6 +80,8 @@ Route::get('/peminjamaktif', [AdminController::class, 'listPeminjamAktif'])->nam
 // Route::middleware(['auth'])->group(function () {
 Route::get('/admin/asset/edit/{id}', [AssetController::class, 'edit'])->name('asset.edit');
 Route::delete('/admin/asset/{id}', [AssetController::class, 'destroy'])->name('asset.delete');
+Route::put('/asset/{id}', [AssetController::class, 'update'])->name('asset.update');
+
 // });
 // });
 Route::get('/ruangan', function () {

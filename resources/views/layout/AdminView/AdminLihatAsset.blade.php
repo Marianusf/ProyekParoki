@@ -37,6 +37,7 @@
                                 <td class="py-3 px-6 text-left">{{ $asset->deskripsi }}</td>
                                 <td class="py-3 px-6 text-left">
                                     @if ($asset->gambar)
+                                        <!-- Debugging: Outputkan URL gambar untuk memeriksa jalur yang benar -->
                                         <img src="{{ asset('storage/' . $asset->gambar) }}"
                                             alt="Gambar {{ $asset->nama_barang }}"
                                             class="w-20 h-20 object-cover rounded-lg">
@@ -45,10 +46,16 @@
                                     @endif
                                 </td>
 
+
+
                                 <td class="py-3 px-6 text-left">{{ $asset->created_at->format('d-m-Y') }}</td>
                                 <td class="py-3 px-6 text-center">
                                     <a href="{{ route('asset.edit', $asset->id) }}"
-                                        class="bg-yellow-500 text-white py-1 px-3 rounded hover:bg-yellow-700">Edit</a>
+                                        class="bg-yellow-500 text-white py-1 px-3 rounded hover:bg-yellow-700 edit-btn"
+                                        onclick="event.preventDefault(); confirmEdit('{{ route('asset.edit', $asset->id) }}');">
+                                        Edit
+                                    </a>
+
                                     <button type="button" onclick="deleteAsset({{ $asset->id }})"
                                         class="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-700">Hapus</button>
                                     <form id="delete-form-{{ $asset->id }}"
@@ -83,6 +90,23 @@
                 if (result.isConfirmed) {
                     // Lakukan penghapusan jika dikonfirmasi
                     document.getElementById('delete-form-' + assetId).submit();
+                }
+            });
+        }
+
+        function confirmEdit(url) {
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Anda akan mengedit data ini!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Edit',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
                 }
             });
         }
