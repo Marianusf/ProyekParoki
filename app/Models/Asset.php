@@ -14,6 +14,7 @@ class Asset extends Model
         'nama_barang',
         'jenis_barang',
         'jumlah_barang',
+        'jumlah_terpinjam',
         'kondisi',
         'deskripsi',
         'gambar',
@@ -21,4 +22,20 @@ class Asset extends Model
 
     // Atau jika Anda ingin menggunakan $guarded (untuk melindungi semua kolom, kecuali yang disebutkan)
     // protected $guarded = [];
+    // Relasi ke keranjang peminjaman
+    public function keranjang()
+    {
+        return $this->hasMany(Keranjang::class);
+    }
+
+    // Relasi ke peminjaman
+    public function peminjaman()
+    {
+        return $this->hasMany(Peminjaman::class, 'asset_id');
+    }
+    // di dalam model Asset
+    public function getStokTersediaAttribute()
+    {
+        return $this->jumlah_barang - $this->jumlah_terpinjam;
+    }
 }

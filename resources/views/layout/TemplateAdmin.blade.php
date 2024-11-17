@@ -90,9 +90,9 @@
                 <span class="text-[15px] ml-4 text-gray-200">Persetujuan Akun</span>
             </a>
 
-            <a href="/loan-requests"
+            <a href="{{ route('lihatPermintaanPeminjaman') }}"
                 class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer 
-            {{ Request::is('loan-requests') ? 'bg-blue-600' : 'hover:bg-blue-600' }}">
+            {{ Request::is('lihatPermintaanPeminjaman') ? 'bg-blue-600' : 'hover:bg-blue-600' }}">
                 <i class="bi bi-check-square-fill"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Persetujuan Peminjaman</span>
             </a>
