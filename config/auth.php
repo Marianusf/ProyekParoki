@@ -70,7 +70,7 @@ return [
     'providers' => [
         'User' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class,
+            'model' => App\Models\peminjam::class,
         ],
         'peminjam' => [
             'driver' => 'eloquent',

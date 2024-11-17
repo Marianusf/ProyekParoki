@@ -5,6 +5,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Peminjam;
+use App\Models\Peminjaman;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -17,5 +18,11 @@ class AdminController extends Controller
 
         // Menampilkan view khusus untuk daftar peminjam aktif di lokasi baru
         return view('layout.AdminView.LihatPeminjamAktif', compact('peminjam'));
+    }
+    public function lihatPermintaanPeminjaman()
+    {
+        $peminjamanRequests = Peminjaman::where('status_peminjaman', 'pending')->with(['asset', 'peminjam'])->get();
+
+        return view('layout.AdminView.PermintaanPeminjaman', compact('peminjamanRequests'));
     }
 }

@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\PeminjamanController;
 
 Route::get('/profil', function () {
     return view('layout.PeminjamView.Profile');
@@ -95,3 +96,22 @@ Route::get('/TemplatePeminjam', function () {
 Route::get('/pengembalian', function () {
     return view('pengembalian');
 });
+
+
+// Route::middleware(['auth:peminjam'])->group(function () {
+Route::post('/keranjang/tambah', [PeminjamanController::class, 'tambahKeKeranjang'])->name('keranjang.tambah');
+Route::get('/keranjang', [PeminjamanController::class, 'lihatKeranjang'])->name('lihatKeranjang');
+Route::post('/checkout', [PeminjamanController::class, 'prosesCheckout'])->name('checkout');
+Route::get('/riwayat-peminjaman', [PeminjamanController::class, 'lihatRiwayatPeminjaman'])->name('riwayatPeminjaman');
+// Menampilkan halaman peminjaman asset
+// Route untuk menampilkan halaman form peminjaman
+Route::get('/pinjam-asset', [PeminjamanController::class, 'tampilPinjamAsset'])->name('pinjam.asset');
+
+
+// });
+
+// Route::middleware(['auth', 'can:isAdmin'])->group(function () {
+Route::post('/peminjaman/{id}/setujui', [PeminjamanController::class, 'setujuiPeminjaman'])->name('peminjaman.setujui');
+Route::post('/peminjaman/{id}/tolak', [PeminjamanController::class, 'tolakPeminjaman'])->name('peminjaman.tolak');
+// });
+Route::get('/admin/peminjaman', [AdminController::class, 'lihatPermintaanPeminjaman'])->name('lihatPermintaanPeminjaman');
