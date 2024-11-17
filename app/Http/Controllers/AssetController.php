@@ -7,6 +7,12 @@ use Illuminate\Http\Request;
 
 class AssetController extends Controller
 {
+    public function cekKetersediaanAsset()
+    {
+        $assets = Asset::all(); // Atau bisa dengan kondisi khusus, misalnya, hanya yang tersedia
+        return view('layout.AdminView.LihatKetersediaan', compact('assets'));
+    }
+
     // Menampilkan form untuk menambahkan asset
     public function create()
     {
