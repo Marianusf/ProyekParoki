@@ -12,16 +12,27 @@
             <h2 class="font-bold text-3xl text-[#002D74] text-center mb-4">Login</h2>
 
             @if ($errors->any())
-                <div class="bg-red-500 text-white p-4 rounded mb-4">
-                    {{ $errors->first() }} <!-- This will display the first error -->
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+                    <strong class="font-bold">Pemberitahuan: </strong>
+                    <span class="block sm:inline">{{ $errors->first() }}</span> <!-- Menampilkan pesan error pertama -->
+                </div>
+            @endif
+
+            @if (session('error'))
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                    <strong class="font-bold">Pemberitahuan: </strong>
+                    <span class="block sm:inline">{{ session('error') }}</span>
                 </div>
             @endif
 
             @if (session('message'))
-                <div class="bg-yellow-500 text-white p-4 rounded mb-4">
-                    {{ session('message') }} <!-- This will display any flash message -->
+                <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative mb-4"
+                    role="alert">
+                    <strong class="font-bold">Informasi: </strong>
+                    <span class="block sm:inline">{{ session('message') }}</span>
                 </div>
             @endif
+
 
             <p class="text-sm mt-2 text-[#002D74] text-center">Sudah Punya Akun? Tinggal Login</p>
 
