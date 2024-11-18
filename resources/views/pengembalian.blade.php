@@ -1,6 +1,5 @@
 @extends('layout.TemplatePeminjam')
 
-
 @section('title', 'Pengembalian')
 
 @section('content')
@@ -27,7 +26,7 @@
     
     <div class="flex items-center bg-white shadow rounded-md p-4">
         <div class="flex-1">
-            <div class="text-sm sm:text-base font-medium">Ruangan 2</div>
+            <div class="text-sm sm:text-base font-medium">Barang 1</div>
             <div class="text-xs sm:text-sm text-gray-500">1 Oktober 2024</div>
             <div class="text-xs sm:text-sm text-gray-500">10.00 WIB</div>
         </div>

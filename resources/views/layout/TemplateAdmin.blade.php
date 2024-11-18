@@ -18,7 +18,6 @@
     <style>
         body {
             overflow: hidden;
-
         }
 
         .sidebar {
