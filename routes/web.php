@@ -106,7 +106,7 @@ Route::get('/riwayat-peminjaman', [PeminjamanController::class, 'lihatRiwayatPem
 // Menampilkan halaman peminjaman asset
 // Route untuk menampilkan halaman form peminjaman
 Route::get('/pinjam-asset', [PeminjamanController::class, 'tampilPinjamAsset'])->name('pinjam.asset');
-
+Route::get('/peminjam/ketersediaan-asset', [AssetController::class, 'peminjamLihatKetersediaanAsset'])->name('peminjam.ketersediaanAsset');
 
 // });
 

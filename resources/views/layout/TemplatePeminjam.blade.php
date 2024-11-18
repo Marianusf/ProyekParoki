@@ -110,7 +110,8 @@
                 <i class="bi bi-x ml-20 sm:ml-28 cursor-pointer" onclick="toggleSidebar()"></i>
             </div>
             <hr class="my-2 text-gray-600">
-            <a href="/home" class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700">
+            <a href="{{ route('peminjam.dashboard') }}"
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700">
                 <i class="bi bi-house-door"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Home</span>
             </a>
@@ -118,22 +119,24 @@
                 <i class="bi bi-building"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Ruangan</span>
             </a>
-            {{-- @if (isset($asset)) --}}
             <a href="{{ route('pinjam.asset') }}"
                 class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700">
                 <i class="bi bi-box-seam"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Barang dan Aset</span>
             </a>
 
-            {{-- @endif --}}
-
             <a href="{{ route('lihatKeranjang') }}"
                 class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700">
                 <i class="bi bi-cart"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Keranjang</span>
             </a>
+            <a href="{{ route('peminjam.ketersediaanAsset') }}"
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700">
+                <i class="bi bi-file-earmark-text"></i>
+                <span class="text-[15px] ml-4 text-gray-200">Daftar Aset Tersedia</span>
+            </a>
 
-            <a href="/add-asset"
+            <a href="{{ route('riwayatPeminjaman') }}"
                 class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700">
                 <i class="bi bi-clock-history"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Histori Peminjaman</span>

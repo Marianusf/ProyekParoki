@@ -1,4 +1,4 @@
-@extends('layout.TemplateAdmin')
+@extends('layout.TemplatePeminjam')
 
 @section('title', 'Ketersediaan Asset')
 
@@ -31,7 +31,6 @@
                             <td class="px-6 py-4 text-sm text-gray-800">{{ $asset->nama_barang }}</td>
                             <td class="py-6 px-4 text-sm">
                                 @if ($asset->gambar)
-                                    <!-- Debugging: Outputkan URL gambar untuk memeriksa jalur yang benar -->
                                     <img src="{{ asset('storage/' . $asset->gambar) }}"
                                         alt="Gambar {{ $asset->nama_barang }}" class="w-20 h-20 object-cover rounded-lg">
                                 @else
@@ -52,8 +51,5 @@
                 </tbody>
             </table>
         </div>
-
-        <!-- Tombol untuk menambah asset baru -->
-
     </div>
 @endsection

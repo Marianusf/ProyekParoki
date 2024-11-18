@@ -164,7 +164,7 @@ class PeminjamanController extends Controller
     }
     public function tampilPinjamAsset()
     {
-        $asset = Asset::all();
+        $asset = Asset::where('kondisi', 'baik')->get();
         return view('layout.PeminjamView.PinjamAsset', compact('asset'));
     }
 }

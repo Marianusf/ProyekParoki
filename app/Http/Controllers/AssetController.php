@@ -9,7 +9,7 @@ class AssetController extends Controller
 {
     public function cekKetersediaanAsset()
     {
-        $assets = Asset::all(); // Atau bisa dengan kondisi khusus, misalnya, hanya yang tersedia
+        $assets = Asset::where('kondisi', 'baik')->get();
         return view('layout.AdminView.LihatKetersediaan', compact('assets'));
     }
 
@@ -107,14 +107,16 @@ class AssetController extends Controller
         return redirect()->route('asset.index')->with('success', 'Asset berhasil diperbarui!');
     }
 
-
-
-
     public function destroy($id)
     {
         $asset = Asset::findOrFail($id);
         $asset->delete();
 
         return redirect()->route('asset.index')->with('success', 'Asset berhasil dihapus!');
+    }
+    public function peminjamLihatKetersediaanAsset()
+    {
+        $assets = Asset::where('kondisi', 'baik')->get();
+        return view('layout.PeminjamView.LihatKetersediaan', compact('assets'));
     }
 }

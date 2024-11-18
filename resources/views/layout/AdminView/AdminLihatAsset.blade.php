@@ -13,6 +13,11 @@
                     <span class="block sm:inline">{{ session('success') }}</span>
                 </div>
             @endif
+            <div class="mb-4 text-right">
+                <a href="{{ route('asset.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+                    Tambah Asset Baru
+                </a>
+            </div>
             <div class="overflow-x-auto">
                 <table class="min-w-full bg-white border border-gray-200 rounded-lg">
                     <thead>
