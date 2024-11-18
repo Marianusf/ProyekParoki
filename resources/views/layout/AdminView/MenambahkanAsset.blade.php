@@ -1,11 +1,19 @@
-<!-- MenambahkanAsset.blade.php -->
 @extends('layout.TemplateAdmin')
 
 @section('title', isset($asset) ? 'Edit Asset' : 'Tambah Asset')
 
 @section('content')
-    <div class="container">
-        <h2>Tambah Asset</h2>
+    <div class="container mx-auto px-6 py-8">
+        <h2 class="text-3xl font-semibold text-center mb-8 text-gray-800">{{ isset($asset) ? 'Edit Asset' : 'Tambah Asset' }}
+        </h2>
+
+        <!-- Menampilkan notifikasi sukses jika ada -->
+        @if (session('success'))
+            <div class="bg-green-500 text-white p-4 rounded-lg mb-6">
+                {{ session('success') }}
+            </div>
+        @endif
+
         <form action="{{ isset($asset) ? route('asset.update', $asset->id) : route('asset.store') }}" method="POST"
             enctype="multipart/form-data">
             @csrf
@@ -13,53 +21,90 @@
                 @method('PUT')
             @endif
 
-            <div class="mb-3">
-                <label for="nama_barang" class="form-label">Nama Barang</label>
-                <input type="text" class="form-control" id="nama_barang" name="nama_barang"
-                    value="{{ old('nama_barang', $asset->nama_barang ?? '') }}" required>
+            <!-- Nama Barang -->
+            <div class="mb-6">
+                <label for="nama_barang" class="block text-sm font-medium text-gray-700">Nama Barang</label>
+                <input type="text"
+                    class="mt-2 block w-full border-2 border-gray-300 rounded-md p-3 text-gray-700 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    id="nama_barang" name="nama_barang" value="{{ old('nama_barang', $asset->nama_barang ?? '') }}"
+                    required>
+                @error('nama_barang')
+                    <p class="text-red-500 text-xs mt-2">{{ $message }}</p>
+                @enderror
             </div>
 
-            <div class="mb-3">
-                <label for="jenis_barang" class="form-label">Jenis Barang</label>
-                <input type="text" class="form-control" id="jenis_barang" name="jenis_barang"
-                    value="{{ old('jenis_barang', $asset->jenis_barang ?? '') }}" required>
+            <!-- Jenis Barang -->
+            <div class="mb-6">
+                <label for="jenis_barang" class="block text-sm font-medium text-gray-700">Jenis Barang</label>
+                <input type="text"
+                    class="mt-2 block w-full border-2 border-gray-300 rounded-md p-3 text-gray-700 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    id="jenis_barang" name="jenis_barang" value="{{ old('jenis_barang', $asset->jenis_barang ?? '') }}"
+                    required>
+                @error('jenis_barang')
+                    <p class="text-red-500 text-xs mt-2">{{ $message }}</p>
+                @enderror
             </div>
 
-            <div class="mb-3">
-                <label for="jumlah_barang" class="form-label">Jumlah Barang</label>
-                <input type="number" class="form-control" id="jumlah_barang" name="jumlah_barang"
-                    value="{{ old('jumlah_barang', $asset->jumlah_barang ?? '') }}" required>
+            <!-- Jumlah Barang -->
+            <div class="mb-6">
+                <label for="jumlah_barang" class="block text-sm font-medium text-gray-700">Jumlah Barang</label>
+                <input type="number"
+                    class="mt-2 block w-full border-2 border-gray-300 rounded-md p-3 text-gray-700 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    id="jumlah_barang" name="jumlah_barang" value="{{ old('jumlah_barang', $asset->jumlah_barang ?? '') }}"
+                    required>
+                @error('jumlah_barang')
+                    <p class="text-red-500 text-xs mt-2">{{ $message }}</p>
+                @enderror
             </div>
 
-            <div class="mb-3">
-                <label for="kondisi" class="form-label">Kondisi Barang</label>
-                <input type="text" class="form-control" id="kondisi" name="kondisi"
-                    value="{{ old('kondisi', $asset->kondisi ?? '') }}" required>
+            <!-- Kondisi Barang -->
+            <div class="mb-6">
+                <label for="kondisi" class="block text-sm font-medium text-gray-700">Kondisi Barang</label>
+                <input type="text"
+                    class="mt-2 block w-full border-2 border-gray-300 rounded-md p-3 text-gray-700 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    id="kondisi" name="kondisi" value="{{ old('kondisi', $asset->kondisi ?? '') }}" required>
+                @error('kondisi')
+                    <p class="text-red-500 text-xs mt-2">{{ $message }}</p>
+                @enderror
             </div>
 
-            <div class="mb-3">
-                <label for="deskripsi" class="form-label">Deskripsi Barang</label>
-                <textarea class="form-control" id="deskripsi" name="deskripsi" rows="4" required>{{ old('deskripsi', $asset->deskripsi ?? '') }}</textarea>
+            <!-- Deskripsi Barang -->
+            <div class="mb-6">
+                <label for="deskripsi" class="block text-sm font-medium text-gray-700">Deskripsi Barang</label>
+                <textarea
+                    class="mt-2 block w-full border-2 border-gray-300 rounded-md p-3 text-gray-700 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    id="deskripsi" name="deskripsi" rows="4" required>{{ old('deskripsi', $asset->deskripsi ?? '') }}</textarea>
+                @error('deskripsi')
+                    <p class="text-red-500 text-xs mt-2">{{ $message }}</p>
+                @enderror
             </div>
 
-            <div class="mb-3">
-                <label for="gambar" class="form-label">Gambar Barang</label>
-                <input type="file" class="form-control" id="gambar" name="gambar" accept="image/*"
-                    onchange="previewImage(event)">
-                <div class="mt-2">
-                    <p>Pratinjau Gambar:</p>
+            <!-- Gambar Barang -->
+            <div class="mb-6">
+                <label for="gambar" class="block text-sm font-medium text-gray-700">Gambar Barang</label>
+                <input type="file"
+                    class="mt-2 block w-full border-2 border-gray-300 rounded-md p-3 text-gray-700 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    id="gambar" name="gambar" accept="image/*" onchange="previewImage(event)">
+
+                <div class="mt-4">
+                    <p class="text-sm text-gray-600">Pratinjau Gambar:</p>
                     <img id="preview"
                         src="{{ isset($asset) && $asset->gambar ? asset('storage/' . $asset->gambar) : '' }}"
                         alt="Pratinjau Gambar"
-                        style="width: 150px; height: auto; {{ isset($asset) && $asset->gambar ? 'display: block;' : 'display: none;' }}">
+                        class="mt-2 rounded-md w-48 h-auto {{ isset($asset) && $asset->gambar ? 'block' : 'hidden' }}">
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary">
-                {{ isset($asset) ? 'Update Asset' : 'Tambah Asset' }}
-            </button>
-        </form>
 
+            <!-- Tombol Submit -->
+            <div class="mb-6">
+                <button type="submit"
+                    class="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                    {{ isset($asset) ? 'Update Asset' : 'Tambah Asset' }}
+                </button>
+            </div>
+        </form>
     </div>
+
     <script>
         function previewImage(event) {
             const input = event.target;
@@ -68,13 +113,13 @@
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    preview.src = e.target.result; // Mengupdate gambar pratinjau
-                    preview.style.display = 'block'; // Menampilkan pratinjau gambar jika sebelumnya disembunyikan
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
                 };
                 reader.readAsDataURL(input.files[0]);
             } else {
-                preview.src = ''; // Menghapus src jika tidak ada file baru yang dipilih
-                preview.style.display = 'none'; // Menyembunyikan pratinjau gambar
+                preview.src = '';
+                preview.style.display = 'none';
             }
         }
     </script>

@@ -7,6 +7,12 @@ use Illuminate\Http\Request;
 
 class AssetController extends Controller
 {
+    public function cekKetersediaanAsset()
+    {
+        $assets = Asset::where('kondisi', 'baik')->get();
+        return view('layout.AdminView.LihatKetersediaan', compact('assets'));
+    }
+
     // Menampilkan form untuk menambahkan asset
     public function create()
     {
@@ -101,14 +107,16 @@ class AssetController extends Controller
         return redirect()->route('asset.index')->with('success', 'Asset berhasil diperbarui!');
     }
 
-
-
-
     public function destroy($id)
     {
         $asset = Asset::findOrFail($id);
         $asset->delete();
 
         return redirect()->route('asset.index')->with('success', 'Asset berhasil dihapus!');
+    }
+    public function peminjamLihatKetersediaanAsset()
+    {
+        $assets = Asset::where('kondisi', 'baik')->get();
+        return view('layout.PeminjamView.LihatKetersediaan', compact('assets'));
     }
 }

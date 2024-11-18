@@ -50,35 +50,51 @@ class PeminjamanController extends Controller
 
         return view('layout.PeminjamView.LihatKeranjang', compact('keranjangItems'));
     }
-
-    // Fungsi untuk memproses checkout keranjang
     public function prosesCheckout(Request $request)
     {
         // Validasi item yang dipilih untuk checkout
         $selectedItems = $request->input('selected_items', []);
         if (empty($selectedItems)) {
-            return redirect()->route('keranjang.index')->with('error', 'Pilih setidaknya satu item untuk checkout.');
+            return redirect()->back()->with('error', 'Pilih setidaknya satu item untuk checkout.');
         }
+
+        $errors = [];
 
         // Proses checkout untuk setiap item yang dipilih
         foreach ($selectedItems as $itemId) {
             $item = Keranjang::find($itemId);
 
-            // Proses penyimpanan data peminjaman
+            // Menghitung stok yang tersedia
+            $stokTersedia = $item->asset->jumlah_barang - $item->asset->jumlah_terpinjam;
+
+            // Validasi stok cukup
+            if ($item->jumlah > $stokTersedia) {
+                $errors[] = "Stok untuk {$item->asset->nama_barang} tidak mencukupi. Tersedia: {$stokTersedia}, Dibutuhkan: {$item->jumlah}.";
+                continue;
+            }
+
+            // Jika stok cukup, simpan peminjaman dengan status menunggu persetujuan
             Peminjaman::create([
                 'id_peminjam' => auth()->guard('peminjam')->id(),
                 'id_asset' => $item->id_asset,
                 'jumlah' => $item->jumlah,
-                'tanggal_peminjaman' => $item->tanggal_peminjaman,  // Tanggal peminjaman yang dipilih
-                'tanggal_pengembalian' => $item->tanggal_pengembalian,  // Tanggal pengembalian yang dipilih
+                'tanggal_peminjaman' => $item->tanggal_peminjaman,
+                'tanggal_pengembalian' => $item->tanggal_pengembalian,
+                'status' => 'pending', // Status menunggu persetujuan admin
             ]);
+        }
+
+        // Jika ada error stok, kembali ke keranjang dengan pesan error
+        if (!empty($errors)) {
+            return redirect()->back()->withErrors($errors);
         }
 
         // Hapus item dari keranjang setelah checkout
         Keranjang::whereIn('id', $selectedItems)->delete();
 
-        return redirect()->route('riwayatPeminjaman')->with('success', 'Checkout berhasil!');
+        return redirect()->route('riwayatPeminjaman')->with('success', 'Checkout berhasil! Menunggu persetujuan admin.');
     }
+
 
 
     public function setujuiPeminjaman($id)
@@ -148,7 +164,7 @@ class PeminjamanController extends Controller
     }
     public function tampilPinjamAsset()
     {
-        $asset = Asset::all();
+        $asset = Asset::where('kondisi', 'baik')->get();
         return view('layout.PeminjamView.PinjamAsset', compact('asset'));
     }
 }
