@@ -11,6 +11,7 @@
                     <tr>
                         <th scope="col" class="px-6 py-3">Nama Asset</th>
                         <th scope="col" class="px-6 py-3">Jumlah</th>
+                        <th scope="col" class="px-6 py-3">Tanggal Pengajuan</th>
                         <th scope="col" class="px-6 py-3">Tanggal Peminjaman</th>
                         <th scope="col" class="px-6 py-3">Tanggal Pengembalian</th>
                         <th scope="col" class="px-6 py-3">Status Peminjaman</th>
@@ -23,6 +24,7 @@
                                 {{ $peminjaman->asset->nama_barang }}
                             </td>
                             <td class="px-6 py-4">{{ $peminjaman->jumlah }}</td>
+                            <td class="px-6 py-4">{{ $peminjaman->created_at }}</td>
                             <td class="px-6 py-4">{{ $peminjaman->tanggal_peminjaman }}</td>
                             <td class="px-6 py-4">{{ $peminjaman->tanggal_pengembalian }}</td>
                             <td class="px-6 py-4">
