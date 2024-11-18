@@ -105,7 +105,6 @@ Route::get('/form', function () {
     return view('TambahAset', ['title'=> 'form']);
 });
 
-
 // Route::middleware(['auth:peminjam'])->group(function () {
 Route::post('/keranjang/tambah', [PeminjamanController::class, 'tambahKeKeranjang'])->name('keranjang.tambah');
 Route::get('/keranjang', [PeminjamanController::class, 'lihatKeranjang'])->name('lihatKeranjang');
