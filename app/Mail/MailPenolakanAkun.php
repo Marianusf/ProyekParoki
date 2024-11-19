@@ -29,7 +29,7 @@ class MailPenolakanAkun extends Mailable
      */
     public function build()
     {
-        return $this->subject('Pendaftaran Akun Ditolak')
+        return $this->subject('Pendaftaran Anda Ditolak')
             ->view('emails.PenolakanAkun')
             ->with(['reason' => $this->reason]);
     }

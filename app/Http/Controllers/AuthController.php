@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Mail;
 
 use App\Mail\AccountRejectionMail;
 use App\Mail\MailPenolakanAkun;
+use App\Mail\MailTerimaPendaftaran;
 
 class AuthController extends Controller
 {
@@ -23,14 +24,23 @@ class AuthController extends Controller
             'email' => 'required|email|regex:/^[\w\.\-]+@gmail\.com$/i|unique:peminjam,email',
             'tanggal_lahir' => 'required|date',
             'alamat' => 'required|string',
-            'nomor_telepon' => 'required|string|max:15',
-            'password' => 'required|string|min:8|confirmed',
+            'nomor_telepon' => 'required|numeric|digits_between:10,15', // Hanya angka
+            'lingkungan' => 'required|string',
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'confirmed',
+                'regex:/^(?=.*[0-9]).{8,}$/', // Minimal 8 karakter dengan minimal 1 angka
+            ],
         ], [
             'email.unique' => 'Email ini sudah terdaftar, silakan gunakan email lain.',
             'name.required' => 'Nama Anda wajib untuk diisi!!',
             'email.required' => 'Email Anda wajib diisi !',
             'tanggal_lahir' => 'Tanggal Lahir Wajib Untuk diisi!!',
-            'nomor_telepon' => 'Nomor Telepon Anda Wajib Diisi !',
+            'nomor_telepon' => 'Nomor Telepon Anda Wajib Diisi dengan Angka !',
+            'lingkungan' => 'Nama lingkungan Wajib Untuk diisi dengan benar!',
+            'password' => 'Password Minimal Memiliki 8 Karakter dengan Kombinasi Angka Minimal Satu',
             'email.email' => 'Format email tidak valid. example@gmail.com',
             'password.confirmed' => 'Konfirmasi kata sandi tidak sama !!',
         ]);
@@ -41,7 +51,7 @@ class AuthController extends Controller
         // Buat data baru di tabel `peminjam`
         peminjam::create($validated);
 
-        return redirect()->back()->with('message', 'Registrasi berhasil, menunggu persetujuan admin');
+        return redirect()->back()->with('message', 'Permintaan Registrasi berhasil !,Silahkan Lihat Gmail untuk Informasi Lebih Lanjut');
     }
 
     public function login(Request $request)
@@ -67,11 +77,11 @@ class AuthController extends Controller
 
         if ($borrower && Hash::check($request->password, $borrower->password)) {
             if (!$borrower->is_approved) {
-                return response()->json(['message' => 'Akun belum disetujui oleh admin'], 403);
+                return redirect()->back()->with('error', 'Akun belum disetujui oleh admin. Mohon cek email pendaftar secara berkala.');
             }
 
             Auth::guard('peminjam')->login($borrower);
-            return redirect()->route('borrower.dashboard')->with('message', 'Login berhasil sebagai Peminjam');
+            return redirect()->route('peminjam.dashboard')->with('message', 'Login berhasil sebagai Peminjam');
         }
 
         // Jika tidak ada yang cocok, tampilkan pesan error
@@ -154,7 +164,7 @@ class AuthController extends Controller
         // Update status peminjam menjadi approved (misal, `is_approved` jadi `1`)
         $peminjam->is_approved = 1;
         $peminjam->save();
-
+        Mail::to($peminjam->email)->send(new MailTerimaPendaftaran($peminjam));
         // Redirect dengan pesan sukses
         return redirect()->back()->with('success', 'Akun peminjam berhasil disetujui.');
     }

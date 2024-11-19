@@ -3,153 +3,188 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Navbar</title>
     @vite('resources/css/app.css')
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
     <style>
-    body {
-        overflow: hidden;
-    }
+        body {
+            overflow: hidden;
+        }
 
-    .sidebar {
-        position: fixed;
-        top: 0;
-        bottom: 0;
-        left: -300px; /* Hidden by default */
-        width: 300px;
-        background-color: #1f2937; /* Tailwind's gray-900 */
-        height: 100vh; /* Full height */
-        overflow-y: auto; /* Scroll if content is too long */
-        transition: left 0.2s ease; /* Smooth transition */
-        z-index: 10; /* Ensure it’s above other content */
-    }
-
-    .sidebar.show {
-        left: 0; /* Show sidebar */
-    }
-
-    .main-content {
-        transition: margin-left 0.3s ease; /* Smooth transition */
-        margin-left: 0; /* Initially fullscreen */
-        padding: 16px; /* Adjust as needed */
-        height: 100vh; /* Full height */
-        overflow-y: auto; /* Scroll if content is too long */
-    }
-
-    .main-content.shifted {
-        margin-left: 300px; /* Adjust for the sidebar width */
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
         .sidebar {
-            width: 80%; /* Change to a smaller width on mobile */
-            left: -80%; /* Hide it off-screen initially */
+            position: fixed;
+            top: 64px;
+            /* Adjust this value based on your navbar height */
+            bottom: 0;
+            left: -300px;
+            /* Hidden by default */
+            width: 250px;
+            background-color: #1f2937;
+            /* Tailwind's gray-900 */
+            height: calc(100vh - 64px);
+            /* Full height minus navbar height */
+            overflow-y: auto;
+            transition: left 0.2s ease;
+            /* Smooth transition */
+            z-index: 10;
+            /* Ensure it’s above other content */
         }
 
         .sidebar.show {
-            left: 0; /* Show it when active */
+            left: 0;
+            /* Show sidebar */
+        }
+
+        .main-content {
+            transition: margin-left 0.3s ease;
+            /* Smooth transition */
+            margin-left: 0;
+            /* Initially fullscreen */
+            padding: 16px;
+            /* Adjust as needed */
+            height: 100vh;
+            /* Full height */
+            overflow-y: auto;
+            /* Scroll if content is too long */
         }
 
         .main-content.shifted {
-            margin-left: 80%; /* Adjust main content for the sidebar width on mobile */
+            margin-left: 300px;
+            /* Adjust for the sidebar width */
         }
-    }
-</style>
+
+        @media (min-width: 640px) {
+            .sidebar {
+                width: 300px;
+            }
+        }
+    </style>
 
 </head>
 
-<body class="bg-blue-600">
-    <span class="absolute text-white text-4xl top-5 left-4 cursor-pointer" onclick="toggleSidebar()">
-        <i class="bi bi-filter-left px-2 bg-gray-900 rounded-md"></i>
-    </span>
-
-    <div class="sidebar" id="sidebar">
-    <div class="text-gray-100 text-xl">
-        <div class="p-2.5 mt-1 flex items-center rounded-md">
-            <div class="w-20 h-20 bg-gray-300 rounded-full"> <img  src="/Gambar/logo.png" alt="Logo"></div>
-            <div class="ml-4">
-            
-            <h2 class="text-lg font-semibold text-gray-200">Daniel</h2>
-            <p class="text-sm text-gray-200">Ketua Lingkungan</p>
-            </div>
-                
-                <i class="bi bi-x ml-auto cursor-pointer" onclick="toggleSidebar()"></i>
-            </div>
-           
-            <hr class="my-2 text-gray-600">
-            <div class="menu-item p-2.5 mt-2 flex items-center rounded-md px-4 cursor-pointer hover:bg-blue-600">
-            <i class="bi bi-window-sidebar"></i>
-                <span class="text-[20px] ml-4 text-gray-200">Beranda</span>
-            </div>
-            <div class="menu-item p-2.5 mt-2 flex items-center rounded-md px-4 cursor-pointer hover:bg-blue-600">
-                <i class="bi bi-person-circle"></i>
-                <span class="text-[15px] ml-4 text-gray-200">Profil</span>
-            </div>
-            <div class="menu-item p-2.5 mt-2 flex items-center rounded-md px-4 cursor-pointer hover:bg-blue-600">
-                <i class="bi bi-house-door-fill"></i>
-                <span class="text-[15px] ml-4 text-gray-200" href="/Ruangan.blade.php"> Ruangan</span>
-            </div>
-            <div class="menu-item p-2.5 mt-2 flex items-center rounded-md px-4 cursor-pointer hover:bg-blue-600">
-            <i class="bi bi-inboxes-fill"></i>
-                <span class="text-[15px] ml-4 text-gray-200">Barang dan Aset</span>
-            </div>
-            <div class="menu-item p-2.5 mt-2 flex items-center rounded-md px-4 cursor-pointer hover:bg-blue-600">
-                <i class="bi bi-clock-fill"></i>
-                <span class="text-[15px] ml-4 text-gray-200">Histori Peminjaman</span>
-            </div>
-            <div class="menu-item p-2.5 mt-2 flex items-center rounded-md px-4 cursor-pointer hover:bg-blue-600">
-                <i class="bi bi-arrow-return-left"></i>
-                <span class="text-[15px] ml-4 text-gray-200">Pengembalian</span>
-            </div>
-            <hr class="my-4 text-gray-600">
-            <div class="menu-item p-2.5 mt-3 flex items-center rounded-md px-4 cursor-pointer hover:bg-blue-600">
-                <i class="bi bi-box-arrow-in-right"></i>
-                <span class="text-[15px] ml-4 text-gray-200">Logout</span>
+<body>
+    <nav class="bg-gray-900">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="flex h-16 items-center justify-between">
+                <div class="flex items-center">
+                    <div class="">
+                        <span class="absolute text-white text-3xl top-4 left-2 cursor-pointer "
+                            onclick="toggleSidebar()">
+                            <i class="bi bi-filter-left px-2 bg-gray-900 hover:bg-gray-700 rounded-md"></i>
+                        </span>
+                    </div>
+                    <div class="p-2.5 mt-1 ml-10 sm:ml-10 flex items-center">
+                        <img src="{{ asset('/logo.png') }}" alt="Logo Paroki Babadan" class="w-8 h-8 sm:w-10 sm:h-10">
+                        <div class="ml-4">
+                            <div class="text-sm sm:text-base font-medium text-white">
+                                Sistem Peminjaman Gereja Babadan
+                            </div>
+                            <div class="text-sm sm:text-base font-medium text-gray-400">
+                                Paroki ST Petrus dan Paulus
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+    </nav>
+
+    <div class="sidebar" id="sidebar">
+        <div class="text-gray-100 text-sm sm:text-md">
+            <div class="p-2.5 mt-1 flex items-center">
+                <img src="https://i.pinimg.com/736x/08/f2/25/08f22527b5352c7acc4a14dc29ef2f95.jpg"
+                    alt="Logo Paroki Babadan" class="w-10 h-10 rounded-full">
+                <div class="ml-5">
+                    <div class="text-base/5 font-medium text-white">{{ Auth::guard('peminjam')->user()->name }}</div>
+                    <div class="text-sm font-medium text-gray-400">{{ Auth::guard('peminjam')->user()->lingkungan }}
+                    </div>
+                </div>
+
+                <i class="bi bi-x ml-20 sm:ml-28 cursor-pointer" onclick="toggleSidebar()"></i>
+            </div>
+            <hr class="my-2 text-gray-600">
+            <a href="{{ route('peminjam.dashboard') }}"
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700">
+                <i class="bi bi-house-door"></i>
+                <span class="text-[15px] ml-4 text-gray-200">Home</span>
+            </a>
+            <a href="ruangan" class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700">
+                <i class="bi bi-building"></i>
+                <span class="text-[15px] ml-4 text-gray-200">Ruangan</span>
+            </a>
+            <a href="{{ route('pinjam.asset') }}"
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700">
+                <i class="bi bi-box-seam"></i>
+                <span class="text-[15px] ml-4 text-gray-200">Barang dan Aset</span>
+            </a>
+
+            <a href="{{ route('lihatKeranjang') }}"
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700">
+                <i class="bi bi-cart"></i>
+                <span class="text-[15px] ml-4 text-gray-200">Keranjang</span>
+            </a>
+            <a href="{{ route('peminjam.ketersediaanAsset') }}"
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700">
+                <i class="bi bi-file-earmark-text"></i>
+                <span class="text-[15px] ml-4 text-gray-200">Daftar Aset Tersedia</span>
+            </a>
+
+            <a href="{{ route('riwayatPeminjaman') }}"
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700">
+                <i class="bi bi-clock-history"></i>
+                <span class="text-[15px] ml-4 text-gray-200">Histori Peminjaman</span>
+            </a>
+            <a href="/view-assets"
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700">
+                <i class="bi bi-arrow-counterclockwise"></i>
+                <span class="text-[15px] ml-4 text-gray-200">Pengembalian</span>
+            </a>
+            <a href="/delete-asset"
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700">
+                <i class="bi bi-person"></i>
+                <span class="text-[15px] ml-4 text-gray-200">Profile</span>
+            </a>
+            <a href="/login" class="p-2.5 mt-3 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700">
+                <i class="bi bi-box-arrow-in-right"></i>
+                <span class="text-[15px] ml-4 text-gray-200">Logout</span>
+            </a>
+        </div>
     </div>
-</div>
+
     <div class="main-content" id="mainContent">
         @yield('content')
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         const sidebar = document.getElementById('sidebar');
         const mainContent = document.getElementById('mainContent');
-        let isManualToggle = false; // Track manual toggle
 
         function toggleSidebar() {
-            isManualToggle = !isManualToggle;
-            sidebar.classList.toggle('show');
-            mainContent.classList.toggle('shifted');
+            sidebar.classList.toggle('show'); // Toggle sidebar visibility
+            mainContent.classList.toggle('shifted'); // Shift main content
         }
 
         sidebar.addEventListener('mouseenter', () => {
-            if (!isManualToggle) {
-                sidebar.classList.add('show');
-                mainContent.classList.add('shifted');
-            }
+            sidebar.classList.add('show');
+            mainContent.classList.add('shifted');
         });
 
         sidebar.addEventListener('mouseleave', () => {
-            if (!isManualToggle) {
-                sidebar.classList.remove('show');
-                mainContent.classList.remove('shifted');
-            }
+            sidebar.classList.remove('show');
+            mainContent.classList.remove('shifted');
         });
 
-        // Ensure the sidebar is hidden on load
+        // Optional: Ensure the sidebar is hidden when the page loads
         window.onload = () => {
             sidebar.classList.remove('show');
             mainContent.classList.remove('shifted');
-            isManualToggle = false;
         };
     </script>
     <script>

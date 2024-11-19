@@ -78,57 +78,67 @@
             </div>
             <hr class="my-2 text-gray-600">
             <a href="{{ route('admin.dashboard') }}"
-                class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600">
+                class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer 
+                {{ Request::routeIs('admin.dashboard') ? 'bg-blue-600' : 'hover:bg-blue-600' }}">
                 <i class="bi bi-house-door-fill"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Home</span>
             </a>
             <a href="{{ route('requests') }}"
-                class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600">
+                class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer 
+            {{ Request::routeIs('requests') ? 'bg-blue-600' : 'hover:bg-blue-600' }}">
                 <i class="bi bi-person-check-fill"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Persetujuan Akun</span>
             </a>
-            <a href="/loan-requests"
-                class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600">
+
+            <a href="{{ route('lihatPermintaanPeminjaman') }}"
+                class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer 
+            {{ Request::is('lihatPermintaanPeminjaman') ? 'bg-blue-600' : 'hover:bg-blue-600' }}">
                 <i class="bi bi-check-square-fill"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Persetujuan Peminjaman</span>
             </a>
+
             <a href="/return-requests"
-                class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600">
+                class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600 {{ Request::is('return-requests*') ? 'bg-blue-600' : '' }}">
                 <i class="bi bi-arrow-return-left"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Persetujuan Pengembalian Aset</span>
             </a>
 
-            <a href="/add-asset"
-                class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600">
+            <a href="{{ route('asset.create') }}"
+                class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600 {{ Request::is('admin/asset/tambah') ? 'bg-blue-600' : '' }}">
                 <i class="bi bi-plus-circle"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Tambah Aset</span>
             </a>
-            <a href="/view-assets"
-                class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600">
+
+            <a href="{{ route('asset.index') }}"
+                class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600 {{ Request::is('admin/asset') ? 'bg-blue-600' : '' }}">
                 <i class="bi bi-list-ul"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Lihat Aset</span>
             </a>
-            <a href="/delete-asset"
-                class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600">
-                <i class="bi bi-trash-fill"></i>
-                <span class="text-[15px] ml-4 text-gray-200">Hapus Aset</span>
-            </a>
-            <a href="/check-availability"
-                class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600">
+
+            <a href="{{ route('ketersediaanAsset') }}"
+                class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600 {{ Request::is('check-availability') ? 'bg-blue-600' : '' }}">
                 <i class="bi bi-eye-fill"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Cek Ketersediaan Aset</span>
             </a>
+
             <hr class="my-4 text-gray-600">
-            <a href="/members"
-                class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600">
+
+            <a href="{{ route('lihat.peminjam.aktif') }}"
+                class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600 {{ Request::is('peminjamaktif') ? 'bg-blue-600' : '' }}">
                 <i class="bi bi-people-fill"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Lihat Peminjam</span>
             </a>
-            <a href="/login"
-                class="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600">
-                <i class="bi bi-box-arrow-in-right"></i>
-                <span class="text-[15px] ml-4 text-gray-200">Logout</span>
-            </a>
+
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit"
+                    class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600 w-full">
+                    <i class="bi bi-box-arrow-in-right"></i>
+                    <span class="text-[15px] ml-4 text-gray-200">Logout</span>
+                </button>
+            </form>
+
+
         </div>
     </div>
 
