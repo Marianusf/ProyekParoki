@@ -56,7 +56,7 @@ Route::get('/dashboard', [PeminjamController::class, 'Dashboard'])->name('dashbo
 
 
 Route::get('/pinjam', [PeminjamController::class, 'index'])->name('pinjam.ViewRuangan');
-Route::get('/pinjam/ruangan', [PeminjamController::class, 'DaftarRuangan'])->name('pinjam.Ruangan');
+Route::get('/pinjam/ruangan', [PeminjamController::class, 'DaftarRuangan'])->name('pinjam.FormRuangan');
 Route::get('/pinjam/ruangan/informasiRuangan', [PeminjamController::class, 'InformasiRuangan'])->name('pinjam.InformasiRuangan');
 
 Route::get('/edit', [PeminjamController::class, 'EditAdmin'])->name('sdit.AdminEdit');

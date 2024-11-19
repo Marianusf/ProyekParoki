@@ -12,7 +12,7 @@ class PeminjamController extends Controller
     }
   
 public function DaftarRuangan(){
-    return View('PeminjamView.Ruangan');
+    return View('PeminjamView.FormRuangan');
 }
 public function Dashboard(){
     return View('PeminjamView.DashboardPeminjam');
@@ -56,6 +56,10 @@ public function SaveDataRuangan(Request $request)
         // Redirect atau kirim response sukses
         return redirect()->back()->with('success', 'Peminjaman ruangan berhasil diajukan.');
     }
+
+
+
+  
 }
 
 

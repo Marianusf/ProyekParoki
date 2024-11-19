@@ -3,7 +3,6 @@
 @section('title', 'Dashboard')
 
 @section('content')
-<script src="https://cdn.tailwindcss.com"></script>
 <style>
     .card {
         transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -29,7 +28,7 @@
                     </div>
                 </div>
             <!-- Menampilkan daftar Ruangan-->
-                <div class="bg-gray-600 rounded-3xl shadow-lg md:p-6 text-center">
+                <div class="bg-gray-300 rounded-3xl shadow-lg md:p-6 text-center">
                     <div class="mt-8">
                         <div id="room-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                             @php
@@ -57,9 +56,9 @@
                                         </span>
                                     </div>
                                     <div class="flex justify-between items-center mt-4 space-x-2">
-                                        <a href="{{ route('pinjam.Ruangan', ['id' => $room['id']]) }}" class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800">Pinjam</a>
+                                        <a href="{{ route('pinjam.FormRuangan', ['id' => $room['id']]) }}" class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800">Pinjam</a>
                                         <a href="{{ route('pinjam.InformasiRuangan', ['id' => $room['id']]) }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Informasi</a>
-                                        <a href="{{ route('pinjam.Ruangan', ['id' => $room['id']]) }}" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">Booking</a>
+                                        
                                     </div>
                                 </div>
                             @endforeach

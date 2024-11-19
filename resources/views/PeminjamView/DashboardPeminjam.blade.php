@@ -133,8 +133,3 @@
 </section>
 @endsection
 
-@section('scripts')
-<script>
-    // Custom JavaScript bisa ditambahkan di sini.
-</script>
-@endsection
