@@ -17,6 +17,9 @@ Route::prefix('/peminjam')->group(function(){
     Route::get('/lihat-aset', function () {
         return view('layout.PeminjamView.lihat-aset');
     });
+    Route::get('/aset', function () {
+        return view('layout.AdminView.AdminViewAset');
+    });
 });
 
 
