@@ -79,7 +79,7 @@
             </div>
             <div>
                 <label class="text-white dark:text-gray-200" for="Tanggal_selesai">Tanggal Selesai</label>
-                <input id="Tanggal_selesai" type="date" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-300 dark:text-gray-900 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring">
+                <input id="tanggal_selesai" type="date" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-300 dark:text-gray-900 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring">
             </div>
 
             <div>
