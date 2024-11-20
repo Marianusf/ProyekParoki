@@ -37,9 +37,7 @@
                     <p class="text-red-500 text-xs mt-2">{{ $message }}</p>
                 @enderror
             </div>
-            <p class="text-sm text-gray-600">Stok tersedia: {{ $asset->stok }}</p>
-
-
+            <p class="text-sm text-gray-600">Stok tersedia: {{ $asset->jumlah_barang - $asset->jumlah_terpinjam }}</p>
             <!-- Tanggal Pinjam -->
             <div class="mb-4">
                 <label for="tanggal_peminjaman" class="block text-sm font-medium text-gray-700">Tanggal Pinjam</label>
