@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
 
 use App\Mail\AccountRejectionMail;
 use App\Mail\MailPenolakanAkun;
@@ -80,13 +81,23 @@ class AuthController extends Controller
                 return redirect()->back()->with('error', 'Akun belum disetujui oleh admin. Mohon cek email pendaftar secara berkala.');
             }
 
+            // Login peminjam
             Auth::guard('peminjam')->login($borrower);
+
+            // Pembersihan keranjang peminjam yang lebih dari 24 jam ini tujuannya agar tidak berantakan lah boy
+            DB::table('keranjang')
+                ->where('id_peminjam', $borrower->id)  // Pastikan keranjang milik peminjam yang login
+                ->where('created_at', '<', now()->subDay(1))  // Hapus yang lebih dari 24 jam
+                ->delete();
+
+            // Redirect ke dashboard peminjam
             return redirect()->route('peminjam.dashboard')->with('message', 'Login berhasil sebagai Peminjam');
         }
 
         // Jika tidak ada yang cocok, tampilkan pesan error
         return redirect()->back()->with('message', 'Username atau Password Anda Salah!');
     }
+
 
 
 
