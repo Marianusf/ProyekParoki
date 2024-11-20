@@ -1,5 +1,5 @@
 @extends('layout.TemplatePeminjam')
-
+@section('title', 'Keranjang')
 @section('content')
     <div class="container mx-auto py-8">
         <h2 class="text-2xl font-semibold mb-6">Keranjang Anda</h2>

@@ -55,8 +55,12 @@ Route::middleware('auth:admin')->group(function () {
 // Rute dengan middleware untuk peminjam
 Route::middleware('auth:peminjam')->group(function () {
     Route::get('/peminjam/dashboard', function () {
-        return view('layout.PeminjamView.HomePeminjam');
+        return view('layout.PeminjamView.HomePeminjam', ['title'=> 'Dashboard']);
     })->name('peminjam.dashboard');
+
+    Route::get('/keranjang', function () {
+        return view('keranjang', ['title'=> 'Keranjang']);
+    });
 });
 
 // Rute untuk requests (memerlukan autentikasi admin)
@@ -93,7 +97,7 @@ Route::get('/TemplatePeminjam', function () {
     return view('layout.TemplatePeminjam',['title'=> 'LayoutPeminjam']);
 });
 
-Route::get('/keranjang', function () {
+Route::get('/keranjangs', function () {
     return view('keranjang', ['title'=> 'Keranjang']);
 });
 
