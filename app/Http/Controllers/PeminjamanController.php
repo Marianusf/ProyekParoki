@@ -131,7 +131,21 @@ class PeminjamanController extends Controller
 
         return redirect()->back()->with('success', 'Peminjaman berhasil disetujui.');
     }
+    // Fungsi untuk admin menolak permintaan peminjaman
+    public function tolakPeminjaman(Request $request, $id)
+    {
+        $request->validate([
+            'alasan_penolakan' => 'required|string'
+        ]);
 
+        $peminjaman = Peminjaman::findOrFail($id);
+        $peminjaman->update([
+            'status_peminjaman' => 'ditolak',
+            'alasan_penolakan' => $request->alasan_penolakan
+        ]);
+
+        return redirect()->back()->with('success', 'Peminjaman ditolak.');
+    }
 
     public function kembalikanAsset($id)
     {
@@ -150,21 +164,7 @@ class PeminjamanController extends Controller
 
 
 
-    // Fungsi untuk admin menolak permintaan peminjaman
-    public function tolakPeminjaman(Request $request, $id)
-    {
-        $request->validate([
-            'alasan_penolakan' => 'required|string'
-        ]);
 
-        $peminjaman = Peminjaman::findOrFail($id);
-        $peminjaman->update([
-            'status_peminjaman' => 'ditolak',
-            'alasan_penolakan' => $request->alasan_penolakan
-        ]);
-
-        return redirect()->back()->with('success', 'Peminjaman ditolak.');
-    }
     public function lihatRiwayatPeminjaman()
     {
         // Ambil riwayat peminjaman untuk peminjam yang sedang login
