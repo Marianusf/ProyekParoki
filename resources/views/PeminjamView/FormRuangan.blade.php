@@ -1,158 +1,99 @@
 @extends('layout.TemplatePeminjam')
-@section('title', 'Input')
+
 @section('content')
+<div class="container mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    <h2 class="text-3xl font-bold mb-8 text-center text-blue-600">Form Peminjaman</h2>
 
-
-<style>
-    .card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        background: #f9fafb;
-        background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.1) 75%, transparent 75%, transparent);
-        background-size: 40px 40px;
-    }
-
-    .card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
-    }
-
-    .modal-content {
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 8px;
-        text-align: center;
-    }
-
-    /* Animasi ceklis */
-    .checkmark-circle {
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        display: inline-block;
-        position: relative;
-        background-color: #4caf50;
-        margin: 0 auto;
-        animation: pop 0.4s ease-out;
-    }
-
-    .checkmark {
-        display: inline-block;
-        width: 20px;
-        height: 45px;
-        border-right: 5px solid #fff;
-        border-bottom: 5px solid #fff;
-        position: absolute;
-        top: 20px; /* Sesuaikan posisi vertikal */
-        left: 45px; 
-        transform: rotate(45deg);
-        transform-origin: left top;
-        animation: checkmark-stroke 0.3s ease-out forwards;
-    }
-
-    @keyframes pop {
-        0% { transform: scale(0.5); opacity: 0; }
-        100% { transform: scale(1); opacity: 1; }
-    }
-
-    @keyframes checkmark-stroke {
-        0% { width: 0; height: 0; opacity: 1; }
-        50% { width: 0; height: 25px; opacity: 1; }
-        100% { width: 20px; height: 45px; opacity: 1; }
-    }
-</style>
-
-<section class="max-w-4xl p-6 mx-auto bg-indigo-600 rounded-md shadow-md dark:bg-gray-800 mt-20 pb-20">
-
-    <h1 class="flex justify-center text-xl font-bold text-white capitalize dark:text-white">FORM PEMINJAMAN RUANGAN</h1>
-    <h1 class="flex justify-center text-xl font-bold text-white capitalize dark:text-white mt-4">RUANGAN AULA</h1>
-   
-    <form>
-        <div class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2">
+    <div class="bg-gradient-to-r from-blue-50 via-blue-100 to-blue-50 border border-gray-500 shadow-2xl rounded-xl p-8">
+    <form action="{{ route('peminjaman.store') }}" method="POST" class="space-y-6">
+            <!-- Penanggung Jawab -->
             <div>
-                <label class="text-white dark:text-gray-200" for="PenanggungJawab">Penanggung Jawab</label>
-                <input id="PenanggungJawab" placeholder="Input Penanggung Jawab" type="text" class="block w-full px-4 py-2 mt-2 text-black bg-white border border-gray-300 rounded-md dark:bg-gray-300 dark:text-gray-900 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring">
+                <label for="penanggung_jawab" class="block text-sm font-semibold text-gray-700 mb-2">Penanggung Jawab</label>
+                <input type="text" id="penanggung_jawab" name="penanggung_jawab" class="w-full sm:w-96 md:w-80 border border-gray-300 rounded-lg shadow-sm p-3 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Masukkan nama penanggung jawab" required>
             </div>
 
+            <!-- Pilih Jenis Peminjaman -->
             <div>
-                <label class="text-white dark:text-gray-200" for="Tanggal_mulai">Tanggal Mulai</label>
-                <input id="tanggal_mulai" type="date" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-300 dark:text-gray-900 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring">
-            </div>
-            <div>
-                <label class="text-white dark:text-gray-200" for="Tanggal_selesai">Tanggal Selesai</label>
-                <input id="tanggal_selesai" type="date" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-300 dark:text-gray-900 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring">
-            </div>
-
-            <div>
-                <label class="text-white dark:text-gray-200" for="jam_mulai">Jam Mulai</label>
-                <input id="jam_mulai" type="time" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-300 dark:text-gray-900 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring">
+                <label for="jenis_peminjaman" class="block text-sm font-semibold text-gray-700 mb-2">Jenis Peminjaman</label>
+                <select id="jenis_peminjaman" name="jenis_peminjaman" class="w-full sm:w-72 md:w-80 border border-gray-300 rounded-lg shadow-sm p-3 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    <option value="asset">Asset</option>
+                    <option value="ruangan">Ruangan</option>
+                </select>
             </div>
 
-            <div>
-                <label class="text-white dark:text-gray-200" for="jam_selesai">Jam Selesai</label>
-                <input id="jam_selesai" type="time" class="block w-full px-4 py-2 mt-2 text-white bg-white border border-gray-300 rounded-md dark:bg-gray-300 dark:text-gray-900 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring">
+            <!-- Form untuk Asset -->
+            <div id="asset-fields">
+                <label for="asset" class="block text-sm font-semibold text-gray-700 mb-2">Pilih Asset</label>
+                <select id="asset" name="asset" class="w-full sm:w-80 md:w-96 border border-gray-300 rounded-lg shadow-sm p-3 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    <option value="1">Laptop - Core i5</option>
+                    <option value="2">Proyektor - 1080p</option>
+                    <option value="3">Kamera - DSLR</option>
+                </select>
+
+                <div class="mt-4">
+                    <label for="jumlah" class="block text-sm font-semibold text-gray-700 mb-2">Jumlah</label>
+                    <input type="number" id="jumlah" name="jumlah" class="w-full sm:w-96 md:w-80 border border-gray-300 rounded-lg shadow-sm p-3 focus:outline-none focus:ring-2 focus:ring-blue-400" min="1">
+                    <p class="text-sm text-gray-600 mt-1">Stok tersedia: 10</p>
+                </div>
             </div>
-    
-            <div>
-                <label class="text-white dark:text-gray-200" for="Keperluan">Keperluan Peminjaman</label>
-                <textarea id="Keperluan" placeholder="Keperluan Peminjaman" class="block w-full px-4 py-2 mt-2 text-gray-900 bg-white border border-gray-300 rounded-md dark:bg-gray-300 dark:text-gray-900 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"></textarea>
+
+            <!-- Form untuk Ruangan -->
+            <div id="ruangan-fields" class="hidden">
+                <label for="ruangan" class="block text-sm font-semibold text-gray-700 mb-2">Pilih Ruangan</label>
+                <select id="ruangan" name="ruangan" class="w-full sm:w-96 md:w-80 border border-gray-300 rounded-lg shadow-sm p-3 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    <option value="1">Ruang Meeting 1</option>
+                    <option value="2">Ruang Presentasi</option>
+                    <option value="3">Auditorium</option>
+                </select>
+
+                <!-- Grid untuk Tanggal -->
+                <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="tanggal_mulai" class="block text-sm font-semibold text-gray-700 mb-2">Tanggal Mulai</label>
+                        <input type="date" id="tanggal_mulai" name="tanggal_mulai" class="w-full border border-gray-300 rounded-lg shadow-sm p-3 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    </div>
+                    <div>
+                        <label for="tanggal_selesai" class="block text-sm font-semibold text-gray-700 mb-2">Tanggal Selesai</label>
+                        <input type="date" id="tanggal_selesai" name="tanggal_selesai" class="w-full border border-gray-300 rounded-lg shadow-sm p-3 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    </div>
+                </div>
+
+                <!-- Grid untuk Jam -->
+                <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="jam_mulai" class="block text-sm font-semibold text-gray-700 mb-2">Jam Mulai</label>
+                        <input type="time" id="jam_mulai" name="jam_mulai" class="w-full border border-gray-300 rounded-lg shadow-sm p-3 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    </div>
+                    <div>
+                        <label for="jam_selesai" class="block text-sm font-semibold text-gray-700 mb-2">Jam Selesai</label>
+                        <input type="time" id="jam_selesai" name="jam_selesai" class="w-full border border-gray-300 rounded-lg shadow-sm p-3 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="flex justify-between mt-6">
-    <a href="{{ route('pinjam.ViewRuangan') }}">
-        <button type="button" class="px-6 py-2 leading-5 text-gray-900 transition-colors duration-200 transform bg-gray-400 rounded-md hover:bg-blue-700 focus:outline-none focus:bg-gray-600">
-            Kembali
-        </button>
-    </a>
-    <button type="button" id="submit-request" class="px-6 py-2 leading-5 text-gray-900 transition-colors duration-200 transform bg-gray-400 rounded-md hover:bg-blue-700 focus:outline-none focus:bg-gray-600">
-        Ajukan Peminjaman
-    </button>
-</div>
 
-    </form>
-</section>
-
-<!-- Modal Konfirmasi -->
-<div id="confirmation-modal" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75 hidden">
-    <div class="modal-content">
-        <h2 class="text-lg font-bold">Apakah Anda Yakin?</h2>
-        <p class="mt-2">Data yang dimasukkan akan diajukan untuk peminjaman ruangan.</p>
-        <div class="flex justify-center gap-4 mt-6">
-            <button id="cancel-btn" class="w-32 py-2 bg-gray-400 text-white rounded-xl hover:bg-gray-500">Batal</button>
-            <button id="confirm-btn" class="w-32 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700">Ya</button>
-        </div>
-    </div>
-</div>
-
-
-<!-- Popup Success Modal -->
-<div id="success-modal" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 hidden">
-    <div class="modal-content">
-        <div class="checkmark-circle">
-            <div class="checkmark"></div>
-        </div>
-        <h2>Pengajuan Peminjaman Berhasil</h2>
-        <p>Peminjaman ruangan telah berhasil diajukan.</p>
-        <button id="close-success-modal" class="mt-4 py-2 px-5 bg-blue-500 text-white rounded-xl hover:bg-blue-600">Tutup</button>
+            <!-- Submit Button -->
+            <div class="text-center mt-6">
+                <button type="submit" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-lg shadow-lg hover:from-blue-600 hover:to-blue-700 transition duration-200 ease-in-out">Tambah ke Keranjang</button>
+            </div>
+        </form>
     </div>
 </div>
 
 <script>
-    document.getElementById('submit-request').addEventListener('click', function () {
-        document.getElementById('confirmation-modal').classList.remove('hidden');
-    });
+    document.addEventListener('DOMContentLoaded', function () {
+        const jenisPeminjaman = document.getElementById('jenis_peminjaman');
+        const assetFields = document.getElementById('asset-fields');
+        const ruanganFields = document.getElementById('ruangan-fields');
 
-    document.getElementById('cancel-btn').addEventListener('click', function () {
-        document.getElementById('confirmation-modal').classList.add('hidden');
-    });
-
-    document.getElementById('confirm-btn').addEventListener('click', function () {
-        document.getElementById('confirmation-modal').classList.add('hidden');
-        document.getElementById('success-modal').classList.remove('hidden');
-    });
-
-    document.getElementById('close-success-modal').addEventListener('click', function () {
-        document.getElementById('success-modal').classList.add('hidden');
+        jenisPeminjaman.addEventListener('change', function () {
+            if (this.value === 'asset') {
+                assetFields.classList.remove('hidden');
+                ruanganFields.classList.add('hidden');
+            } else {
+                assetFields.classList.add('hidden');
+                ruanganFields.classList.remove('hidden');
+            }
+        });
     });
 </script>
-
 @endsection

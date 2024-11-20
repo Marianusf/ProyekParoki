@@ -9,28 +9,29 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
-        Schema::create('_pinjam_ruangan', function (Blueprint $table) {
+        Schema::create('peminjaman', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_peminjam');
-            $table->unsignedBigInteger('id_ruangan');
-            $table->text('PenanggungJawab');
+            $table->string('penanggung_jawab');
+            $table->string('jenis_peminjaman');
+            $table->foreignId('asset_id')->nullable()->constrained('assets');
+            $table->foreignId('ruangan_id')->nullable()->constrained('ruangans');
+            $table->integer('jumlah')->nullable();
             $table->date('tanggal_mulai');
             $table->date('tanggal_selesai');
             $table->time('jam_mulai');
             $table->time('jam_selesai');
-            $table->text('Keperluan');
-            $table->text('')->nullable();
             $table->timestamps();
         });
     }
+    
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('_pinjam_ruangan');
+        Schema::dropIfExists('peminjaman');
     }
 };

@@ -64,6 +64,7 @@ Route::get('/edit', [PeminjamController::class, 'EditAdmin'])->name('sdit.AdminE
 
 
 //Menyimpan data ruangan yang akan disimpan ke dalam database
-Route::post('/masuk/save', [PeminjamanController::class, 'saveDataRuangan'])->name('masuk.SaveDataRuangan');
+Route::post('/masuk/save', [PeminjamController::class, 'saveDataRuangan'])->name('masuk.SaveDataRuangan');
 
-Route::get('/peminjaman', [PeminjamController::class, 'Peminjaman'])->name('peminjaman.Peminjaman');
+Route::post('/peminjaman', [PeminjamController::class, 'store'])->name('peminjaman.store');
+Route::post('/pinjam/ruangan', [PeminjamController::class, 'storeRuangan'])->name('pinjam.ruangan');
