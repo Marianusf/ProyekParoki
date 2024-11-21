@@ -6,6 +6,7 @@
 
     <div class="bg-gradient-to-r from-blue-50 via-blue-100 to-blue-50 border border-gray-500 shadow-2xl rounded-xl p-8">
     <form action="{{ route('peminjaman.store') }}" method="POST" class="space-y-6">
+    @csrf
             <!-- Penanggung Jawab -->
             <div>
                 <label for="penanggung_jawab" class="block text-sm font-semibold text-gray-700 mb-2">Penanggung Jawab</label>
