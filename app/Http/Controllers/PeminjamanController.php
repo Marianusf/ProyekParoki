@@ -14,10 +14,22 @@ class PeminjamanController extends Controller
     {
         $request->validate([
             'id_asset' => 'required|exists:assets,id',
-            'jumlah' => 'required|integer|min:1',
-            'tanggal_peminjaman' => 'required|date',
+            'jumlah' => [
+                'required',
+                'integer',
+                'min:1',
+                function ($attribute, $value, $fail) use ($request) {
+                    $asset = Asset::find($request->id_asset);
+                    $stokTersedia = $asset->jumlah_barang - $asset->jumlah_terpinjam;
+                    if ($value > $stokTersedia) {
+                        $fail('Jumlah yang diminta melebihi stok tersedia.');
+                    }
+                },
+            ],
+            'tanggal_peminjaman' => 'required|date|after_or_equal:today',
             'tanggal_pengembalian' => 'required|date|after:tanggal_peminjaman',
         ]);
+
 
         // Ambil data asset dari database
         $asset = Asset::find($request['id_asset']);
@@ -119,7 +131,21 @@ class PeminjamanController extends Controller
 
         return redirect()->back()->with('success', 'Peminjaman berhasil disetujui.');
     }
+    // Fungsi untuk admin menolak permintaan peminjaman
+    public function tolakPeminjaman(Request $request, $id)
+    {
+        $request->validate([
+            'alasan_penolakan' => 'required|string'
+        ]);
 
+        $peminjaman = Peminjaman::findOrFail($id);
+        $peminjaman->update([
+            'status_peminjaman' => 'ditolak',
+            'alasan_penolakan' => $request->alasan_penolakan
+        ]);
+
+        return redirect()->back()->with('success', 'Peminjaman ditolak.');
+    }
 
     public function kembalikanAsset($id)
     {
@@ -138,21 +164,7 @@ class PeminjamanController extends Controller
 
 
 
-    // Fungsi untuk admin menolak permintaan peminjaman
-    public function tolakPeminjaman(Request $request, $id)
-    {
-        $request->validate([
-            'alasan_penolakan' => 'required|string'
-        ]);
 
-        $peminjaman = Peminjaman::findOrFail($id);
-        $peminjaman->update([
-            'status_peminjaman' => 'ditolak',
-            'alasan_penolakan' => $request->alasan_penolakan
-        ]);
-
-        return redirect()->back()->with('success', 'Peminjaman ditolak.');
-    }
     public function lihatRiwayatPeminjaman()
     {
         // Ambil riwayat peminjaman untuk peminjam yang sedang login

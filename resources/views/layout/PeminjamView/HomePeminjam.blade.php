@@ -9,12 +9,12 @@
             <h2 class="text-3xl font-semibold text-gray-800 mb-6">
                 Selamat
                 @php
-                    $hour = now()->format('H'); // Mendapatkan jam saat ini dalam format 24 jam
+                    $hour = now()->format('H');
                     if ($hour >= 5 && $hour < 12) {
                         echo 'Pagi';
-                    } elseif ($hour >= 12 && $hour < 18) {
+                    } elseif ($hour >= 12 && $hour < 16) {
                         echo 'Siang';
-                    } elseif ($hour >= 18 && $hour < 21) {
+                    } elseif ($hour >= 16 && $hour < 19) {
                         echo 'Sore';
                     } else {
                         echo 'Malam';
