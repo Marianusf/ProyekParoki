@@ -50,17 +50,17 @@ class PeminjamController extends Controller
 
     public function index()
     {
-        return view('PeminjamView.ViewRuangan'); // Ensure this view exists
+        return view('PeminjamView.FormPeminjaman'); // Ensure this view exists
     }
   
 public function DaftarRuangan(){
-    return View('PeminjamView.FormRuangan');
+    return View('PeminjamView.FormPeminjaman');
 }
 public function Dashboard(){
     return View('PeminjamView.DashboardPeminjam');
 }
-public function InformasiRuangan(){
-    return view('PeminjamView.InformasiRuangan');
+public function InformasiAset(){
+    return view('PeminjamView.InformasiAset');
 }
 }
 

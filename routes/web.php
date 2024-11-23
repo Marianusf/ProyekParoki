@@ -55,9 +55,8 @@ Route::get('/navbar', function () {
 Route::get('/dashboard', [PeminjamController::class, 'Dashboard'])->name('dashboard.DashbaordRuangan');
 
 
-Route::get('/pinjam', [PeminjamController::class, 'index'])->name('pinjam.ViewRuangan');
-Route::get('/pinjam/ruangan', [PeminjamController::class, 'DaftarRuangan'])->name('pinjam.FormRuangan');
-Route::get('/pinjam/ruangan/informasiRuangan', [PeminjamController::class, 'InformasiRuangan'])->name('pinjam.InformasiRuangan');
+Route::get('/pinjam', [PeminjamController::class, 'index'])->name('pinjam.FormPeminjaman');
+Route::get('/pinjam/informasiRuangan', [PeminjamController::class, 'InformasiAset'])->name('pinjam.InformasiAset');
 
 Route::get('/edit', [PeminjamController::class, 'EditAdmin'])->name('sdit.AdminEdit');
 
@@ -68,3 +67,4 @@ Route::post('/masuk/save', [PeminjamController::class, 'saveDataRuangan'])->name
 
 Route::post('/peminjaman', [PeminjamController::class, 'store'])->name('peminjaman.store');
 Route::post('/pinjam/ruangan', [PeminjamController::class, 'storeRuangan'])->name('pinjam.ruangan');
+Route::get('/informasi-asset', [PeminjamController::class, 'InformasiAset'])->name('pinjam.InformasiAset');
