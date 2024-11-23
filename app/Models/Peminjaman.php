@@ -1,26 +1,30 @@
 <?php
 
+
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
 class Peminjaman extends Model
 {
     use HasFactory;
 
-    protected $table = 'peminjamans';  // Tabel yang digunakan oleh model ini
-
-    // Tentukan kolom mana yang boleh diisi massal
     protected $fillable = [
-        'penanggung_jawab',
-        'jenis_peminjaman',
-        'asset_id',
-        'jumlah',
-        'ruangan_id',
-        'tanggal_mulai',
-        'tanggal_selesai',
-        'jam_mulai',
-        'jam_selesai',
+        'penanggung_jawab', 'jenis_peminjaman', 'tanggal_mulai', 'tanggal_selesai', 
+        'jam_mulai', 'jam_selesai', 'asset_id', 'ruangan_id', 'alat_misa_id', 'perlengkapan_id', 
+        'jumlah', 'status', 'approved_by', 'approved_at'
     ];
 
+    // Fungsi untuk memeriksa apakah peminjaman sudah disetujui
+    public function isApproved()
+    {
+        return $this->status === 'disetujui';
+    }
+
+    // Fungsi untuk memeriksa apakah peminjaman ditolak
+    public function isRejected()
+    {
+        return $this->status === 'ditolak';
+    }
 }
