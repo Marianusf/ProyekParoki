@@ -6,7 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Keranjang;
 use App\Models\Peminjaman;
+use App\Models\Peminjam;
 use App\Models\Asset;
+use App\Mail\MailPeminjamanStatus;
+use Illuminate\Support\Facades\Mail;
 
 class PeminjamanController extends Controller
 {
@@ -107,31 +110,25 @@ class PeminjamanController extends Controller
         return redirect()->route('riwayatPeminjaman')->with('success', 'Checkout berhasil! Menunggu persetujuan admin.');
     }
 
-
-
     public function setujuiPeminjaman($id)
     {
-        // Ambil data peminjaman dan asset
         $peminjaman = Peminjaman::findOrFail($id);
         $asset = Asset::findOrFail($peminjaman->id_asset);
 
-        // Cek jika stok tersedia
+        // Cek stok barang
         $stokTersedia = $asset->jumlah_barang - $asset->jumlah_terpinjam;
 
-        // Jika jumlah barang yang dipinjam melebihi stok yang tersedia, batalkan
         if ($peminjaman->jumlah > $stokTersedia) {
             return redirect()->back()->withErrors(['jumlah' => 'Stok tidak cukup untuk memproses peminjaman.']);
         }
 
-        // Update jumlah terpinjam di asset
+        // Update jumlah terpinjam
         $asset->increment('jumlah_terpinjam', $peminjaman->jumlah);
-
-        // Update status peminjaman menjadi disetujui
         $peminjaman->update(['status_peminjaman' => 'disetujui']);
 
         return redirect()->back()->with('success', 'Peminjaman berhasil disetujui.');
     }
-    // Fungsi untuk admin menolak permintaan peminjaman
+
     public function tolakPeminjaman(Request $request, $id)
     {
         $request->validate([
@@ -139,12 +136,62 @@ class PeminjamanController extends Controller
         ]);
 
         $peminjaman = Peminjaman::findOrFail($id);
+        $asset = Asset::findOrFail($peminjaman->id_asset);
+
         $peminjaman->update([
             'status_peminjaman' => 'ditolak',
             'alasan_penolakan' => $request->alasan_penolakan
         ]);
 
+
         return redirect()->back()->with('success', 'Peminjaman ditolak.');
+    }
+
+    public function batchAction(Request $request)
+    {
+        $validated = $request->validate([
+            'action' => 'required|in:approve,reject',
+            'selected_requests' => 'required|array',
+            'selected_requests.*' => 'exists:peminjaman,id', // pastikan ID peminjaman valid
+        ], [
+            'action.required' => 'Tindakan harus dipilih.',
+            'action.in' => 'Tindakan yang dipilih tidak valid.',
+            'selected_requests.required' => 'Anda harus memilih setidaknya satu permintaan.',
+            'selected_requests.array' => 'Permintaan yang dipilih harus berupa array.',
+            'selected_requests.*.exists' => 'ID peminjaman yang dipilih tidak valid.',
+        ]);
+
+
+        $selectedRequests = Peminjaman::whereIn('id', $request->selected_requests)->get();
+        $action = $request->action;
+        $alasan = $action == 'reject' ? $request->alasan_penolakan : null;
+
+        // Kirim email hanya satu kali untuk tiap peminjam
+        $peminjamIds = $selectedRequests->pluck('id_peminjam')->unique();
+
+        foreach ($peminjamIds as $peminjamId) {
+            $peminjam = Peminjam::findOrFail($peminjamId);
+            $peminjamanForPeminjam = $selectedRequests->where('id_peminjam', $peminjamId);
+
+            // Tentukan subjek dan isi email berdasarkan tindakan
+            $status = $action == 'approve' ? 'disetujui' : 'ditolak';
+        }
+
+        // Lakukan aksi sesuai pilihan
+        if ($action == 'approve') {
+            // Setujui permintaan
+            $selectedRequests->each(function ($request) {
+                $request->update(['status_peminjaman' => 'disetujui']);
+            });
+            return back()->with('success', 'Semua peminjaman disetujui.');
+        } elseif ($action == 'reject') {
+            // Tolak permintaan dengan alasan
+            $selectedRequests->each(function ($request) use ($alasan) {
+                $request->update(['status_peminjaman' => 'ditolak']);
+                $request->update(['alasan_penolakan' => $alasan]);
+            });
+            return back()->with('success', 'Semua peminjaman ditolak.');
+        }
     }
 
     public function kembalikanAsset($id)

@@ -113,6 +113,9 @@ Route::get('/peminjam/ketersediaan-asset', [AssetController::class, 'peminjamLih
 // Route::middleware(['auth', 'can:isAdmin'])->group(function () {
 Route::post('/peminjaman/{id}/setujui', [PeminjamanController::class, 'setujuiPeminjaman'])->name('peminjaman.setujui');
 Route::post('/peminjaman/{id}/tolak', [PeminjamanController::class, 'tolakPeminjaman'])->name('peminjaman.tolak');
+// Batch action untuk setujui atau tolak peminjaman sekaligus banyak
+Route::post('/peminjaman/batch-action', [PeminjamanController::class, 'batchAction'])->name('peminjaman.batch_action');
+
 // });
 Route::get('/admin/peminjaman', [AdminController::class, 'lihatPermintaanPeminjaman'])->name('lihatPermintaanPeminjaman');
 Route::get('/ketersediaan-asset', [AssetController::class, 'cekKetersediaanAsset'])->name('ketersediaanAsset');
