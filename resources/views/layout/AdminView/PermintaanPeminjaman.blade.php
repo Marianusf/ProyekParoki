@@ -45,6 +45,7 @@
                                 <th scope="col" class="px-6 py-3">Jumlah</th>
                                 <th scope="col" class="px-6 py-3">Tanggal Peminjaman</th>
                                 <th scope="col" class="px-6 py-3">Tanggal Pengembalian</th>
+                                <th scope="col" class="px-6 py-3">Lama Peminjaman</th>
                                 <th scope="col" class="px-6 py-3">Aksi</th>
                             </tr>
                         </thead>
@@ -60,8 +61,21 @@
                                     </td>
                                     <td class="px-6 py-4">{{ $request->peminjam->name }}</td>
                                     <td class="px-6 py-4">{{ $request->jumlah }}</td>
-                                    <td class="px-6 py-4">{{ $request->tanggal_peminjaman }}</td>
-                                    <td class="px-6 py-4">{{ $request->tanggal_pengembalian }}</td>
+                                    <td class="px-6 py-4">
+                                        {{ \Carbon\Carbon::parse($request->tanggal_peminjaman)->format('d F Y') }}</td>
+                                    <td class="px-6 py-4">
+                                        {{ \Carbon\Carbon::parse($request->tanggal_pengembalian)->format('d F Y') }}</td>
+                                    <td class="px-6 py-4">
+                                        <?php
+                                        // Menghitung selisih hari antara tanggal peminjaman dan tanggal pengembalian
+                                        $tanggalPeminjaman = \Carbon\Carbon::parse($request->tanggal_peminjaman);
+                                        $tanggalPengembalian = \Carbon\Carbon::parse($request->tanggal_pengembalian);
+                                        
+                                        // Menghitung selisih hari
+                                        $selisihHari = $tanggalPeminjaman->diffInDays($tanggalPengembalian);
+                                        ?>
+                                        {{ $selisihHari }} Hari
+                                    </td>
                                     <td class="px-6 py-4">
                                         <button type="button"
                                             class="setujuButton px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition">
