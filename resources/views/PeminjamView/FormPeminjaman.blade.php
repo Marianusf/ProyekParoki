@@ -124,6 +124,32 @@
     </div>
 </div>
 
+<div id="popup-notification" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden z-50">
+    <div class="bg-white rounded-xl shadow-2xl p-8 w-96 text-center relative">
+        <!-- Dekorasi Lingkaran dengan Ceklis -->
+        <div class="flex items-center justify-center -mt-12">
+            <div class="bg-blue-100 rounded-full p-6 shadow-md">
+                <svg class="w-16 h-16 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+            </div>
+        </div>
+        <!-- Pesan -->
+        <div class="mt-6">
+            <h3 class="text-2xl font-semibold text-gray-800">Berhasil Ditambahkan!</h3>
+            <p class="text-sm text-gray-600 mt-2">
+                Item telah berhasil dimasukkan ke keranjang Anda. Jangan lupa untuk segera menyelesaikan pembelian!
+            </p>
+            <!-- Tombol -->
+            <button id="popup-close-btn" 
+                    class="mt-6 w-full px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-lg shadow-lg hover:from-blue-600 hover:to-blue-700 transition duration-300 transform hover:scale-105">
+                OK
+            </button>
+        </div>
+    </div>
+</div>
+
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const jenisPeminjaman = document.getElementById('jenis_peminjaman');
@@ -170,6 +196,29 @@
                     gambarAlatMisa.src = '';  // Jika tidak ada pilihan, sembunyikan gambar
                     break;
             }
+        });
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.querySelector('form');
+        const popupNotification = document.getElementById('popup-notification');
+        const popupCloseBtn = document.getElementById('popup-close-btn');
+
+        // Tampilkan popup saat form berhasil disubmit
+        form.addEventListener('submit', function (event) {
+            event.preventDefault(); // Mencegah submit form default (jika ingin debugging)
+            
+            // Simulasikan proses pengiriman data
+            setTimeout(() => {
+                popupNotification.classList.remove('hidden');
+            }, 500); // Simulasi delay pengiriman data ke server
+
+            // Lanjutkan submit form secara default (hapus ini jika Anda menggunakan AJAX)
+            // form.submit();
+        });
+
+        // Sembunyikan popup saat tombol OK diklik
+        popupCloseBtn.addEventListener('click', function () {
+            popupNotification.classList.add('hidden');
         });
     });
 </script>
