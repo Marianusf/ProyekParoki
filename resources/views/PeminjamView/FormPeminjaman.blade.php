@@ -21,7 +21,6 @@
                 <label for="jenis_peminjaman" class="block text-sm font-bold text-gray-700 mb-2">Jenis Peminjaman</label>
                 <div class="relative">
                     <select id="jenis_peminjaman" name="jenis_peminjaman" class="w-full sm:w-72 border border-gray-300 rounded-lg shadow-md p-3 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-transform duration-200 transform hover:scale-105">
-                        <option value="asset">Asset</option>
                         <option value="ruangan">Ruangan</option>
                         <option value="alatMisa">Alat Misa</option>
                         <option value="perlengkapan">Perlengkapan</option>
@@ -52,7 +51,7 @@
             <!-- Form untuk Asset -->
             <div id="asset-fields" class="hidden">
                 <label for="asset" class="block text-sm font-bold text-gray-700 mb-2">Pilih Asset</label>
-                <select id="asset" name="asset" class="w-full sm:w-80 border border-gray-300 rounded-lg shadow-md p-3 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-transform duration-200 transform hover:scale-105">
+                <select id="perlengkapan" name="perlengkapan" class="w-full sm:w-80 border border-gray-300 rounded-lg shadow-md p-3 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-transform duration-200 transform hover:scale-105">
                     <option value="1">Proyektor</option>
                     <option value="2">Kamera</option>
                     <option value="3">Kursi</option>
