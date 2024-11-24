@@ -14,7 +14,11 @@
             @if ($errors->any())
                 <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
                     <strong class="font-bold">Pemberitahuan: </strong>
-                    <span class="block sm:inline">{{ $errors->first() }}</span> <!-- Menampilkan pesan error pertama -->
+                    <ul class="list-disc pl-5">
+                        @foreach ($errors->all() as $error)
+                            <li><strong>{{ $error }}</strong></li> <!-- Menampilkan pesan error dalam <strong> -->
+                        @endforeach
+                    </ul>
                 </div>
             @endif
 

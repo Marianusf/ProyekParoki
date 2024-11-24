@@ -10,6 +10,7 @@ use App\Models\Peminjam;
 use App\Models\Asset;
 use App\Mail\MailPeminjamanStatus;
 use Illuminate\Support\Facades\Mail;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Strong;
 
 class PeminjamanController extends Controller
 {
@@ -126,8 +127,15 @@ class PeminjamanController extends Controller
         $asset->increment('jumlah_terpinjam', $peminjaman->jumlah);
         $peminjaman->update(['status_peminjaman' => 'disetujui']);
 
-        return redirect()->back()->with('success', 'Peminjaman berhasil disetujui.');
+        // Kirim email ke peminjam
+        $peminjam = Peminjam::findOrFail($peminjaman->id_peminjam);
+        $assetName = $asset->nama_barang; // Nama aset
+
+        Mail::to($peminjam->email)->send(new MailPeminjamanStatus('status_peminjaman', null, $peminjam->name, $assetName));
+
+        return redirect()->back()->with('success', 'Permintaan Peminjaman oleh ' . $peminjam->name . ' Berhasil disetujui.');
     }
+
 
     public function tolakPeminjaman(Request $request, $id)
     {
@@ -143,56 +151,99 @@ class PeminjamanController extends Controller
             'alasan_penolakan' => $request->alasan_penolakan
         ]);
 
+        // Send the email after rejecting
+        $peminjam = Peminjam::findOrFail($peminjaman->id_peminjam);
+        $assetName = $asset->nama_barang; // Asset name
 
-        return redirect()->back()->with('success', 'Peminjaman ditolak.');
+        // Sending the rejection email
+        Mail::to($peminjam->email)->send(new MailPeminjamanStatus('ditolak', $request->alasan_penolakan, $peminjam->name, $assetName));
+
+        return redirect()->back()->with('success', 'Permintaan Peminjaman oleh ' . $peminjam->name . ' berhasil ditolak.');
     }
 
     public function batchAction(Request $request)
     {
+        // Validate the input data
         $validated = $request->validate([
             'action' => 'required|in:approve,reject',
             'selected_requests' => 'required|array',
-            'selected_requests.*' => 'exists:peminjaman,id', // pastikan ID peminjaman valid
+            'selected_requests.*' => 'exists:peminjaman,id', // Ensure valid loan IDs
         ], [
-            'action.required' => 'Tindakan harus dipilih.',
-            'action.in' => 'Tindakan yang dipilih tidak valid.',
-            'selected_requests.required' => 'Anda harus memilih setidaknya satu permintaan.',
-            'selected_requests.array' => 'Permintaan yang dipilih harus berupa array.',
-            'selected_requests.*.exists' => 'ID peminjaman yang dipilih tidak valid.',
+            'action.required' => 'Pilih tindakan yang ingin dilakukan.',
+            'selected_requests.required' => 'Tidak ada permintaan yang dipilih.',
         ]);
 
+        // Initialize arrays to store errors and borrower details
+        $errors = [];
+        $peminjamDetails = [];
 
-        $selectedRequests = Peminjaman::whereIn('id', $request->selected_requests)->get();
-        $action = $request->action;
-        $alasan = $action == 'reject' ? $request->alasan_penolakan : null;
+        // Step 1: Check if any of the selected requests have insufficient stock
+        foreach ($request->selected_requests as $requestId) {
+            $peminjaman = Peminjaman::find($requestId);
+            $asset = Asset::find($peminjaman->id_asset);
 
-        // Kirim email hanya satu kali untuk tiap peminjam
-        $peminjamIds = $selectedRequests->pluck('id_peminjam')->unique();
+            // Check stock availability
+            $stokTersedia = $asset->jumlah_barang - $asset->jumlah_terpinjam;
 
-        foreach ($peminjamIds as $peminjamId) {
-            $peminjam = Peminjam::findOrFail($peminjamId);
-            $peminjamanForPeminjam = $selectedRequests->where('id_peminjam', $peminjamId);
-
-            // Tentukan subjek dan isi email berdasarkan tindakan
-            $status = $action == 'approve' ? 'disetujui' : 'ditolak';
+            if ($peminjaman->jumlah > $stokTersedia) {
+                // If stock is insufficient, add to errors and break the loop
+                $errors[] = "Stok tidak cukup untuk peminjaman {$peminjaman->jumlah} unit dari asset '{$asset->nama_barang}'";
+                break; // Exit the loop immediately, no need to process further
+            }
         }
 
-        // Lakukan aksi sesuai pilihan
-        if ($action == 'approve') {
-            // Setujui permintaan
-            $selectedRequests->each(function ($request) {
-                $request->update(['status_peminjaman' => 'disetujui']);
-            });
-            return back()->with('success', 'Semua peminjaman disetujui.');
-        } elseif ($action == 'reject') {
-            // Tolak permintaan dengan alasan
-            $selectedRequests->each(function ($request) use ($alasan) {
-                $request->update(['status_peminjaman' => 'ditolak']);
-                $request->update(['alasan_penolakan' => $alasan]);
-            });
-            return back()->with('success', 'Semua peminjaman ditolak.');
+        // If there are any errors (insufficient stock), return them
+        if (!empty($errors)) {
+            return redirect()->back()->withErrors($errors);
         }
+
+        // Step 2: Process each selected request (approval or rejection)
+        foreach ($request->selected_requests as $requestId) {
+            $peminjaman = Peminjaman::find($requestId);
+            $asset = Asset::find($peminjaman->id_asset);
+
+            // Proceed with the approval/rejection logic
+            if ($validated['action'] === 'approve') {
+                $asset->increment('jumlah_terpinjam', $peminjaman->jumlah);
+                $peminjaman->update(['status_peminjaman' => 'disetujui']);
+            } elseif ($validated['action'] === 'reject') {
+                $peminjaman->update(['status_peminjaman' => 'ditolak', 'alasan_penolakan' => $request->alasan_penolakan]);
+            }
+
+            // Group the request details by borrower
+            $peminjam = $peminjaman->peminjam; // Get the borrower
+            $peminjamDetails[$peminjam->id][] = [
+                'nama_barang' => $asset->nama_barang,
+                'jumlah' => $peminjaman->jumlah,
+            ];
+        }
+
+        // Step 3: Send individual emails to each borrower
+        foreach ($peminjamDetails as $peminjamId => $assetDetailsForPeminjam) {
+            $peminjam = Peminjam::find($peminjamId);
+            $status = $validated['action'] === 'approve' ? 'disetujui' : 'ditolak';
+            $alasanPenolakan = $validated['action'] === 'reject' ? $request->alasan_penolakan : null;
+
+            // Send the email for this specific borrower
+            Mail::to($peminjam->email)->send(new MailPeminjamanStatus(
+                $status,
+                $alasanPenolakan,
+                $peminjam->name,
+                $assetDetailsForPeminjam // Send only the specific asset details for this borrower
+            ));
+        }
+        $peminjamNames = Peminjaman::whereIn('id', $request->selected_requests)
+            ->with('peminjam')
+            ->get()
+            ->map(function ($peminjaman) {
+                return $peminjaman->peminjam->name;
+            })
+            ->unique()
+            ->implode(', ');
+
+        return redirect()->back()->with('success', 'Tindakan batch berhasil diproses untuk: ' . $peminjamNames);
     }
+
 
     public function kembalikanAsset($id)
     {

@@ -1,4 +1,4 @@
-<?
+<?php
 
 namespace App\Mail;
 
@@ -9,31 +9,28 @@ use Illuminate\Queue\SerializesModels;
 class MailPeminjamanStatus extends Mailable
 {
     use Queueable, SerializesModels;
-
     public $status;
     public $alasan;
-    public $name;
-    public $assetName; // Add the asset name to the mail class
+    public $peminjamName;
+    public $assetDetails;
 
-    // Modify constructor to accept the asset name
-    public function __construct($status, $alasan, $name, $assetName)
+    public function __construct($status, $alasan, $peminjamName, $assetDetails)
     {
         $this->status = $status;
         $this->alasan = $alasan;
-        $this->name = $name;
-        $this->assetName = $assetName; // Assign asset name
+        $this->peminjamName = $peminjamName;
+        $this->assetDetails = $assetDetails;
     }
 
-    // Build the email message
     public function build()
     {
-        return $this->view('emails.PeminjamanStatus') // Ensure correct path for view
+        return $this->subject('Status Peminjaman')
+            ->view('emails.PeminjamanStatus')
             ->with([
                 'status' => $this->status,
                 'alasan' => $this->alasan,
-                'name' => $this->name,
-                'assetName' => $this->assetName, // Pass asset name to the view
-            ])
-            ->subject($this->status == 'disetujui' ? 'Peminjaman Disetujui' : 'Peminjaman Ditolak');
+                'peminjamName' => $this->peminjamName,
+                'assetDetails' => $this->assetDetails,
+            ]);
     }
 }

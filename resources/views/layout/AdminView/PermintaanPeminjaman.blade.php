@@ -5,10 +5,16 @@
         <h2 class="text-2xl font-bold mb-6">Permintaan Peminjaman</h2>
 
         @if ($errors->any())
-            <div class="bg-red-500 text-white p-4 rounded mb-4">
-                {{ $errors->first() }}
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+                <strong class="font-bold">Pemberitahuan: </strong>
+                <ul class="list-disc pl-5">
+                    @foreach ($errors->all() as $error)
+                        <li><strong>{{ $error }}</strong></li> <!-- Menampilkan setiap error dalam <strong> -->
+                    @endforeach
+                </ul>
             </div>
         @endif
+
 
         @if (session('message'))
             <div class="bg-green-500 text-white p-2 rounded mb-4">
@@ -150,6 +156,8 @@
                     }).then((result) => {
                         if (result.isConfirmed) {
                             const reason = result.value;
+
+                            // Create form to submit rejection
                             const tolakForm = document.createElement('form');
                             tolakForm.action = '{{ route('peminjaman.tolak', ':id') }}'
                                 .replace(':id', button.closest('tr').querySelector(
@@ -160,6 +168,14 @@
                                 reason + '">';
                             document.body.appendChild(tolakForm);
                             tolakForm.submit();
+
+                            // Show confirmation that email was sent after rejection
+                            Swal.fire({
+                                title: 'Peminjaman Ditolak',
+                                text: 'Email penolakan telah dikirim!',
+                                icon: 'success',
+                                confirmButtonText: 'Tutup'
+                            });
                         }
                     });
                 });
@@ -199,6 +215,14 @@
                         batchForm.appendChild(alasanInput);
 
                         batchForm.submit();
+
+                        // Show confirmation that email was sent for batch rejection
+                        Swal.fire({
+                            title: 'Penolakan Terpenuhi',
+                            text: 'Email penolakan untuk semua terpilih telah dikirim!',
+                            icon: 'success',
+                            confirmButtonText: 'Tutup'
+                        });
                     }
                 });
             });

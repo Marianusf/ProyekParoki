@@ -1,60 +1,111 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $status == 'disetujui' ? 'Peminjaman Disetujui' : 'Peminjaman Ditolak' }}</title>
+    <title>Status Peminjaman</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            line-height: 1.6;
-            padding: 20px;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f7f7;
             color: #333;
         }
 
-        h2 {
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .content {
+            padding: 20px;
+            text-align: left;
+        }
+
+        .status-approved {
             color: #4CAF50;
-            /* Warna hijau untuk disetujui */
-        }
-
-        h2.ditolak {
-            color: #F44336;
-            /* Warna merah untuk ditolak */
-        }
-
-        p {
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
-
-        strong {
             font-weight: bold;
         }
 
+        .status-rejected {
+            color: #f44336;
+            font-weight: bold;
+        }
+
+        .reason {
+            background-color: #ffebee;
+            color: #f44336;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .item-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .item-list li {
+            margin-bottom: 10px;
+        }
+
         .footer {
+            background-color: #f1f1f1;
+            text-align: center;
+            padding: 10px;
             font-size: 14px;
-            color: #777;
-            margin-top: 20px;
+        }
+
+        .footer a {
+            color: #4CAF50;
+            text-decoration: none;
         }
     </style>
 </head>
 
 <body>
-    <h2 class="{{ $status == 'disetujui' ? '' : 'ditolak' }}">
-        {{ $status == 'disetujui' ? 'Permintaan Peminjaman Anda Disetujui' : 'Permintaan Peminjaman Anda Ditolak' }}
-    </h2>
+    <div class="container">
+        <div class="header">
+            <h1>Status Peminjaman</h1>
+        </div>
 
-    <p>Yth. {{ $peminjamName }}</p>
-    <p>Permintaan peminjaman Anda untuk asset <strong>{{ $assetName }}</strong> telah {{ $status }}.</p>
+        <div class="content">
+            <p>Halo, {{ $peminjamName }}.</p>
 
-    @if ($status == 'ditolak')
-        <p><strong>Alasan Penolakan:</strong> {{ $alasanPenolakan }}</p>
-    @endif
+            @if ($status == 'disetujui')
+                <p class="status-approved">Selamat! Peminjaman Anda telah disetujui untuk item berikut:</p>
+            @else
+                <p class="status-rejected">Maaf, peminjaman Anda untuk item berikut tidak disetujui:</p>
+                @if ($alasan)
+                    <p class="reason">Alasan Penolakan: {{ $alasan }}</p>
+                @endif
+            @endif
+            <ul class="item-list">
+                @foreach ($assetDetails as $item)
+                    <li>{{ $item['nama_barang'] }} (Jumlah: {{ $item['jumlah'] }})</li>
+                @endforeach
+            </ul>
 
-    <p>Terima kasih atas perhatian Anda.</p>
+            <p>Jika Anda memiliki pertanyaan lebih lanjut, silakan hubungi kami.</p>
+        </div>
 
-    <p class="footer">Jika Anda memiliki pertanyaan, silakan hubungi kami.</p>
+        <div class="footer">
+            &copy; {{ date('Y') }} Paroki Babadan. Semua Hak Dilindungi.
+        </div>
+    </div>
 </body>
 
 </html>
