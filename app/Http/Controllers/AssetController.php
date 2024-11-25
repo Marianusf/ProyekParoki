@@ -79,20 +79,19 @@ class AssetController extends Controller
             'gambar' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
         ]);
 
-        // Menghapus gambar lama (jika ada)
-        if ($asset->gambar && file_exists(public_path('storage/assets/images' . $asset->gambar))) {
-            unlink(public_path('storage/assets/images' . $asset->gambar)); // Delete the old image
-        }
-
-
-        // Menyimpan gambar baru (jika ada)
-        // Pastikan gambar disimpan hanya sekali dalam folder 'assets/images'
+        // Jika ada file baru, simpan dan hapus file lama
         if ($request->hasFile('gambar')) {
+            // Hapus gambar lama jika ada
+            if ($asset->gambar && file_exists(public_path('storage/' . $asset->gambar))) {
+                unlink(public_path('storage/' . $asset->gambar));
+            }
+
+            // Simpan gambar baru
             $gambarPath = $request->file('gambar')->store('assets/images', 'public');
         } else {
-            $gambarPath = null;
+            // Pertahankan gambar lama jika tidak ada file baru
+            $gambarPath = $asset->gambar;
         }
-
 
         // Memperbarui data di database
         $asset->update([
@@ -106,6 +105,7 @@ class AssetController extends Controller
 
         return redirect()->route('asset.index')->with('success', 'Asset berhasil diperbarui!');
     }
+
 
     public function destroy($id)
     {
