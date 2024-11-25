@@ -141,7 +141,7 @@
                 <i class="bi bi-clock-history"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Histori Peminjaman</span>
             </a>
-            <a href="/view-assets"
+            <a href="{{ route('pengembalian.form') }}"
                 class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700">
                 <i class="bi bi-arrow-counterclockwise"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Pengembalian</span>

@@ -32,4 +32,8 @@ class Peminjaman extends Model
     {
         return $this->belongsTo(Asset::class, 'id_asset');
     }
+    public function pengembalian()
+    {
+        return $this->hasOne(Pengembalian::class, 'peminjaman_id'); // Properly relate via peminjaman_id
+    }
 }

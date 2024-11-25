@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Peminjam;
 use App\Models\Peminjaman;
+use App\Models\Pengembalian;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -24,5 +25,13 @@ class AdminController extends Controller
         $peminjamanRequests = Peminjaman::where('status_peminjaman', 'pending')->with(['asset', 'peminjam'])->get();
 
         return view('layout.AdminView.PermintaanPeminjaman', compact('peminjamanRequests'));
+    }
+    public function adminLihatPermintaanPengembalian()
+    {
+        $pengembalian = Pengembalian::with('peminjaman')
+            ->where('status', 'pending') // Menampilkan pengembalian yang statusnya pending
+            ->get();
+
+        return view('layout.AdminView.PermintaanPengembalian', compact('pengembalian'));
     }
 }

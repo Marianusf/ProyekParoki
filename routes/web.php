@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PeminjamanController;
+use App\Http\Controllers\PengembalianController;
 
 Route::get('/profil', function () {
     return view('layout.PeminjamView.Profile');
@@ -119,3 +120,22 @@ Route::post('/peminjaman/batch-action', [PeminjamanController::class, 'batchActi
 // });
 Route::get('/admin/peminjaman', [AdminController::class, 'lihatPermintaanPeminjaman'])->name('lihatPermintaanPeminjaman');
 Route::get('/ketersediaan-asset', [AssetController::class, 'cekKetersediaanAsset'])->name('ketersediaanAsset');
+
+
+//proses pengembalian
+Route::get('/pengembalian/form', [PengembalianController::class, 'showPengembalianForm'])->name('pengembalian.form');
+
+// Mengirimkan pengajuan pengembalian
+Route::post('/pengembalian/store', [PengembalianController::class, 'storePengembalian'])->name('pengembalian.store');
+Route::get('/admin/pengembalian', [AdminController::class, 'adminLihatPermintaanPengembalian'])->name('admin.PermintaanPengembalianAsset');
+
+// Menyetujui pengembalian
+Route::patch('/admin/pengembalian/{id}/approve', [PengembalianController::class, 'approvePengembalian'])->name('pengembalian.approve');
+
+// Menolak pengembalian dengan alasan
+Route::patch('/admin/pengembalian/{id}/reject', [PengembalianController::class, 'rejectPengembalian'])->name('pengembalian.reject');
+
+Route::get('/pengembalian', [PengembalianController::class, 'index'])->name('pengembalian.index');
+Route::post('/pengembalian/setujui/{id}', [PengembalianController::class, 'setujui'])->name('pengembalian.setujui');
+Route::post('/pengembalian/tolak/{id}', [PengembalianController::class, 'tolak'])->name('pengembalian.tolak');
+Route::post('/pengembalian/batch_action', [PengembalianController::class, 'batchAction'])->name('pengembalian.batch_action');

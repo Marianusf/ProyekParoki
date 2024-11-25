@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('jumlah');
             $table->date('tanggal_peminjaman');
             $table->date('tanggal_pengembalian');
-            $table->enum('status_peminjaman', ['pending', 'disetujui', 'ditolak'])->default('pending');
+            $table->enum('status_peminjaman', ['pending', 'disetujui', 'ditolak', 'selesai'])->default('pending');
             $table->text('alasan_penolakan')->nullable();
             $table->timestamps();
             $table->foreign('id_peminjam')->references('id')->on('peminjam')->onDelete('cascade');

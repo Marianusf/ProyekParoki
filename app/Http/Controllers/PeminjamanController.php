@@ -9,6 +9,7 @@ use App\Models\Peminjaman;
 use App\Models\Peminjam;
 use App\Models\Asset;
 use App\Mail\MailPeminjamanStatus;
+use App\Models\Pengembalian;
 use Illuminate\Support\Facades\Mail;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Strong;
 
@@ -270,8 +271,20 @@ class PeminjamanController extends Controller
             ->with('asset') // Mengambil informasi tentang asset yang dipinjam
             ->get();
 
-        return view('layout.PeminjamView.RiwayatPeminjaman', compact('riwayatPeminjaman'));
+        $riwayatPengembalian = Pengembalian::whereIn('peminjaman_id', $riwayatPeminjaman->pluck('id')->toArray())
+            ->whereNotNull('tanggal_pengembalian') // Memastikan hanya pengembalian yang sudah tercatat
+            ->with('asset') // Mengambil informasi asset yang dikembalikan
+            ->get();
+        $riwayatSelesai = $riwayatPeminjaman->filter(function ($peminjaman) {
+            // Memastikan bahwa peminjaman memiliki pengembalian yang disetujui
+            return $peminjaman->pengembalian && $peminjaman->pengembalian->status == 'approved' && $peminjaman->status_peminjaman == 'disetujui';
+        });
+
+
+        return view('layout.PeminjamView.RiwayatPeminjaman', compact('riwayatPeminjaman', 'riwayatPengembalian', 'riwayatSelesai'));
     }
+
+
     public function tampilPinjamAsset()
     {
         $asset = Asset::where('kondisi', 'baik')->get();
