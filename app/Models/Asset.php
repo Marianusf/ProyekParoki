@@ -38,4 +38,8 @@ class Asset extends Model
     {
         return $this->jumlah_barang - $this->jumlah_terpinjam;
     }
+    public function pengembalian()
+    {
+        return $this->hasMany(Pengembalian::class); // Menghubungkan dengan model Pengembalian
+    }
 }
