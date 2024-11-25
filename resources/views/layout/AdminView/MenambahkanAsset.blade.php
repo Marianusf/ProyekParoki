@@ -36,10 +36,32 @@
             <!-- Jenis Barang -->
             <div class="mb-6">
                 <label for="jenis_barang" class="block text-sm font-medium text-gray-700">Jenis Barang</label>
-                <input type="text"
+                <select
                     class="mt-2 block w-full border-2 border-gray-300 rounded-md p-3 text-gray-700 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                    id="jenis_barang" name="jenis_barang" value="{{ old('jenis_barang', $asset->jenis_barang ?? '') }}"
-                    required>
+                    id="jenis_barang" name="jenis_barang" required>
+                    <option value="" disabled
+                        {{ old('jenis_barang', $asset->jenis_barang ?? '') == '' ? 'selected' : '' }}>Pilih Jenis Barang
+                    </option>
+                    <option value="elektronik"
+                        {{ old('jenis_barang', $asset->jenis_barang ?? '') == 'elektronik' ? 'selected' : '' }}>Elektronik
+                    </option>
+                    <option value="furniture"
+                        {{ old('jenis_barang', $asset->jenis_barang ?? '') == 'furniture' ? 'selected' : '' }}>Furniture
+                    </option>
+                    <option value="rumah tangga"
+                        {{ old('jenis_barang', $asset->jenis_barang ?? '') == 'rumahtangga' ? 'selected' : '' }}>Rumah
+                        Tangga
+                    </option>
+                    <option value="alat tulis kantor"
+                        {{ old('jenis_barang', $asset->jenis_barang ?? '') == 'alat tulis kantor' ? 'selected' : '' }}>Alat
+                        Tulis Kantor</option>
+                    <option value="perangkat keras"
+                        {{ old('jenis_barang', $asset->jenis_barang ?? '') == 'perangkat keras' ? 'selected' : '' }}>
+                        Perangkat Keras</option>
+                    <option value="lainnya"
+                        {{ old('jenis_barang', $asset->jenis_barang ?? '') == 'lainnya' ? 'selected' : '' }}>Lainnya
+                    </option>
+                </select>
                 @error('jenis_barang')
                     <p class="text-red-500 text-xs mt-2">{{ $message }}</p>
                 @enderror
@@ -60,13 +82,22 @@
             <!-- Kondisi Barang -->
             <div class="mb-6">
                 <label for="kondisi" class="block text-sm font-medium text-gray-700">Kondisi Barang</label>
-                <input type="text"
+                <select
                     class="mt-2 block w-full border-2 border-gray-300 rounded-md p-3 text-gray-700 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                    id="kondisi" name="kondisi" value="{{ old('kondisi', $asset->kondisi ?? '') }}" required>
+                    id="kondisi" name="kondisi" required>
+                    <option value="baik" {{ old('kondisi', $asset->kondisi ?? '') == 'baik' ? 'selected' : '' }}>Baik
+                    </option>
+                    <option value="rusak" {{ old('kondisi', $asset->kondisi ?? '') == 'rusak' ? 'selected' : '' }}>Rusak
+                    </option>
+                    <option value="perlu perbaikan"
+                        {{ old('kondisi', $asset->kondisi ?? '') == 'perlu perbaikan' ? 'selected' : '' }}>Perlu Perbaikan
+                    </option>
+                </select>
                 @error('kondisi')
                     <p class="text-red-500 text-xs mt-2">{{ $message }}</p>
                 @enderror
             </div>
+
 
             <!-- Deskripsi Barang -->
             <div class="mb-6">
