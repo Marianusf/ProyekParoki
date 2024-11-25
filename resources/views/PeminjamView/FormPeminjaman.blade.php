@@ -1,16 +1,25 @@
 @extends('layout.TemplatePeminjam')
 
 @section('content')
+<style>
+    .alat-misa-gambar {
+        max-width: 200px;
+        max-height: 150px;
+        width: auto;
+        height: auto;
+        margin: 0 auto;
+        display: none;
+    }
+</style>
 <div class="container mx-auto py-8 px-4 sm:px-6 lg:px-8">
     <h2 class="text-3xl font-extrabold mb-8 text-center text-blue-600">Form Peminjaman</h2>
 
     <div class="bg-gradient-to-r from-blue-50 via-blue-100 to-blue-50 border border-gray-300 shadow-xl rounded-xl p-8">
         <form action="{{ route('peminjaman.store') }}" method="POST" class="space-y-8">
             @csrf
-            <!-- Penanggung Jawab -->
             <div>
                 <label for="penanggung_jawab" class="block text-sm font-bold text-gray-700 mb-2">Penanggung Jawab</label>
-                <input type="text" id="penanggung_jawab" name="penanggung_jawab" class="w-full sm:w-96 border border-gray-300 rounded-lg shadow-md p-3 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-transform duration-200 transform hover:scale-105" placeholder="Masukkan nama penanggung jawab" required>
+                <input type="text" id="penanggung_jawab" name="penanggung_jawab" class="w-full max-w-md border border-gray-300 rounded-lg shadow-md p-3 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-transform duration-200 transform hover:scale-105" placeholder="Masukkan nama penanggung jawab" required>
             </div>
 
             <!-- Divider -->
@@ -36,32 +45,46 @@
             <!-- Form untuk Alat Misa -->
             <div id="alat-misa-fields" class="hidden">
                 <label for="alat_misa" class="block text-sm font-bold text-gray-700 mb-2">Pilih Alat Misa</label>
-                <select id="alat_misa" name="alat_misa" class="w-full sm:w-96 border border-gray-300 rounded-lg shadow-md p-3 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-transform duration-200 transform hover:scale-105">
-                    <option value="1">Alat Misa 1</option>
-                    <option value="2">Alat Misa 2</option>
-                    <option value="3">Alat Misa 3</option>
+                <select id="alat_misa" name="alat_misa" class="w-60 sm:w-96 border border-gray-300 rounded-lg shadow-md p-3 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-transform duration-200 transform hover:scale-105">
+                    <option value="Aspergilum">Aspergilum</option>
+                    <option value="Sacramentarium">Sacramentarium</option>
+                    <option value="Piala">Piala</option>
+                    <option value="Purifikatiroum">Purifikatiroum</option>
+                    <option value="Patena">Patena</option>
+                    <option value="Corporale">Corporale </option>
+                    <option value="Ampul">Ampul</option>
+                    <option value="Lavabo">Lavabo</option>
+                    <option value="Palla">Palla</option>
+                    <option value="Sibori">Sibori</option>
                 </select>
 
                 <!-- Gambar Alat Misa -->
                 <div id="alat_misa_gambar" class="mt-4">
-                    <img src="" alt="Gambar Alat Misa" id="gambar_alat_misa" class="w-full sm:w-96 h-auto rounded-lg">
+                    <img id="gambar_Piala" src="{{ asset('Gambar/Piala.png') }}" class="alat-misa-gambar rounded-lg">
+                    <img id="gambar_Sibori" src="{{ asset('Gambar/Sibori.png') }}" class="alat-misa-gambar rounded-lg">
+                    <img id="gambar_Ampul" src="{{ asset('Gambar/Ampul.png') }}" class="alat-misa-gambar rounded-lg">
+                    <img id="gambar_Lavabo" src="{{ asset('Gambar/Lavabo.png') }}" class="alat-misa-gambar rounded-lg">
+                    <img id="gambar_Purifikatiroum" src="{{ asset('Gambar/Purifikatorium.png') }}" class="alat-misa-gambar rounded-lg">
+                    <img id="gambar_Patena" src="{{ asset('Gambar/Patena.png') }}" class="alat-misa-gambar rounded-lg">
+                    <img id="gambar_Palla" src="{{ asset('Gambar/Palla.png') }}" class="alat-misa-gambar rounded-lg">
+                    <img id="gambar_Corporale" src="{{ asset('Gambar/Corporal.png') }}" class="alat-misa-gambar rounded-lg">
                 </div>
             </div>
 
             <!-- Form untuk Asset -->
-            <div id="asset-fields" class="hidden">
-                <label for="asset" class="block text-sm font-bold text-gray-700 mb-2">Pilih Asset</label>
-                <select id="perlengkapan" name="perlengkapan" class="w-full sm:w-80 border border-gray-300 rounded-lg shadow-md p-3 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-transform duration-200 transform hover:scale-105">
-                    <option value="1">Proyektor</option>
-                    <option value="2">Kamera</option>
-                    <option value="3">Kursi</option>
-                    <option value="4">Meja</option>
-                    <option value="5">Speaker + Mic</option>
-                    <option value="6">Alat Misa</option>
+            <div id="perlengkapan-fields" class="hidden">
+                <label for="perlengkapan" class="block text-sm font-bold text-gray-700 mb-2">Pilih Perlengkapan</label>
+                <select id="perlengkapan" name="perlengkapan" class="w-80 sm:w-96 border border-gray-300 rounded-lg shadow-md p-3 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-transform duration-200 transform hover:scale-105">
+                    <option value="Kursi">Kursi</option>
+                    <option value="Meja">Meja</option>
+                    <option value="Proyektor">Proyektor</option>
+                    <option value="Speaker">Speaker</option>
+                    <option value="Microfon">Microfon</option>
                 </select>
+
                 <div class="mt-4">
-                    <label for="jumlah" class="block text-sm font-bold text-gray-700 mb-2">Jumlah</label>
-                    <input type="number" id="jumlah" name="jumlah" class="w-full sm:w-96 border border-gray-300 rounded-lg shadow-md p-3 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-transform duration-200 transform hover:scale-105" min="1">
+                    <label for="jumlah_perlengkapan" class="block text-sm font-bold text-gray-700 mb-2">Jumlah</label>
+                    <input type="number" id="jumlah_perlengkapan" name="jumlah_perlengkapan" class="w-80 sm:w-96 border border-gray-300 rounded-lg shadow-md p-3 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-transform duration-200 transform hover:scale-105" min="1">
                     <p class="text-sm text-gray-600 mt-1">Stok tersedia: 10</p>
                 </div>
             </div>
@@ -69,24 +92,26 @@
             <!-- Form untuk Ruangan -->
             <div id="ruangan-fields" class="hidden">
                 <label for="ruangan" class="block text-sm font-bold text-gray-700 mb-2">Pilih Ruangan</label>
-                <select id="ruangan" name="ruangan" class="w-full sm:w-96 border border-gray-300 rounded-lg shadow-md p-3 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-transform duration-200 transform hover:scale-105">
+                <select id="ruangan" name="ruangan" class="w-80 sm:w-96 border border-gray-300 rounded-lg shadow-md p-3 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-transform duration-200 transform hover:scale-105">
                     <option value="1">Ruangan Aula</option>
                 </select>
+                <label for="alasan" class="block text-sm font-bold text-gray-700 mb-2">Alasan Peminjaman</label>
+                <input type="text" id="" name="alasan" class="w-full max-w-md border border-gray-300 rounded-lg shadow-md p-3 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-transform duration-200 transform hover:scale-105" placeholder="Berikan Alasan Anda " required>
+            </div>
 
-                <!-- Grid untuk Tanggal -->
-                <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label for="tanggal_mulai" class="block text-sm font-bold text-gray-700 mb-2">Tanggal Mulai</label>
-                        <input type="date" id="tanggal_mulai" name="tanggal_mulai" class="w-full border border-gray-300 rounded-lg shadow-md p-3 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-transform duration-200 transform hover:scale-105">
-                    </div>
-                    <div>
-                        <label for="tanggal_selesai" class="block text-sm font-bold text-gray-700 mb-2">Tanggal Selesai</label>
-                        <input type="date" id="tanggal_selesai" name="tanggal_selesai" class="w-full border border-gray-300 rounded-lg shadow-md p-3 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-transform duration-200 transform hover:scale-105">
-                    </div>
+            <!-- Grid untuk Tanggal -->
+            <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label for="tanggal_mulai" class="block text-sm font-bold text-gray-700 mb-2">Tanggal Mulai</label>
+                    <input type="date" id="tanggal_mulai" name="tanggal_mulai" class="w-full border border-gray-300 rounded-lg shadow-md p-3 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-transform duration-200 transform hover:scale-105">
                 </div>
-
-                <!-- Grid untuk Jam -->
-                <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label for="tanggal_selesai" class="block text-sm font-bold text-gray-700 mb-2">Tanggal Selesai</label>
+                    <input type="date" id="tanggal_selesai" name="tanggal_selesai" class="w-full border border-gray-300 rounded-lg shadow-md p-3 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-transform duration-200 transform hover:scale-105">
+                </div>
+            </div>
+                        <!-- Grid untuk Jam -->
+                        <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label for="jam_mulai" class="block text-sm font-bold text-gray-700 mb-2">Jam Mulai</label>
                         <input type="time" id="jam_mulai" name="jam_mulai" class="w-full border border-gray-300 rounded-lg shadow-md p-3 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-transform duration-200 transform hover:scale-105">
@@ -98,31 +123,23 @@
                 </div>
             </div>
 
-            <!-- Form untuk Perlengkapan -->
-            <div id="perlengkapan-fields" class="hidden">
-                <label for="perlengkapan" class="block text-sm font-bold text-gray-700 mb-2">Pilih Perlengkapan</label>
-                <select id="perlengkapan" name="perlengkapan" class="w-full sm:w-96 border border-gray-300 rounded-lg shadow-md p-3 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-transform duration-200 transform hover:scale-105">
-                    <option value="1">Perlengkapan 1</option>
-                    <option value="2">Perlengkapan 2</option>
-                    <option value="3">Perlengkapan 3</option>
-                </select>
-                <div class="mt-4">
-                    <label for="jumlah_perlengkapan" class="block text-sm font-bold text-gray-700 mb-2">Jumlah</label>
-                    <input type="number" id="jumlah_perlengkapan" name="jumlah_perlengkapan" class="w-full sm:w-96 border border-gray-300 rounded-lg shadow-md p-3 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-transform duration-200 transform hover:scale-105" min="1">
-                    <p class="text-sm text-gray-600 mt-1">Stok tersedia: 10</p>
-                </div>
-            </div>
 
-            <!-- Submit Button -->
-            <div class="text-center mt-6">
-                <button type="submit" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-lg shadow-lg hover:from-blue-600 hover:to-blue-700 transition duration-300 ease-in-out transform hover:scale-105">
-                    Tambah ke Keranjang
-                </button>
-            </div>
-        </form>
+
+
+
+<!-- Form untuk submit ke server -->
+<form id="peminjaman-form" action="{{ route('peminjaman.store') }}" method="POST" class="space-y-8">
+    @csrf
+    <!-- Form fields here -->
+
+    <div class="mt-8 text-center">
+        <button id="add-to-cart-btn" type="button" class="px-6 py-3 text-lg font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-md focus:outline-none focus:ring-4 focus:ring-blue-300">
+            Masukkan Keranjang
+        </button>
     </div>
-</div>
+</form>
 
+<!-- Popup Notifikasi -->
 <div id="popup-notification" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden z-50">
     <div class="bg-white rounded-xl shadow-2xl p-8 w-96 text-center relative">
         <!-- Dekorasi Lingkaran dengan Ceklis -->
@@ -148,77 +165,67 @@
     </div>
 </div>
 
-
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const jenisPeminjaman = document.getElementById('jenis_peminjaman');
-        const assetFields = document.getElementById('asset-fields');
-        const ruanganFields = document.getElementById('ruangan-fields');
-        const alatMisaFields = document.getElementById('alat-misa-fields');
-        const perlengkapanFields = document.getElementById('perlengkapan-fields');
-        const gambarAlatMisa = document.getElementById('gambar_alat_misa');
-        const alatMisaDropdown = document.getElementById('alat_misa');
+    document.getElementById('jenis_peminjaman').addEventListener('change', function() {
+        var selectedValue = this.value;
+        document.getElementById('alat-misa-fields').classList.add('hidden');
+        document.getElementById('perlengkapan-fields').classList.add('hidden');
+        document.getElementById('ruangan-fields').classList.add('hidden');
 
-        jenisPeminjaman.addEventListener('change', function () {
-            assetFields.classList.add('hidden');
-            ruanganFields.classList.add('hidden');
-            alatMisaFields.classList.add('hidden');
-            perlengkapanFields.classList.add('hidden');
-
-            if (this.value === 'asset') {
-                assetFields.classList.remove('hidden');
-            } else if (this.value === 'ruangan') {
-                ruanganFields.classList.remove('hidden');
-            } else if (this.value === 'alatMisa') {
-                alatMisaFields.classList.remove('hidden');
-            } else if (this.value === 'perlengkapan') {
-                perlengkapanFields.classList.remove('hidden');
-            }
-        });
-
-        // Event Listener untuk perubahan pilihan alat misa
-        alatMisaDropdown.addEventListener('change', function () {
-            const selectedOption = this.value;
-
-            // Menampilkan gambar berdasarkan pilihan alat misa
-            switch (selectedOption) {
-                case '1':
-                    gambarAlatMisa.src = '/images/alat_misa_1.jpg'; // Ganti dengan path gambar yang sesuai
-                    break;
-                case '2':
-                    gambarAlatMisa.src = '/images/alat_misa_2.jpg'; // Ganti dengan path gambar yang sesuai
-                    break;
-                case '3':
-                    gambarAlatMisa.src = '/images/alat_misa_3.jpg'; // Ganti dengan path gambar yang sesuai
-                    break;
-                default:
-                    gambarAlatMisa.src = '';  // Jika tidak ada pilihan, sembunyikan gambar
-                    break;
-            }
-        });
+        if (selectedValue === 'alatMisa') {
+            document.getElementById('alat-misa-fields').classList.remove('hidden');
+        } else if (selectedValue === 'perlengkapan') {
+            document.getElementById('perlengkapan-fields').classList.remove('hidden');
+        } else {
+            document.getElementById('ruangan-fields').classList.remove('hidden');
+        }
     });
-    document.addEventListener('DOMContentLoaded', function () {
-        const form = document.querySelector('form');
-        const popupNotification = document.getElementById('popup-notification');
-        const popupCloseBtn = document.getElementById('popup-close-btn');
 
-        // Tampilkan popup saat form berhasil disubmit
-        form.addEventListener('submit', function (event) {
-            event.preventDefault(); // Mencegah submit form default (jika ingin debugging)
-            
-            // Simulasikan proses pengiriman data
-            setTimeout(() => {
-                popupNotification.classList.remove('hidden');
-            }, 500); // Simulasi delay pengiriman data ke server
-
-            // Lanjutkan submit form secara default (hapus ini jika Anda menggunakan AJAX)
-            // form.submit();
+    document.getElementById('alat_misa').addEventListener('change', function() {
+        var selectedAlat = this.value;
+        var allImages = document.querySelectorAll('.alat-misa-gambar');
+        allImages.forEach(function(image) {
+            image.style.display = 'none';
         });
 
-        // Sembunyikan popup saat tombol OK diklik
-        popupCloseBtn.addEventListener('click', function () {
-            popupNotification.classList.add('hidden');
-        });
+        var selectedImage = document.getElementById('gambar_' + selectedAlat);
+        if (selectedImage) {
+            selectedImage.style.display = 'block';
+        }
     });
+     // Show popup notification after "Masukkan Keranjang" button is clicked
+    document.getElementById('add-to-cart-btn').addEventListener('click', function() {
+        // Prevent form submission
+        event.preventDefault();
+
+        // Show the popup
+        const popup = document.getElementById("popup-notification");
+        popup.classList.remove("hidden");
+        popup.classList.add("fade-in");
+
+        // Optionally, submit the form after showing the popup (if needed)
+        // setTimeout(function() {
+        //     document.getElementById('peminjaman-form').submit();
+        // }, 2000); // Delay for 2 seconds before submitting the form (optional)
+    });
+
+    // Close the popup when "OK" button is clicked
+    document.getElementById("popup-close-btn").addEventListener("click", function () {
+        const popup = document.getElementById("popup-notification");
+        popup.classList.add("hidden");
+    });
+
+    // Add fade-in animation to popup
+    const style = document.createElement("style");
+    style.innerHTML = `
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    `;
+    document.head.appendChild(style);
 </script>
 @endsection

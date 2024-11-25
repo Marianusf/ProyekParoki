@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Peminjaman;
 use Illuminate\Http\Request;
+use App\Models\KeranjangPeminjaman;
 
 class PeminjamController extends Controller
 {
@@ -11,39 +12,6 @@ class PeminjamController extends Controller
     public function create()
     {
         return view('peminjam.create');
-    }
-
-    // Method untuk menyimpan data peminjaman ke dalam database
-    public function store(Request $request)
-    {
-        // Validasi data dari form
-        $validatedData = $request->validate([
-            'penanggung_jawab' => 'required|string|max:255',
-            'jenis_peminjaman' => 'required|string',
-            'asset_id' => 'nullable|exists:assets,id',
-            'ruangan_id' => 'nullable|exists:ruangans,id',
-            'jumlah' => 'nullable|integer|min:1',
-            'tanggal_mulai' => 'required|date',
-            'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
-            'jam_mulai' => 'required|date_format:H:i',
-            'jam_selesai' => 'required|date_format:H:i|after:jam_mulai',
-        ]);
-
-        // Menyimpan data peminjaman ke dalam database
-        Peminjaman::create([
-            'penanggung_jawab' => $validatedData['penanggung_jawab'],
-            'jenis_peminjaman' => $validatedData['jenis_peminjaman'],
-            'asset_id' => $validatedData['jenis_peminjaman'] == 'asset' ? $validatedData['asset_id'] : null,
-            'ruangan_id' => $validatedData['jenis_peminjaman'] == 'ruangan' ? $validatedData['ruangan_id'] : null,
-            'jumlah' => $validatedData['jumlah'],
-            'tanggal_mulai' => $validatedData['tanggal_mulai'],
-            'tanggal_selesai' => $validatedData['tanggal_selesai'],
-            'jam_mulai' => $validatedData['jam_mulai'],
-            'jam_selesai' => $validatedData['jam_selesai'],
-        ]);
-
-        // Redirect atau kembali dengan pesan sukses
-        return redirect()->route('peminjaman.index')->with('success', 'Peminjaman berhasil ditambahkan');
     }
 
 
@@ -62,6 +30,40 @@ public function Dashboard(){
 public function InformasiAset(){
     return view('PeminjamView.InformasiAset');
 }
+public function store(Request $request)
+{
+    // Validasi inputan
+    $validatedData = $request->validate([
+        'penanggung_jawab' => 'required|string|max:255',
+        'jenis_peminjaman' => 'required|string',
+        'perlengkapan' => 'nullable|string',
+        'ruangan' => 'nullable|string',
+        'alat_misa' => 'nullable|string',
+        'tanggal_mulai' => 'nullable|date',
+        'tanggal_selesai' => 'nullable|date',
+        'jam_mulai' => 'nullable|date_format:H:i',
+        'jam_selesai' => 'nullable|date_format:H:i',
+        'jumlah' => 'nullable|integer|min:1',
+    ]);
+
+    // Simpan ke keranjang peminjaman
+    KeranjangPeminjaman::create([
+        'penanggung_jawab' => $validatedData['penanggung_jawab'],
+        'jenis_peminjaman' => $validatedData['jenis_peminjaman'],
+        'perlengkapan' => $request->input('perlengkapan'),
+        'ruangan' => $request->input('ruangan'),
+        'alat_misa' => $request->input('alat_misa'),
+        'tanggal_mulai' => $request->input('tanggal_mulai'),
+        'tanggal_selesai' => $request->input('tanggal_selesai'),
+        'jam_mulai' => $request->input('jam_mulai'),
+        'jam_selesai' => $request->input('jam_selesai'),
+        'jumlah' => $request->input('jumlah'),
+    ]);
+
+    // Tampilkan popup notifikasi
+    return response()->json(['message' => 'Berhasil ditambahkan ke keranjang'], 200);
+}
+
 }
 
 

@@ -56,6 +56,10 @@ Route::get('/dashboard', [PeminjamController::class, 'Dashboard'])->name('dashbo
 
 
 Route::get('/pinjam', [PeminjamController::class, 'index'])->name('pinjam.FormPeminjaman');
+
+
+Route::post('/peminjaman/store', [PeminjamController::class, 'store'])->name('peminjaman.store');
+
 Route::get('/pinjam/informasiRuangan', [PeminjamController::class, 'InformasiAset'])->name('pinjam.InformasiAset');
 
 Route::get('/edit', [PeminjamController::class, 'EditAdmin'])->name('sdit.AdminEdit');
