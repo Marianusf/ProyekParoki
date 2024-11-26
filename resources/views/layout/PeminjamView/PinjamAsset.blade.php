@@ -59,11 +59,20 @@
                 @enderror
             </div>
 
-            <!-- Submit Button -->
-            <div class="mb-4">
-                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Tambah ke
-                    Keranjang</button>
+            <!-- Submit Button dan Icon Keranjang -->
+            <div class="mb-4 flex items-center space-x-4">
+                <!-- Tombol Tambah ke Keranjang -->
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    Tambah ke Keranjang
+                </button>
+
+                <!-- Icon Keranjang -->
+                <a href="{{ route('lihatKeranjang') }}" class="text-blue-500 hover:text-blue-700">
+                    <i class="fas fa-shopping-cart text-2xl"></i>
+                    <span class="sr-only">Lihat Keranjang</span> <!-- Untuk aksesibilitas -->
+                </a>
             </div>
+
         </form>
     </div>
 
