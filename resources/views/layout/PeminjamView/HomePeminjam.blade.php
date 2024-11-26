@@ -1,6 +1,6 @@
 @extends('layout.TemplatePeminjam')
 
-@section('title', 'Home Peminjam')
+@section('title', 'HomePeminjam')
 
 @section('content')
     <section class="p-6 bg-gray-100 min-h-screen">
@@ -24,7 +24,6 @@
                 Selamat Datang di Sistem Peminjaman Asset Gereja Babadan!
             </h2>
 
-            <!-- Statistik Peminjaman -->
             <section class="bg-white p-6 rounded-lg shadow-md mb-6">
                 <div class="container mx-auto">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">

@@ -1,5 +1,5 @@
 @extends('layout.TemplateAdmin')
-
+@section('title', 'PermintaanPengembalian')
 @section('content')
     <div class="container mx-auto py-8">
         <h2 class="text-2xl font-bold mb-6">Permintaan Pengembalian</h2>
@@ -14,17 +14,19 @@
                 </ul>
             </div>
         @endif
-
-        @if (session('message'))
-            <div class="bg-green-500 text-white p-2 rounded mb-4">
-                {{ session('message') }}
-            </div>
-        @endif
         @if (session('success'))
-            <div class="bg-green-500 text-white p-2 rounded mb-4">
-                {{ session('success') }}
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <strong class="font-bold">Sukses: </strong>
+                <span class="block sm:inline">{{ session('success') }}</span>
             </div>
         @endif
+        @if (session('message'))
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <strong class="font-bold">PESAN : </strong>
+                <span class="block sm:inline">{{ session('message') }}</span>
+            </div>
+        @endif
+
         @if ($pengembalian->isEmpty())
             <p class="text-gray-700">Tidak ada permintaan pengembalian saat ini.</p>
         @else

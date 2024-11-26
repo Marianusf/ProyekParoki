@@ -1,12 +1,11 @@
 @extends('layout.TemplatePeminjam')
 
-@section('title', 'Riwayat Peminjaman')
+@section('title', 'RiwayatPeminjaman')
 
 @section('content')
     <div class="container mx-auto py-8">
         <h1 class="text-3xl font-semibold mb-6">Riwayat Peminjaman</h1>
 
-        <!-- Filter dan Pencarian -->
         <div class="flex justify-between items-center mb-4">
             <div class="flex space-x-4 items-center">
                 <!-- Dropdown Jumlah Item yang Ditampilkan -->
@@ -20,14 +19,11 @@
             </div>
 
             <div class="flex space-x-4 items-center">
-                <!-- Input Pencarian -->
                 <input type="text" id="search"
                     class="p-3 w-96 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
                     placeholder="Cari berdasarkan nama asset..." />
             </div>
         </div>
-
-        <!-- Filter Status dan Bulan -->
         <div class="flex justify-between mb-4 space-x-4">
             <div class="flex items-center space-x-4 w-1/2 sm:w-1/4">
                 <label for="statusFilter" class="text-lg">Filter Status:</label>
@@ -59,7 +55,6 @@
             </div>
         </div>
 
-        <!-- Tab Filter Riwayat -->
         <div class="mb-6">
             <label for="historyFilter" class="text-lg mr-4">Filter Riwayat:</label>
             <select id="historyFilter">
@@ -67,10 +62,8 @@
                 <option value="riwayatPeminjaman">Riwayat Peminjaman</option>
                 <option value="riwayatPengembalian">Riwayat Pengembalian</option>
             </select>
-
         </div>
 
-        <!-- Tabel Riwayat Peminjaman dan Pengembalian -->
         <div class="overflow-x-auto shadow-md sm:rounded-lg max-h-96">
             <table class="min-w-full text-sm text-left text-gray-500">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-200 sticky top-0">
@@ -105,7 +98,6 @@
                                     {{ \Carbon\Carbon::parse($riwayat->pengembalian->tanggal_pengembalian)->format('d F Y') }}
                                 </td>
                                 <td class="px-6 py-4">
-                                    <!-- Menampilkan status SELESAI jika pengembalian approved -->
                                     <span class="text-green-500 flex items-center space-x-1">
                                         <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none"
                                             viewBox="0 0 24 24" stroke="currentColor">
@@ -303,7 +295,6 @@
 
                     if (matchesType && matchesSearch && matchesStatus && matchesMonth) {
                         row.style.display = ''; // Show row
-                        // Highlight text jika sesuai dengan pencarian
                         assetNameCell.innerHTML = highlightText(assetNameCell.textContent, searchInput
                             .value);
                     } else {
@@ -312,14 +303,12 @@
                 });
             }
 
-            // Update display on filter change
             historyFilter.addEventListener('change', filterRows);
             searchInput.addEventListener('input', filterRows);
             statusFilter.addEventListener('change', filterRows);
             monthFilter.addEventListener('change', filterRows);
             itemsPerPageSelect.addEventListener('change', filterRows);
 
-            // Initial call to display rows
             filterRows();
         });
     </script>
