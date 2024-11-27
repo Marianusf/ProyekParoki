@@ -28,7 +28,6 @@
                     <span class="block sm:inline">{{ session('error') }}</span>
                 </div>
             @endif
-            @endif
             <div class="mb-4 text-right">
                 <a href="{{ route('asset.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
                     Tambah Asset Baru
