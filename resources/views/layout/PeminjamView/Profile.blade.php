@@ -1,89 +1,122 @@
 @extends('layout.TemplatePeminjam')
-
-@section('title', 'Profil')
-
+@section('title', 'profileku')
 @section('content')
     <section class="p-6 bg-gray-100 min-h-screen place-items-center">
         <div class="bg-white w-full max-w-7xl p-6 rounded-lg shadow-md border border-black">
             <h2 class="text-2xl font-semibold text-gray-800 mb-2">Profil</h2>
             <p class="text-gray-500 mb-4">PAROKI ST PETRUS DAN PAULUS</p>
 
-            <!-- Form untuk Update Profil -->
-            <form action="" method="POST" class="space-y-4">
+            <!-- Gambar Profil -->
+            <div class="flex justify-center mb-6">
+                <div class="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center">
+                    <img src="{{ asset('storage/' . $peminjam->profile_picture) }}" alt="Profile Picture"
+                        class="rounded-full w-full h-full object-cover">
+                </div>
+            </div>
+
+            <!-- Data Profil -->
+            <form action="" method="POST" id="profilForm">
                 @csrf
                 @method('PUT')
 
-                <!-- Profile Picture -->
-                <div class="flex justify-center mb-6">
-                    <div class="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center">
-                        <!-- Placeholder for profile picture -->
-                        <img src="{{ asset('storage/' . $peminjam->profile_picture) }}" alt="Profile Picture"
-                            class="rounded-full w-full h-full object-cover">
-                    </div>
-                </div>
-
-                <!-- Form Fields -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Nama Lengkap -->
                     <div>
                         <label class="block text-sm text-gray-600">Nama Lengkap</label>
-                        <input type="text" name="nama_lengkap" value="{{ old('nama_lengkap', $peminjam->name) }}"
-                            class="w-full bg-gray-100 border border-gray-200 rounded p-2 text-gray-700">
+                        <div id="viewNamaLengkap" class="text-gray-700">{{ $peminjam->name }}</div>
+                        <input type="text" name="nama_lengkap" value="{{ $peminjam->name }}"
+                            class="w-full bg-gray-100 border border-gray-200 rounded p-2 text-gray-700 hidden"
+                            id="editNamaLengkap">
                     </div>
+
                     <div>
                         <label class="block text-sm text-gray-600">Email</label>
-                        <input type="email" name="email" value="{{ old('email', $peminjam->email) }}"
-                            class="w-full bg-gray-100 border border-gray-200 rounded p-2 text-gray-700">
+                        <div id="viewEmail" class="text-gray-700">{{ $peminjam->email }}</div>
+                        <input type="email" name="email" value="{{ $peminjam->email }}"
+                            class="w-full bg-gray-100 border border-gray-200 rounded p-2 text-gray-700 hidden"
+                            id="editEmail">
                     </div>
-                    <div>
-                        <label class="block text-sm text-gray-600">NIK</label>
-                        <input type="text" name="nik" value="{{ old('nik', $peminjam->nik) }}"
-                            class="w-full bg-gray-100 border border-gray-200 rounded p-2 text-gray-700">
-                    </div>
+
                     <div>
                         <label class="block text-sm text-gray-600">Tanggal Lahir</label>
-                        <input type="text" name="tanggal_lahir"
-                            value="{{ old('tanggal_lahir', $peminjam->tanggal_lahir) }}"
-                            class="w-full bg-gray-100 border border-gray-200 rounded p-2 text-gray-700">
+                        <div id="viewTanggalLahir" class="text-gray-700">
+                            {{ \Carbon\Carbon::parse($peminjam->tanggal_lahir)->format('d-m-Y') }}
+                        </div>
+                        <input type="date" name="tanggal_lahir" value="{{ $peminjam->tanggal_lahir }}"
+                            class="w-full bg-gray-100 border border-gray-200 rounded p-2 text-gray-700 hidden"
+                            id="editTanggalLahir">
                     </div>
+
+                    <!-- Nomor Telepon -->
                     <div>
-                        <label class="block text-sm text-gray-600">Jenis Kelamin</label>
-                        <input type="text" name="jenis_kelamin"
-                            value="{{ old('jenis_kelamin', $peminjam->jenis_kelamin) }}"
-                            class="w-full bg-gray-100 border border-gray-200 rounded p-2 text-gray-700">
+                        <label class="block text-sm text-gray-600">Nomor Telepon</label>
+                        <div id="viewNomorTelepon" class="text-gray-700">{{ $peminjam->nomor_telepon }}</div>
+                        <input type="text" name="nomor_telepon" value="{{ $peminjam->nomor_telepon }}"
+                            class="w-full bg-gray-100 border border-gray-200 rounded p-2 text-gray-700 hidden"
+                            id="editNomorTelepon">
                     </div>
                     <div>
                         <label class="block text-sm text-gray-600">Lingkungan</label>
-                        <input type="text" name="lingkungan" value="{{ old('lingkungan', $peminjam->lingkungan) }}"
-                            class="w-full bg-gray-100 border border-gray-200 rounded p-2 text-gray-700">
+                        <div id="viewLingkungan" class="text-gray-700">{{ $peminjam->lingkungan }}</div>
+                        <input type="text" name="lingkungan" value="{{ $peminjam->lingkungan }}"
+                            class="w-full bg-gray-100 border border-gray-200 rounded p-2 text-gray-700 hidden"
+                            id="editLingkungan">
                     </div>
                     <div>
-                        <label class="block text-sm text-gray-600">Nomor Telepon</label>
-                        <input type="text" name="nomor_telepon"
-                            value="{{ old('nomor_telepon', $peminjam->nomor_telepon) }}"
-                            class="w-full bg-gray-100 border border-gray-200 rounded p-2 text-gray-700">
-                    </div>
-                    <div>
-                        <label class="block text-sm text-gray-600">Alamat Saat Ini</label>
-                        <input type="text" name="alamat" value="{{ old('alamat', $peminjam->alamat) }}"
-                            class="w-full bg-gray-100 border border-gray-200 rounded p-2 text-gray-700">
+                        <label class="block text-sm text-gray-600">Alamat</label>
+                        <div id="viewAlamat" class="text-gray-700">{{ $peminjam->alamat }}</div>
+                        <input type="text" name="alamat" value="{{ $peminjam->alamat }}"
+                            class="w-full bg-gray-100 border border-gray-200 rounded p-2 text-gray-700 hidden"
+                            id="editAlamat">
                     </div>
                 </div>
 
-                <!-- Buttons -->
-                <div class="flex justify-center space-x-5 mt-6 mr-4">
-                    <button type="submit" name="update"
-                        class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">Update Perubahan</button>
-                    <button type="reset" name="reset"
-                        class="bg-blue-100 hover:bg-blue-200 text-blue-700 py-2 px-4 rounded">Reset Perubahan</button>
+                <!-- Tombol -->
+                <div class="flex justify-center space-x-5 mt-6">
+                    <button type="button" id="editButton"
+                        class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">
+                        Edit
+                    </button>
+                    <button type="submit" id="saveButton"
+                        class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded hidden">
+                        Simpan
+                    </button>
+                    <button type="button" id="cancelButton"
+                        class="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded hidden">
+                        Batal
+                    </button>
                 </div>
             </form>
         </div>
-    </section>
-@endsection
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const editButton = document.getElementById('editButton');
+                const saveButton = document.getElementById('saveButton');
+                const cancelButton = document.getElementById('cancelButton');
+                const viewElements = document.querySelectorAll('[id^="view"]');
+                const editElements = document.querySelectorAll('[id^="edit"]');
 
-@section('scripts')
-    <script>
-        // Additional JavaScript specific to this page
-        // console.log('Profile page script loaded.');
-    </script>
-@endsection
+                // Fungsi untuk masuk ke mode edit
+                const enableEditMode = () => {
+                    viewElements.forEach(el => el.classList.add('hidden'));
+                    editElements.forEach(el => el.classList.remove('hidden'));
+                    editButton.classList.add('hidden');
+                    saveButton.classList.remove('hidden');
+                    cancelButton.classList.remove('hidden');
+                };
+
+                // Fungsi untuk keluar dari mode edit
+                const disableEditMode = () => {
+                    viewElements.forEach(el => el.classList.remove('hidden'));
+                    editElements.forEach(el => el.classList.add('hidden'));
+                    editButton.classList.remove('hidden');
+                    saveButton.classList.add('hidden');
+                    cancelButton.classList.add('hidden');
+                };
+
+                // Event Listener
+                editButton.addEventListener('click', enableEditMode);
+                cancelButton.addEventListener('click', disableEditMode);
+            });
+        </script>
+    @endsection
