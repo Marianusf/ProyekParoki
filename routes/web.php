@@ -6,11 +6,11 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PeminjamanController;
+use App\Http\Controllers\PeminjamController;
 use App\Http\Controllers\PengembalianController;
 
-Route::get('/profil', function () {
-    return view('layout.PeminjamView.Profile');
-});
+//untuk kelola peminjam
+Route::get('lihatProfile', [PeminjamController::class, 'lihatProfile'])->name('lihat.profile');
 
 
 // Rute untuk lupa password

@@ -1,5 +1,5 @@
 @extends('layout.TemplatePeminjam')
-
+@section('title', 'pengajuanPengembalian')
 @section('content')
     <div class="container mx-auto py-8">
         <h2 class="text-3xl font-bold mb-6 text-gray-800">Pengembalian Barang</h2>
@@ -15,19 +15,19 @@
             </div>
         @endif
 
-        <!-- Menampilkan Pesan Sukses -->
         @if (session('success'))
-            <div class="bg-green-500 text-white p-4 mb-4 rounded-md">
-                {{ session('success') }}
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <strong class="font-bold">SUKSES: </strong>
+                <span class="block sm:inline">{{ session('success') }}</span>
+            </div>
+        @endif
+        @if (session('message'))
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <strong class="font-bold">BERHASIL: </strong>
+                <span class="block sm:inline">{{ session('message') }}</span>
             </div>
         @endif
 
-        <!-- Menampilkan Pesan Validasi Error untuk Input -->
-        @if (session('message'))
-            <div class="bg-green-500 text-white p-4 mb-4 rounded-md">
-                {{ session('message') }}
-            </div>
-        @endif
 
         @if ($peminjaman->isEmpty())
             <p class="text-gray-500 text-center">Tidak ada barang yang perlu dikembalikan saat ini.</p>

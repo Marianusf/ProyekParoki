@@ -1,6 +1,6 @@
 @extends('layout.TemplateAdmin')
 
-@section('title', 'Home Admin')
+@section('title', 'HomeAdmin')
 
 @section('content')
     <section class="p-6 bg-gray-100 min-h-screen">
