@@ -6,7 +6,6 @@
             <h2 class="text-2xl font-semibold text-gray-800 mb-2">Profil</h2>
             <p class="text-gray-500 mb-4">PAROKI ST PETRUS DAN PAULUS</p>
 
-            <!-- Gambar Profil -->
             <div class="flex justify-center mb-6">
                 <div class="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center">
                     <img src="{{ asset('storage/' . $peminjam->profile_picture) }}" alt="Profile Picture"
@@ -14,7 +13,6 @@
                 </div>
             </div>
 
-            <!-- Data Profil -->
             <form action="" method="POST" id="profilForm">
                 @csrf
                 @method('PUT')
@@ -47,7 +45,6 @@
                             id="editTanggalLahir">
                     </div>
 
-                    <!-- Nomor Telepon -->
                     <div>
                         <label class="block text-sm text-gray-600">Nomor Telepon</label>
                         <div id="viewNomorTelepon" class="text-gray-700">{{ $peminjam->nomor_telepon }}</div>

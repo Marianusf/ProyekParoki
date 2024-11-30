@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('lingkungan'); // nama lingkungan
             $table->string('password'); // Kata sandi
             $table->boolean('is_approved')->default(false); // Status persetujuan dari admin
+            $table->string('poto_profile')->default('default.jpg'); // poto profile
             $table->timestamps();
         });
     }

@@ -39,7 +39,7 @@ class AuthController extends Controller
             'name.required' => 'Nama Anda wajib untuk diisi!!',
             'email.required' => 'Email Anda wajib diisi !',
             'tanggal_lahir' => 'Tanggal Lahir Wajib Untuk diisi!!',
-            'nomor_telepon' => 'Nomor Telepon Anda Wajib Diisi dengan Angka !',
+            'nomor_telepon' => 'Nomor Telepon Anda Wajib Diisi dengan Angka 10-15 digit !',
             'lingkungan' => 'Nama lingkungan Wajib Untuk diisi dengan benar!',
             'password' => 'Password Minimal Memiliki 8 Karakter dengan Kombinasi Angka Minimal Satu',
             'email.email' => 'Format email tidak valid. example@gmail.com',

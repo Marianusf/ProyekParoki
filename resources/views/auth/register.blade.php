@@ -85,7 +85,6 @@
                     <span class="text-red-500 text-sm hidden" id="passwordError">Password wajib diisi.</span>
                 </div>
 
-                <!-- Konfirmasi Password -->
                 <div class="relative">
                     <input
                         class="p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#002D74] w-full"
