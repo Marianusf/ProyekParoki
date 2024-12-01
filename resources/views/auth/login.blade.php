@@ -11,32 +11,27 @@
 
             <h2 class="font-bold text-3xl text-[#002D74] text-center mb-4">Login</h2>
 
-            @if ($errors->any())
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
-                    <strong class="font-bold">Pemberitahuan: </strong>
-                    <ul class="list-disc pl-5">
-                        @foreach ($errors->all() as $error)
-                            <li><strong>{{ $error }}</strong></li> <!-- Menampilkan pesan error dalam <strong> -->
-                        @endforeach
-                    </ul>
+            @if (session('success'))
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4"
+                    role="alert">
+                    <strong class="font-bold">Sukses: </strong>
+                    <span class="block sm:inline">{{ session('success') }}</span>
+                </div>
+            @endif
+            @if (session('message'))
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4"
+                    role="alert">
+                    <strong class="font-bold">PESAN: </strong>
+                    <span class="block sm:inline">{{ session('message') }}</span>
                 </div>
             @endif
 
             @if (session('error'))
                 <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                    <strong class="font-bold">Pemberitahuan: </strong>
+                    <strong class="font-bold">Error: </strong>
                     <span class="block sm:inline">{{ session('error') }}</span>
                 </div>
             @endif
-
-            @if (session('message'))
-                <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative mb-4"
-                    role="alert">
-                    <strong class="font-bold">Informasi: </strong>
-                    <span class="block sm:inline">{{ session('message') }}</span>
-                </div>
-            @endif
-
 
             <p class="text-sm mt-2 text-[#002D74] text-center">Sudah Punya Akun? Tinggal Login</p>
 

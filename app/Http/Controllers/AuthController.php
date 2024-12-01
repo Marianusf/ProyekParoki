@@ -141,7 +141,13 @@ class AuthController extends Controller
     {
         $request->validate([
             'email' => 'required|email|regex:/^[\w\.\-]+@gmail\.com$/',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'confirmed',
+                'regex:/^(?=.*[0-9]).{8,}$/', // Minimal 8 karakter dengan minimal 1 angka
+            ],
             'token' => 'required',
         ]);
 

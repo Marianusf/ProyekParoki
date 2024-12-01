@@ -10,8 +10,16 @@ use App\Http\Controllers\PeminjamController;
 use App\Http\Controllers\PengembalianController;
 
 //untuk kelola peminjam
-Route::get('lihatProfile', [PeminjamController::class, 'lihatProfile'])->name('lihat.profile');
+Route::get('lihatProfile', [PeminjamController::class, 'lihatProfile'])->name('lihatProfile');
+Route::put('lihatProfile', [PeminjamController::class, 'lihatProfile'])->name('lihatProfile');
 
+Route::middleware('auth:peminjam')->get('lihatProfile', [PeminjamController::class, 'lihatProfile'])->name('lihatProfile');
+
+// Menampilkan form untuk mengedit profil
+Route::middleware('auth:peminjam')->get('/profile/edit', [PeminjamController::class, 'editProfile'])->name('profile.edit');
+
+// Menyimpan perubahan profil
+Route::middleware('auth:peminjam')->put('/profile/update', [PeminjamController::class, 'updateProfile'])->name('profile.update');
 
 // Rute untuk lupa password
 Route::get('password/reset', [AuthController::class, 'showLinkRequestForm'])->name('password.request');

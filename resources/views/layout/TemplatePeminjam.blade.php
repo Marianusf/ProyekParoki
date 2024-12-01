@@ -101,14 +101,13 @@
     <div class="sidebar" id="sidebar">
         <div class="text-gray-100 text-sm sm:text-md">
             <div class="p-2.5 mt-1 flex items-center">
-                <img src="https://i.pinimg.com/736x/08/f2/25/08f22527b5352c7acc4a14dc29ef2f95.jpg"
-                    alt="Logo Paroki Babadan" class="w-10 h-10 rounded-full">
+                <img src="{{ Auth::guard('peminjam')->user()->poto_profile ? asset('storage/' . Auth::guard('peminjam')->user()->poto_profile) : asset('default.jpg') }}"
+                    alt="Foto Profil" class="w-10 h-10 rounded-full">
                 <div class="ml-5">
-                    <div class="text-base/5 font-medium text-white">{{ Auth::guard('peminjam')->user()->name }}</div>
+                    <div class="text-base font-medium text-white">{{ Auth::guard('peminjam')->user()->name }}</div>
                     <div class="text-sm font-medium text-gray-400">{{ Auth::guard('peminjam')->user()->lingkungan }}
                     </div>
                 </div>
-
                 <i class="bi bi-x ml-20 sm:ml-28 cursor-pointer" onclick="toggleSidebar()"></i>
             </div>
             <hr class="my-2 text-gray-600">
@@ -148,7 +147,7 @@
                 <i class="bi bi-arrow-counterclockwise"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Pengembalian</span>
             </a>
-            <a href="{{ route('lihat.profile') }}"
+            <a href="{{ route('lihatProfile') }}"
                 class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700">
                 <i class="bi bi-person"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Profile</span>
