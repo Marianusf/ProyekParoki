@@ -54,8 +54,17 @@ class PeminjamController extends Controller
         ]);
 
         try {
-            // Update data profil
+            // Update data profil lainnya
             $updatedFields = []; // Menyimpan field yang berhasil diperbarui
+            if ($request->hasFile('poto_profile')) {
+                if ($peminjam->poto_profile && $peminjam->poto_profile !== 'default.jpg') {
+                    Storage::disk('public')->delete($peminjam->poto_profile);
+                }
+                $path = $request->file('poto_profile')->store('profile_pictures', 'public');
+                $peminjam->update(['poto_profile' => $path]);
+                $updatedFields[] = 'Foto Profil';
+            }
+
             if ($request->name !== $peminjam->name) {
                 $peminjam->name = $request->name;
                 $updatedFields[] = 'Nama Lengkap';
@@ -94,17 +103,6 @@ class PeminjamController extends Controller
                 // Verifikasi password yang baru
                 $peminjam->password = bcrypt($request->password);
                 $updatedFields[] = 'Password';
-            }
-
-            // Update foto profil jika ada file yang diunggah
-            if ($request->hasFile('poto_profile')) {
-                if ($peminjam->poto_profile && $peminjam->poto_profile !== 'default.jpg') {
-                    Storage::disk('public')->delete($peminjam->poto_profile);
-                }
-
-                $path = $request->file('poto_profile')->store('profile_pictures', 'public');
-                $peminjam->update(['poto_profile' => $path]);
-                $updatedFields[] = 'Foto Profil';
             }
 
             // Menampilkan pesan jika ada perubahan

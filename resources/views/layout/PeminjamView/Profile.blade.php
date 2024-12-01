@@ -34,22 +34,22 @@
                 </div>
             @endif
             {{-- Profile Picture --}}
-            <div class="flex justify-center mb-8">
-                <div class="relative w-36 h-36 rounded-full shadow-md overflow-hidden">
-                    <img src="{{ asset('storage/' . $peminjam->poto_profile) }}" alt="Foto Profil"
-                        class="w-full h-full object-cover">
-                    <label for="editFotoProfil"
-                        class="absolute bottom-2 right-2 bg-blue-500 text-white rounded-full p-2 cursor-pointer hover:bg-blue-600 transition duration-200">
-                        <i class="fas fa-camera"></i>
-                    </label>
-                </div>
-                <input type="file" name="poto_profile" id="editFotoProfil" class="hidden">
-            </div>
+
 
             <form action="{{ route('profile.update') }}" method="POST" id="profilForm" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
-
+                <div class="flex justify-center mb-8">
+                    <div class="relative w-36 h-36 rounded-full shadow-md overflow-hidden">
+                        <img src="{{ $peminjam->poto_profile ? asset('storage/' . $peminjam->poto_profile) : asset('default.png') }}"
+                            alt="Foto Profil" class="w-full h-full object-cover">
+                        <label for="editFotoProfil"
+                            class="absolute bottom-2 right-2 bg-blue-500 text-white rounded-full p-2 cursor-pointer hover:bg-blue-600 transition duration-200">
+                            <i class="fas fa-camera"></i>
+                        </label>
+                    </div>
+                    <input type="file" name="poto_profile" id="editFotoProfil" class="hidden">
+                </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {{-- Loop untuk menampilkan fields --}}
                     @php

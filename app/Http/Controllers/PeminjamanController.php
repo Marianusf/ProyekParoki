@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Keranjang;
 use App\Models\Peminjaman;
@@ -126,13 +127,31 @@ class PeminjamanController extends Controller
 
         // Update jumlah terpinjam
         $asset->increment('jumlah_terpinjam', $peminjaman->jumlah);
-        $peminjaman->update(['status_peminjaman' => 'disetujui']);
-        $peminjaman->id_admin = auth('admin')->user()->id;
+        if (Auth::guard('admin')->check()) {
+            $adminId = Auth::guard('admin')->user()->id;
+            $peminjaman->update([
+                'status_peminjaman' => 'disetujui',
+                'id_admin' => $adminId,
+            ]);
+        } else {
+            return redirect()->route('/login')->with('error', 'Admin belum login.');
+        }
+
         // Kirim email ke peminjam
         $peminjam = Peminjam::findOrFail($peminjaman->id_peminjam);
         $assetName = $asset->nama_barang; // Nama aset
+        Mail::to($peminjam->email)->send(new MailPeminjamanStatus(
+            'disetujui', // Status peminjaman
+            null, // Tidak ada alasan penolakan
+            $peminjam->name,
+            [
+                [
+                    'nama_barang' => $asset->nama_barang,
+                    'jumlah' => $peminjaman->jumlah,
+                ]
+            ]
+        ));
 
-        Mail::to($peminjam->email)->send(new MailPeminjamanStatus('status_peminjaman', null, $peminjam->name, $assetName));
 
         return redirect()->back()->with('success', 'Permintaan Peminjaman oleh ' . $peminjam->name . ' Berhasil disetujui.');
     }
@@ -146,18 +165,33 @@ class PeminjamanController extends Controller
 
         $peminjaman = Peminjaman::findOrFail($id);
         $asset = Assets::findOrFail($peminjaman->id_asset);
-        $peminjaman->id_admin = auth('admin')->user()->id;
-        $peminjaman->update([
-            'status_peminjaman' => 'ditolak',
-            'alasan_penolakan' => $request->alasan_penolakan
-        ]);
+
+        if (Auth::guard('admin')->check()) {
+            $adminId = Auth::guard('admin')->user()->id;
+            $peminjaman->update([
+                'status_peminjaman' => 'ditolak',
+                'id_admin' => $adminId,
+                'alasan_penolakan' => $request->alasan_penolakan
+            ]);
+        } else {
+            return redirect()->route('/login')->with('error', 'Admin belum login.');
+        }
 
         // Send the email after rejecting
         $peminjam = Peminjam::findOrFail($peminjaman->id_peminjam);
         $assetName = $asset->nama_barang; // Asset name
-
-        // Sending the rejection email
-        Mail::to($peminjam->email)->send(new MailPeminjamanStatus('ditolak', $request->alasan_penolakan, $peminjam->name, $assetName));
+        Mail::to($peminjam->email)->send(new MailPeminjamanStatus(
+            'ditolak', // Status peminjaman
+            $peminjaman->alasan_penolakan, // Kirimkan alasan penolakan yang sebenarnya
+            $peminjam->name,
+            [
+                [
+                    'nama_barang' => $asset->nama_barang,
+                    'jumlah' => $peminjaman->jumlah,
+                    'alasan' => $peminjaman->alasan_penolakan,
+                ]
+            ]
+        ));
 
         return redirect()->back()->with('success', 'Permintaan Peminjaman oleh ' . $peminjam->name . ' berhasil ditolak.');
     }
@@ -210,7 +244,14 @@ class PeminjamanController extends Controller
             } elseif ($validated['action'] === 'reject') {
                 $peminjaman->update(['status_peminjaman' => 'ditolak', 'alasan_penolakan' => $request->alasan_penolakan]);
             }
-
+            if (Auth::guard('admin')->check()) {
+                $adminId = Auth::guard('admin')->user()->id;
+                $peminjaman->update([
+                    'id_admin' => $adminId,
+                ]);
+            } else {
+                return redirect()->route('/login')->with('error', 'Admin belum login.');
+            }
             // Group the request details by borrower
             $peminjam = $peminjaman->peminjam; // Get the borrower
             $peminjamDetails[$peminjam->id][] = [
@@ -230,7 +271,7 @@ class PeminjamanController extends Controller
                 $status,
                 $alasanPenolakan,
                 $peminjam->name,
-                $assetDetailsForPeminjam // Send only the specific asset details for this borrower
+                $peminjamDetails[$peminjam->id]
             ));
         }
         $peminjamNames = Peminjaman::whereIn('id', $request->selected_requests)
@@ -244,23 +285,6 @@ class PeminjamanController extends Controller
 
         return redirect()->back()->with('success', 'Tindakan batch berhasil diproses untuk: ' . $peminjamNames);
     }
-
-
-    public function kembalikanAsset($id)
-    {
-        $peminjaman = Peminjaman::findOrFail($id);
-        $asset = Assets::findOrFail($peminjaman->id_asset);
-
-        // Update jumlah barang yang tersedia
-        $asset->decrement('jumlah_terpinjam', $peminjaman->jumlah);
-        $asset->increment('jumlah_barang', $peminjaman->jumlah);
-
-        // Update status peminjaman menjadi dikembalikan
-        $peminjaman->update(['status_peminjaman' => 'dikembalikan']);
-
-        return redirect()->back()->with('success', 'Barang berhasil dikembalikan.');
-    }
-
 
 
 
