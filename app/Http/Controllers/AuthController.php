@@ -95,7 +95,7 @@ class AuthController extends Controller
         }
 
         // Jika tidak ada yang cocok, tampilkan pesan error
-        return redirect()->back()->with('message', 'Username atau Password Anda Salah!');
+        return redirect()->back()->with('error', 'Username atau Password Anda Salah!');
     }
 
 
