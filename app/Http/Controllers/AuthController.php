@@ -39,7 +39,7 @@ class AuthController extends Controller
             'name.required' => 'Nama Anda wajib untuk diisi!!',
             'email.required' => 'Email Anda wajib diisi !',
             'tanggal_lahir' => 'Tanggal Lahir Wajib Untuk diisi!!',
-            'nomor_telepon' => 'Nomor Telepon Anda Wajib Diisi dengan Angka !',
+            'nomor_telepon' => 'Nomor Telepon Anda Wajib Diisi dengan Angka 10-15 digit !',
             'lingkungan' => 'Nama lingkungan Wajib Untuk diisi dengan benar!',
             'password' => 'Password Minimal Memiliki 8 Karakter dengan Kombinasi Angka Minimal Satu',
             'email.email' => 'Format email tidak valid. example@gmail.com',
@@ -95,7 +95,7 @@ class AuthController extends Controller
         }
 
         // Jika tidak ada yang cocok, tampilkan pesan error
-        return redirect()->back()->with('message', 'Username atau Password Anda Salah!');
+        return redirect()->back()->with('error', 'Username atau Password Anda Salah!');
     }
 
 
@@ -141,7 +141,13 @@ class AuthController extends Controller
     {
         $request->validate([
             'email' => 'required|email|regex:/^[\w\.\-]+@gmail\.com$/',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'confirmed',
+                'regex:/^(?=.*[0-9]).{8,}$/', // Minimal 8 karakter dengan minimal 1 angka
+            ],
             'token' => 'required',
         ]);
 

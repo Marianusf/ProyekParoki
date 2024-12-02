@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Asset;
+use App\Models\Assets;
 use Illuminate\Http\Request;
 
 class AssetController extends Controller
 {
     public function cekKetersediaanAsset()
     {
-        $assets = Asset::where('kondisi', 'baik')->get();
+        $assets = Assets::where('kondisi', 'baik')->get();
         return view('layout.AdminView.LihatKetersediaan', compact('assets'));
     }
 
@@ -41,7 +41,7 @@ class AssetController extends Controller
 
 
         // Menyimpan data ke database
-        Asset::create([
+        Assets::create([
             'nama_barang' => $request->nama_barang,
             'jenis_barang' => $request->jenis_barang,
             'jumlah_barang' => $request->jumlah_barang,
@@ -57,17 +57,17 @@ class AssetController extends Controller
     // Menampilkan daftar asset
     public function index()
     {
-        $assets = Asset::paginate(10); // Ambil semua data asset dari database
+        $assets = Assets::paginate(10); // Ambil semua data asset dari database
         return view('layout.AdminView.AdminLihatAsset', compact('assets'));
     }
     public function edit($id)
     {
-        $asset = Asset::findOrFail($id);
+        $asset = Assets::findOrFail($id);
         return view('layout.AdminView.MenambahkanAsset', compact('asset'));
     }
     public function update(Request $request, $id)
     {
-        $asset = Asset::findOrFail($id);
+        $asset = Assets::findOrFail($id);
 
         // Validasi data yang diterima
         $request->validate([
@@ -109,14 +109,14 @@ class AssetController extends Controller
 
     public function destroy($id)
     {
-        $asset = Asset::findOrFail($id);
+        $asset = Assets::findOrFail($id);
         $asset->delete();
 
         return redirect()->route('asset.index')->with('success', 'Asset berhasil dihapus!');
     }
     public function peminjamLihatKetersediaanAsset()
     {
-        $assets = Asset::where('kondisi', 'baik')->get();
+        $assets = Assets::where('kondisi', 'baik')->get();
         return view('layout.PeminjamView.LihatKetersediaan', compact('assets'));
     }
 }

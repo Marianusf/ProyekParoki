@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('pengembalian', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('id_admin')->nullable();
             $table->foreignId('peminjaman_id')->constrained('peminjaman')->onDelete('cascade'); // Relasi ke peminjaman
+            $table->foreign('id_admin')->references('id')->on('admin')->onDelete('set null');
             $table->date('tanggal_pengembalian');
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->text('alasan_penolakan')->nullable();

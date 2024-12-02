@@ -14,6 +14,7 @@ class Peminjaman extends Model
     protected $fillable = [
         'id_peminjam',
         'id_asset',
+        'id_admin',
         'jumlah',
         'tanggal_peminjaman',
         'tanggal_pengembalian',
@@ -30,10 +31,14 @@ class Peminjaman extends Model
     // Relasi ke asset
     public function asset()
     {
-        return $this->belongsTo(Asset::class, 'id_asset');
+        return $this->belongsTo(Assets::class, 'id_asset');
     }
     public function pengembalian()
     {
         return $this->hasOne(Pengembalian::class, 'peminjaman_id'); // Properly relate via peminjaman_id
+    }
+    public function admin()
+    {
+        return $this->belongsTo(Admin::class, 'id_admin');
     }
 }

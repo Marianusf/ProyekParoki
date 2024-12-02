@@ -25,11 +25,21 @@
         }
 
         .header {
-            background-color: #4CAF50;
             color: #fff;
             padding: 20px;
             text-align: center;
         }
+
+        .header.approved {
+            background-color: #4CAF50;
+            /* Hijau untuk disetujui */
+        }
+
+        .header.rejected {
+            background-color: #f44336;
+            /* Merah untuk ditolak */
+        }
+
 
         .content {
             padding: 20px;
@@ -78,9 +88,10 @@
 
 <body>
     <div class="container">
-        <div class="header">
+        <div class="header {{ $status == 'disetujui' ? 'approved' : 'rejected' }}">
             <h1>Status Peminjaman</h1>
         </div>
+
 
         <div class="content">
             <p>Halo, {{ $peminjamName }}.</p>

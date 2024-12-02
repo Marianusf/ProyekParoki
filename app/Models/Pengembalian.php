@@ -11,6 +11,7 @@ class Pengembalian extends Model
     protected $table = 'pengembalian';
     protected $fillable = [
         'peminjaman_id',
+        'id_admin',
         'tanggal_pengembalian',
         'status',
         'alasan_penolakan',
@@ -27,12 +28,16 @@ class Pengembalian extends Model
     }
     public function asset()
     {
-        return $this->belongsTo(Asset::class, 'asset_id');
+        return $this->belongsTo(Assets::class, 'asset_id');
     }
     // Di model Pengembalian
 
     public function peminjam()
     {
         return $this->belongsTo(Peminjam::class);
+    }
+    public function admin()
+    {
+        return $this->belongsTo(Admin::class, 'id_admin');
     }
 }

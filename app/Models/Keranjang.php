@@ -28,6 +28,6 @@ class Keranjang extends Model
     // Relasi ke asset
     public function asset()
     {
-        return $this->belongsTo(Asset::class, 'id_asset');
+        return $this->belongsTo(Assets::class, 'id_asset');
     }
 }

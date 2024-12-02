@@ -21,6 +21,7 @@ class peminjam extends Authenticatable
         'lingkungan',
         'password',
         'is_approved',
+        'poto_profile'
     ];
 
     protected $hidden = [

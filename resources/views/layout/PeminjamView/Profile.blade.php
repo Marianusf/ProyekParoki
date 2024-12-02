@@ -1,122 +1,232 @@
 @extends('layout.TemplatePeminjam')
 @section('title', 'profileku')
 @section('content')
-    <section class="p-6 bg-gray-100 min-h-screen place-items-center">
-        <div class="bg-white w-full max-w-7xl p-6 rounded-lg shadow-md border border-black">
-            <h2 class="text-2xl font-semibold text-gray-800 mb-2">Profil</h2>
-            <p class="text-gray-500 mb-4">PAROKI ST PETRUS DAN PAULUS</p>
-
-            <!-- Gambar Profil -->
-            <div class="flex justify-center mb-6">
-                <div class="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center">
-                    <img src="{{ asset('storage/' . $peminjam->profile_picture) }}" alt="Profile Picture"
-                        class="rounded-full w-full h-full object-cover">
-                </div>
+    <section class="min-h-screen bg-gradient-to-tr from-gray-100 to-gray-300 py-12 flex justify-center items-center">
+        <div class="bg-white w-full max-w-4xl p-8 rounded-xl shadow-lg">
+            {{-- Header --}}
+            <div class="flex flex-col items-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-800 flex items-center gap-3">
+                    <i class="fas fa-user-circle text-blue-600"></i> Profil Saya
+                </h2>
+                <p class="text-sm text-gray-500">Paroki St Petrus dan Paulus</p>
             </div>
+            <hr class="mb-6 border-gray-300">
 
-            <!-- Data Profil -->
-            <form action="" method="POST" id="profilForm">
+            @if (session('success'))
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4"
+                    role="alert">
+                    <strong class="font-bold">Sukses: </strong>
+                    <span class="block sm:inline">{{ session('success') }}</span>
+                </div>
+            @endif
+            @if (session('message'))
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4"
+                    role="alert">
+                    <strong class="font-bold">PESAN: </strong>
+                    <span class="block sm:inline">{{ session('message') }}</span>
+                </div>
+            @endif
+
+            @if (session('error'))
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                    <strong class="font-bold">Error: </strong>
+                    <span class="block sm:inline">{{ session('error') }}</span>
+                </div>
+            @endif
+            {{-- Profile Picture --}}
+
+
+            <form action="{{ route('profile.update') }}" method="POST" id="profilForm" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <!-- Nama Lengkap -->
-                    <div>
-                        <label class="block text-sm text-gray-600">Nama Lengkap</label>
-                        <div id="viewNamaLengkap" class="text-gray-700">{{ $peminjam->name }}</div>
-                        <input type="text" name="nama_lengkap" value="{{ $peminjam->name }}"
-                            class="w-full bg-gray-100 border border-gray-200 rounded p-2 text-gray-700 hidden"
-                            id="editNamaLengkap">
+                <div class="flex justify-center mb-8">
+                    <div class="relative w-36 h-36 rounded-full shadow-md overflow-hidden">
+                        <img src="{{ $peminjam->poto_profile ? asset('storage/' . $peminjam->poto_profile) : asset('default.png') }}"
+                            alt="Foto Profil" class="w-full h-full object-cover">
+                        <label for="editFotoProfil"
+                            class="absolute bottom-2 right-2 bg-blue-500 text-white rounded-full p-2 cursor-pointer hover:bg-blue-600 transition duration-200">
+                            <i class="fas fa-camera"></i>
+                        </label>
                     </div>
+                    <input type="file" name="poto_profile" id="editFotoProfil" class="hidden">
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {{-- Loop untuk menampilkan fields --}}
+                    @php
+                        $fields = [
+                            [
+                                'label' => 'Nama Lengkap',
+                                'name' => 'name',
+                                'value' => $peminjam->name,
+                                'icon' => 'fas fa-user',
+                            ],
+                            [
+                                'label' => 'Email',
+                                'name' => 'email',
+                                'value' => $peminjam->email,
+                                'icon' => 'fas fa-envelope',
+                            ],
+                            [
+                                'label' => 'Tanggal Lahir',
+                                'name' => 'tanggal_lahir',
+                                'value' => \Carbon\Carbon::parse($peminjam->tanggal_lahir)->format('Y-m-d'), // Format View
+                                'icon' => 'fas fa-calendar-alt',
+                                'type' => 'date',
+                                'inputValue' => old(
+                                    'tanggal_lahir',
+                                    \Carbon\Carbon::parse($peminjam->tanggal_lahir)->format('d-m-Y'), // Format untuk input date
+                                ), // Format Input untuk date input
+                            ],
 
-                    <div>
-                        <label class="block text-sm text-gray-600">Email</label>
-                        <div id="viewEmail" class="text-gray-700">{{ $peminjam->email }}</div>
-                        <input type="email" name="email" value="{{ $peminjam->email }}"
-                            class="w-full bg-gray-100 border border-gray-200 rounded p-2 text-gray-700 hidden"
-                            id="editEmail">
-                    </div>
+                            [
+                                'label' => 'Nomor Telepon',
+                                'name' => 'nomor_telepon',
+                                'value' => $peminjam->nomor_telepon,
+                                'icon' => 'fas fa-phone',
+                            ],
+                            [
+                                'label' => 'Lingkungan',
+                                'name' => 'lingkungan',
+                                'value' => $peminjam->lingkungan,
+                                'icon' => 'fas fa-home',
+                            ],
+                            [
+                                'label' => 'Alamat',
+                                'name' => 'alamat',
+                                'value' => $peminjam->alamat,
+                                'icon' => 'fas fa-map-marker-alt',
+                            ],
+                        ];
+                    @endphp
 
-                    <div>
-                        <label class="block text-sm text-gray-600">Tanggal Lahir</label>
-                        <div id="viewTanggalLahir" class="text-gray-700">
-                            {{ \Carbon\Carbon::parse($peminjam->tanggal_lahir)->format('d-m-Y') }}
+                    @foreach ($fields as $field)
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-600 mb-2 flex items-center gap-2">
+                                <i class="{{ $field['icon'] }} text-blue-500"></i> {{ $field['label'] }}
+                            </label>
+                            <div id="view{{ ucfirst($field['name']) }}" class="text-gray-800 font-medium">
+                                {{ $field['value'] }}
+                            </div>
+                            <input type="{{ $field['type'] ?? 'text' }}" name="{{ $field['name'] }}"
+                                value="{{ old($field['name'], $field['value']) }}"
+                                class="w-full bg-gray-100 border border-gray-300 rounded-lg p-2 text-gray-700 hidden focus:ring-2 focus:ring-blue-500 transition duration-150"
+                                id="edit{{ ucfirst($field['name']) }}">
                         </div>
-                        <input type="date" name="tanggal_lahir" value="{{ $peminjam->tanggal_lahir }}"
-                            class="w-full bg-gray-100 border border-gray-200 rounded p-2 text-gray-700 hidden"
-                            id="editTanggalLahir">
-                    </div>
-
-                    <!-- Nomor Telepon -->
-                    <div>
-                        <label class="block text-sm text-gray-600">Nomor Telepon</label>
-                        <div id="viewNomorTelepon" class="text-gray-700">{{ $peminjam->nomor_telepon }}</div>
-                        <input type="text" name="nomor_telepon" value="{{ $peminjam->nomor_telepon }}"
-                            class="w-full bg-gray-100 border border-gray-200 rounded p-2 text-gray-700 hidden"
-                            id="editNomorTelepon">
-                    </div>
-                    <div>
-                        <label class="block text-sm text-gray-600">Lingkungan</label>
-                        <div id="viewLingkungan" class="text-gray-700">{{ $peminjam->lingkungan }}</div>
-                        <input type="text" name="lingkungan" value="{{ $peminjam->lingkungan }}"
-                            class="w-full bg-gray-100 border border-gray-200 rounded p-2 text-gray-700 hidden"
-                            id="editLingkungan">
-                    </div>
-                    <div>
-                        <label class="block text-sm text-gray-600">Alamat</label>
-                        <div id="viewAlamat" class="text-gray-700">{{ $peminjam->alamat }}</div>
-                        <input type="text" name="alamat" value="{{ $peminjam->alamat }}"
-                            class="w-full bg-gray-100 border border-gray-200 rounded p-2 text-gray-700 hidden"
-                            id="editAlamat">
-                    </div>
+                    @endforeach
                 </div>
 
-                <!-- Tombol -->
-                <div class="flex justify-center space-x-5 mt-6">
+                {{-- Sticky Footer Buttons --}}
+                <div class="flex justify-center space-x-4 mt-10 sticky bottom-4 bg-white py-4">
                     <button type="button" id="editButton"
-                        class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">
-                        Edit
+                        class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg shadow-md transition duration-200 flex-grow-0 flex-shrink-0">
+                        <i class="fas fa-edit"></i> Edit
                     </button>
                     <button type="submit" id="saveButton"
-                        class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded hidden">
-                        Simpan
+                        class="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white py-2 px-6 rounded-lg shadow-md hidden transition duration-200 flex-grow-0 flex-shrink-0">
+                        <i class="fas fa-save"></i> Simpan
                     </button>
                     <button type="button" id="cancelButton"
-                        class="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded hidden">
-                        Batal
+                        class="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white py-2 px-6 rounded-lg shadow-md hidden transition duration-200 flex-grow-0 flex-shrink-0">
+                        <i class="fas fa-times"></i> Batal
                     </button>
                 </div>
+
             </form>
+
         </div>
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                const editButton = document.getElementById('editButton');
-                const saveButton = document.getElementById('saveButton');
-                const cancelButton = document.getElementById('cancelButton');
-                const viewElements = document.querySelectorAll('[id^="view"]');
-                const editElements = document.querySelectorAll('[id^="edit"]');
+    </section>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const editButton = document.getElementById('editButton');
+            const saveButton = document.getElementById('saveButton');
+            const cancelButton = document.getElementById('cancelButton');
+            const viewElements = document.querySelectorAll('[id^="view"]');
+            const editElements = document.querySelectorAll('[id^="edit"]');
+            const inputs = document.querySelectorAll('[name]'); // Mengambil semua input
 
-                // Fungsi untuk masuk ke mode edit
-                const enableEditMode = () => {
-                    viewElements.forEach(el => el.classList.add('hidden'));
-                    editElements.forEach(el => el.classList.remove('hidden'));
-                    editButton.classList.add('hidden');
-                    saveButton.classList.remove('hidden');
-                    cancelButton.classList.remove('hidden');
-                };
+            // Fungsi untuk masuk ke mode edit
+            const enableEditMode = () => {
+                viewElements.forEach(el => el.classList.add('hidden'));
+                editElements.forEach(el => el.classList.remove('hidden'));
+                editButton.classList.add('hidden');
+                saveButton.classList.remove('hidden');
+                cancelButton.classList.remove('hidden');
+            };
 
-                // Fungsi untuk keluar dari mode edit
-                const disableEditMode = () => {
-                    viewElements.forEach(el => el.classList.remove('hidden'));
-                    editElements.forEach(el => el.classList.add('hidden'));
-                    editButton.classList.remove('hidden');
-                    saveButton.classList.add('hidden');
-                    cancelButton.classList.add('hidden');
-                };
+            // Fungsi untuk keluar dari mode edit
+            const disableEditMode = () => {
+                viewElements.forEach(el => el.classList.remove('hidden'));
+                editElements.forEach(el => el.classList.add('hidden'));
+                editButton.classList.remove('hidden');
+                saveButton.classList.add('hidden');
+                cancelButton.classList.add('hidden');
+            };
 
-                // Event Listener
-                editButton.addEventListener('click', enableEditMode);
-                cancelButton.addEventListener('click', disableEditMode);
+            // Event Listener untuk tombol Edit
+            editButton.addEventListener('click', () => {
+                Swal.fire({
+                    title: 'Apakah Anda Yakin?',
+                    text: 'Anda akan mulai mengedit profil Anda!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Edit!',
+                    cancelButtonText: 'Batal',
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        enableEditMode(); // Masuk ke mode edit hanya setelah konfirmasi
+                    }
+                });
             });
-        </script>
-    @endsection
+
+            // Event Listener untuk tombol Cancel
+            cancelButton.addEventListener('click', (event) => {
+                event.preventDefault();
+
+                Swal.fire({
+                    title: 'Apakah Anda Yakin?',
+                    text: 'Perubahan akan dibatalkan dan tidak akan disimpan!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Batal!',
+                    cancelButtonText: 'Tidak, Kembali',
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        disableEditMode(); // Kembali ke mode awal hanya setelah konfirmasi
+                    }
+                });
+            });
+
+            // Event Listener untuk tombol Simpan
+            saveButton.addEventListener('click', (event) => {
+                event.preventDefault();
+
+                Swal.fire({
+                    title: 'Apakah Anda Yakin?',
+                    text: 'Perubahan profil Anda akan disimpan!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Simpan!',
+                    cancelButtonText: 'Batal',
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('profilForm')
+                            .submit(); // Submit form jika konfirmasi diterima
+                    }
+                });
+            });
+
+            // Perubahan input akan menampilkan tombol simpan
+            inputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    saveButton.classList.remove('hidden'); // Tampilkan tombol Simpan
+                });
+            });
+        });
+    </script>
+@endsection
