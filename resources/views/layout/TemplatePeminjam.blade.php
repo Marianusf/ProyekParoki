@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>@yield('title', 'Authentication')</title>
+    <title>@yield('title', 'TemplatePeminjam')</title>
     @vite('resources/css/app.css')
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;800&display=swap"
         rel="stylesheet">
@@ -72,28 +72,29 @@
 </head>
 
 <body>
-    <nav class="bg-gray-900">
+    <nav class="bg-gray-800">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="flex h-16 items-center justify-between">
-                <div class="flex items-center">
-                    <div class="">
-                        <span class="absolute text-white text-3xl top-4 left-2 cursor-pointer "
-                            onclick="toggleSidebar()">
-                            <i class="bi bi-filter-left px-2 bg-gray-900 hover:bg-gray-700 rounded-md"></i>
-                        </span>
-                    </div>
-                    <div class="p-2.5 mt-1 ml-10 sm:ml-10 flex items-center">
-                        <img src="{{ asset('/logo.png') }}" alt="Logo Paroki Babadan" class="w-8 h-8 sm:w-10 sm:h-10">
-                        <div class="ml-4">
-                            <div class="text-sm sm:text-base font-medium text-white">
-                                Sistem Peminjaman Gereja Babadan
-                            </div>
-                            <div class="text-sm sm:text-base font-medium text-gray-400">
-                                Paroki ST Petrus dan Paulus
-                            </div>
+                <!-- Bagian Sidebar Icon -->
+                <div class="flex-1">
+                    <span class="absolute text-white text-3xl top-4 left-2 cursor-pointer" onclick="toggleSidebar()">
+                        <i class="bi bi-filter-left px-2 bg-gray-800 hover:bg-gray-600 rounded-md"></i>
+                    </span>
+                </div>
+                <!-- Bagian Tengah: Logo dan Judul -->
+                <div class="flex items-center justify-center">
+                    <img src="{{ asset('/logo.png') }}" alt="Logo Paroki Babadan" class="w-8 h-8 sm:w-10 sm:h-10">
+                    <div class="ml-4">
+                        <div class="text-sm sm:text-base font-medium text-white">
+                            Sistem Peminjaman Gereja Babadan
+                        </div>
+                        <div class="text-sm sm:text-base font-medium text-gray-400">
+                            Paroki ST Petrus dan Paulus
                         </div>
                     </div>
                 </div>
+                <!-- Spacer Kanan -->
+                <div class="flex-1"></div>
             </div>
         </div>
     </nav>
@@ -147,15 +148,20 @@
                 <i class="bi bi-arrow-counterclockwise"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Pengembalian</span>
             </a>
+            <hr class="my-4 text-gray-600">
             <a href="{{ route('lihatProfile') }}"
                 class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700">
                 <i class="bi bi-person"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Profile</span>
             </a>
-            <a href="/login" class="p-2.5 mt-3 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700">
-                <i class="bi bi-box-arrow-in-right"></i>
-                <span class="text-[15px] ml-4 text-gray-200">Logout</span>
-            </a>
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit"
+                    class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 w-full">
+                    <i class="bi bi-box-arrow-in-right"></i>
+                    <span class="text-[15px] ml-4 text-gray-200">Logout</span>
+                </button>
+            </form>
         </div>
     </div>
 

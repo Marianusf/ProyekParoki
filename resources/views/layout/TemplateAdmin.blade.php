@@ -18,20 +18,20 @@
     <style>
         body {
             overflow: hidden;
-
         }
 
         .sidebar {
             position: fixed;
-            top: 0;
+            top: 64px;
+            /* Adjust this value based on your navbar height */
             bottom: 0;
             left: -300px;
             /* Hidden by default */
-            width: 300px;
+            width: 250px;
             background-color: #1f2937;
             /* Tailwind's gray-900 */
-            height: 100vh;
-            /* Full height */
+            height: calc(100vh - 64px);
+            /* Full height minus navbar height */
             overflow-y: auto;
             transition: left 0.2s ease;
             /* Smooth transition */
@@ -61,84 +61,103 @@
             margin-left: 300px;
             /* Adjust for the sidebar width */
         }
+
+        @media (min-width: 640px) {
+            .sidebar {
+                width: 300px;
+            }
+        }
     </style>
 </head>
 
-<body class="bg-blue-600 font-[Poppins]">
-    <span class="absolute text-white text-4xl top-5 left-4 cursor-pointer" onclick="toggleSidebar()">
-        <i class="bi bi-filter-left px-2 bg-gray-900 rounded-md"></i>
-    </span>
+<body>
+    <nav class="bg-gray-800">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="flex h-16 items-center justify-between">
+                <!-- Bagian Sidebar Icon -->
+                <div class="flex-1">
+                    <span class="absolute text-white text-3xl top-4 left-2 cursor-pointer" onclick="toggleSidebar()">
+                        <i class="bi bi-filter-left px-2 bg-gray-800 hover:bg-gray-600 rounded-md"></i>
+                    </span>
+                </div>
+                <!-- Bagian Tengah: Logo dan Judul -->
+                <div class="flex items-center justify-center">
+                    <img src="{{ asset('/logo.png') }}" alt="Logo Paroki Babadan" class="w-8 h-8 sm:w-10 sm:h-10">
+                    <div class="ml-4">
+                        <div class="text-sm sm:text-base font-medium text-white">
+                            Sistem Peminjaman Gereja Babadan
+                        </div>
+                        <div class="text-sm sm:text-base font-medium text-gray-400">
+                            Paroki ST Petrus dan Paulus
+                        </div>
+                    </div>
+                </div>
+                <!-- Spacer Kanan -->
+                <div class="flex-1"></div>
+            </div>
+        </div>
+    </nav>
 
     <div class="sidebar" id="sidebar">
-        <div class="text-gray-100 text-xl">
-            <div class="p-2.5 mt-1 flex items-center rounded-md">
-                <img src="{{ asset('/logo.png') }}" alt="Logo Paroki Babadan" class="w-8 h-8 rounded-md">
-                <h1 class="text-[15px] ml-3 text-xl text-gray-200 font-bold">Paroki Babadan</h1>
-                <i class="bi bi-x ml-20 cursor-pointer" onclick="toggleSidebar()"></i>
+        <div class="text-gray-100 text-sm sm:text-md">
+            <div class="p-2.5 mt-1 flex items-center">
+                <img src="{{ asset('/logo.png') }}" alt="Logo Paroki Babadan" class="w-10 h-10 rounded-full">
+                <div class="ml-5">
+                    <div class="text-base font-medium text-white">Admin</div>
+                    <div class="text-sm font-medium text-gray-400">Paroki Babadan</div>
+                </div>
+                <i class="bi bi-x ml-auto cursor-pointer" onclick="toggleSidebar()"></i>
             </div>
             <hr class="my-2 text-gray-600">
             <a href="{{ route('admin.dashboard') }}"
-                class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer 
-                {{ Request::routeIs('admin.dashboard') ? 'bg-blue-600' : 'hover:bg-blue-600' }}">
-                <i class="bi bi-house-door-fill"></i>
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('admin.dashboard') ? 'bg-gray-700' : '' }}">
+                <i class="bi bi-house-door"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Home</span>
             </a>
             <a href="{{ route('requests') }}"
-                class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer 
-            {{ Request::routeIs('requests') ? 'bg-blue-600' : 'hover:bg-blue-600' }}">
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('requests') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-person-check-fill"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Persetujuan Akun</span>
             </a>
-
             <a href="{{ route('lihatPermintaanPeminjaman') }}"
-                class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer 
-            {{ Request::is('lihatPermintaanPeminjaman') ? 'bg-blue-600' : 'hover:bg-blue-600' }}">
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('lihatPermintaanPeminjaman') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-check-square-fill"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Persetujuan Peminjaman</span>
             </a>
-
             <a href="{{ route('admin.PermintaanPengembalianAsset') }}"
-                class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600 {{ Request::is('return-requests*') ? 'bg-blue-600' : '' }}">
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('return-requests*') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-arrow-return-left"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Persetujuan Pengembalian Aset</span>
             </a>
-
             <a href="{{ route('asset.create') }}"
-                class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600 {{ Request::is('admin/asset/tambah') ? 'bg-blue-600' : '' }}">
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('admin/asset/tambah') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-plus-circle"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Tambah Aset</span>
             </a>
-
             <a href="{{ route('asset.index') }}"
-                class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600 {{ Request::is('admin/asset') ? 'bg-blue-600' : '' }}">
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('admin/asset') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-list-ul"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Lihat Aset</span>
             </a>
-
             <a href="{{ route('ketersediaanAsset') }}"
-                class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600 {{ Request::is('check-availability') ? 'bg-blue-600' : '' }}">
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('check-availability') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-eye-fill"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Cek Ketersediaan Aset</span>
             </a>
-
             <hr class="my-4 text-gray-600">
-
             <a href="{{ route('lihat.peminjam.aktif') }}"
-                class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600 {{ Request::is('peminjamaktif') ? 'bg-blue-600' : '' }}">
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('peminjamaktif') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-people-fill"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Lihat Peminjam</span>
             </a>
-
             <form action="{{ route('logout') }}" method="POST">
                 @csrf
                 <button type="submit"
-                    class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600 w-full">
+                    class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 w-full">
                     <i class="bi bi-box-arrow-in-right"></i>
                     <span class="text-[15px] ml-4 text-gray-200">Logout</span>
                 </button>
             </form>
-
-
         </div>
     </div>
 
