@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('nomor_telepon', 15)->nullable();
             $table->string('password');
-            $table->enum('role', ['admin', 'sekretariat']);
+            $table->enum('role', ['admin', 'sekretariat', 'paramenta']);
             $table->timestamps();
         });
     }

@@ -54,7 +54,7 @@ Route::middleware('auth:admin')->group(function () {
     })->name('admin.dashboard');
 
     Route::get('/sekretariat/dashboard', function () {
-        return view('sekretariat.dashboard');
+        return view('layout.AdminSekretariatView.HomeAdminSekretariat');
     })->name('sekretariat.dashboard');
 
     // Rute untuk memproses persetujuan akun peminjam hanya untuk admin

@@ -120,12 +120,12 @@
                 <span class="text-[15px] ml-4 text-gray-200">Persetujuan Akun</span>
             </a>
             <a href="{{ route('lihatPermintaanPeminjaman') }}"
-                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('lihatPermintaanPeminjaman') ? 'bg-gray-700' : '' }}">
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('lihatPermintaanPeminjaman') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-check-square-fill"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Persetujuan Peminjaman</span>
             </a>
             <a href="{{ route('admin.PermintaanPengembalianAsset') }}"
-                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('return-requests*') ? 'bg-gray-700' : '' }}">
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('admin.PermintaanPengembalianAsset') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-arrow-return-left"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Persetujuan Pengembalian Aset</span>
             </a>
@@ -140,7 +140,7 @@
                 <span class="text-[15px] ml-4 text-gray-200">Lihat Aset</span>
             </a>
             <a href="{{ route('ketersediaanAsset') }}"
-                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('check-availability') ? 'bg-gray-700' : '' }}">
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('ketersediaanAsset') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-eye-fill"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Cek Ketersediaan Aset</span>
             </a>
