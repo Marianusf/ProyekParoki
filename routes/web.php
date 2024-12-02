@@ -7,29 +7,6 @@ use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PeminjamanController;
 
-Route::prefix('/peminjam')->group(function(){
-
-    Route::get('/profile', function () {
-        return view('layout.PeminjamView.Profile');
-    });
-    
-    Route::get('/barang-jasa', function () {
-        return view('layout.PeminjamView.Barang-Jasa.barang-jasa');
-    });
-
-    Route::get('/lihat-aset', function () {
-        return view('layout.PeminjamView.lihat-aset');
-    });
-    Route::get('/aset', function () {
-        return view('layout.AdminView.AdminViewAset');
-    });
-});
-
-
-
-
-
-
 // Rute untuk lupa password
 Route::get('password/reset', [AuthController::class, 'showLinkRequestForm'])->name('password.request');
 Route::post('password/email', [AuthController::class, 'sendResetLinkEmail'])->name('password.email');
@@ -134,3 +111,34 @@ Route::post('/peminjaman/{id}/tolak', [PeminjamanController::class, 'tolakPeminj
 // });
 Route::get('/admin/peminjaman', [AdminController::class, 'lihatPermintaanPeminjaman'])->name('lihatPermintaanPeminjaman');
 Route::get('/ketersediaan-asset', [AssetController::class, 'cekKetersediaanAsset'])->name('ketersediaanAsset');
+
+
+Route::prefix('/peminjam')->group(function(){
+
+    Route::get('/profile', function () {
+        return view('layout.PeminjamView.Profile');
+    });
+    
+    Route::get('/barang-jasa', function () {
+        return view('layout.PeminjamView.Barang-Jasa.barang-jasa');
+    });
+
+    Route::get('/lihat-aset', function () {
+        return view('layout.PeminjamView.lihat-aset');
+    });
+    Route::get('/aset', function () {
+        return view('layout.AdminView.AdminViewAset');
+    });
+    
+    Route::get('/', function () {
+        return view('layout.AdminView.LihatPeminjamAktif');
+    });
+});
+
+Route::get('/', function () {
+    return view('layout.AdminView.LihatPermintaanAkun');
+});
+
+
+
+
