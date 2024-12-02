@@ -109,8 +109,8 @@
                 <i class="bi bi-x ml-auto cursor-pointer" onclick="toggleSidebar()"></i>
             </div>
             <hr class="my-2 text-gray-600">
-            <a href="{{ route('admin.dashboard') }}"
-                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('admin.dashboard') ? 'bg-gray-700' : '' }}">
+            <a href="{{ route('sekretariat.dashboard') }}"
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('sekretariat.dashboard') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-house-door"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Home</span>
             </a>
@@ -124,18 +124,18 @@
                 <i class="bi bi-arrow-return-left"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Persetujuan Pengembalian Aset</span>
             </a>
-            <a href="{{ route('asset.create') }}"
-                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('admin/asset/tambah') ? 'bg-gray-700' : '' }}">
+            <a href="{{ route('ruangan.create') }}"
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('ruangan.store') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-plus-circle"></i>
-                <span class="text-[15px] ml-4 text-gray-200">Tambah Aset</span>
+                <span class="text-[15px] ml-4 text-gray-200">Tambah Ruangan</span>
             </a>
-            <a href="{{ route('asset.index') }}"
-                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('admin/asset') ? 'bg-gray-700' : '' }}">
+            <a href="{{ route('lihatSemuaRuangan') }}"
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-list-ul"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Lihat Ruangan</span>
             </a>
-            <a href="{{ route('ketersediaanAsset') }}"
-                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('ketersediaanAsset') ? 'bg-gray-700' : '' }}">
+            <a href="{{ route('cekKetersediaanRuangan') }}"
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('lihatKetersediaanRuangan') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-eye-fill"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Cek Ketersediaan Ruangan</span>
             </a>

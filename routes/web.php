@@ -8,6 +8,20 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\PeminjamController;
 use App\Http\Controllers\PengembalianController;
+use App\Http\Controllers\RuanganController;
+
+// KELOLA RUANGAN
+Route::get('ruangan/create', [RuanganController::class, 'create'])->name('ruangan.create');
+Route::post('ruanganStore', [RuanganController::class, 'store'])->name('ruangan.store');
+Route::get('ruangan/{ruangan}/edit', [RuanganController::class, 'edit'])->name('ruangan.edit');
+Route::put('ruangan/{ruangan}', [RuanganController::class, 'update'])->name('ruangan.update');
+
+Route::get('lihatSemuaRuangan', [RuanganController::class, 'lihatSemuaRuangan'])->name('lihatSemuaRuangan');
+Route::get('cekKetersediaanRuangan', [RuanganController::class, 'cekKetersediaanRuangan'])->name('cekKetersediaanRuangan');
+// Route untuk menghapus ruangan
+Route::delete('/ruangan/{ruangan}', [RuanganController::class, 'destroy'])->name('ruangan.destroy');
+
+
 
 //untuk kelola peminjam
 Route::get('lihatProfile', [PeminjamController::class, 'lihatProfile'])->name('lihatProfile');
