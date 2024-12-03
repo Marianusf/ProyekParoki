@@ -8,7 +8,6 @@
             <!-- Header Section -->
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-3xl font-bold text-gray-800">Daftar Ruangan Aktif</h2>
-
             </div>
 
             <!-- Flash Messages -->
@@ -26,11 +25,21 @@
                 </div>
             @endif
 
+            <!-- Searching -->
+            <div class="relative mb-6">
+                <input type="text" id="search"
+                    class="border border-gray-300 rounded-lg p-3 w-full pl-12 focus:ring-2 focus:ring-blue-500"
+                    placeholder="Cari ruangan...">
+                <span class="absolute left-4 top-3 text-gray-400">
+                    <i class="fas fa-search text-lg"></i> <!-- FontAwesome Icon -->
+                </span>
+            </div>
+
             <!-- Room Table -->
-            <div class="bg-white shadow-md rounded-lg overflow-hidden">
+            <div class="bg-white shadow-lg rounded-lg overflow-auto">
                 @if ($room->count() > 0)
-                    <table class="min-w-full table-auto">
-                        <thead class="bg-blue-600 text-white uppercase text-sm">
+                    <table id="roomTable" class="min-w-full table-auto">
+                        <thead class="bg-indigo-600 text-white text-sm uppercase">
                             <tr>
                                 <th class="py-3 px-6 text-left">Gambar</th>
                                 <th class="py-3 px-6 text-left">Nama Ruangan</th>
@@ -55,7 +64,7 @@
                                     </td>
 
                                     <!-- Nama -->
-                                    <td class="py-3 px-6">{{ $room->nama }}</td>
+                                    <td class="py-3 px-6 highlight-cell" data-highlight="true">{{ $room->nama }}</td>
 
                                     <!-- Kapasitas -->
                                     <td class="py-3 px-6">{{ $room->kapasitas }}</td>
@@ -66,11 +75,11 @@
                                     <!-- Fasilitas -->
                                     <td class="py-3 px-6">
                                         @if ($room->fasilitas)
-                                            <ul class="list-disc list-inside text-gray-600">
+                                            <ol class="list-decimal list-inside text-gray-600">
                                                 @foreach (json_decode($room->fasilitas) as $fasilitas)
                                                     <li>{{ $fasilitas }}</li>
                                                 @endforeach
-                                            </ul>
+                                            </ol>
                                         @else
                                             <span class="text-gray-500">Tidak ada fasilitas</span>
                                         @endif
@@ -96,9 +105,48 @@
                     </div>
                 @endif
             </div>
-
-
         </div>
     </section>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('search');
+            const tableRows = document.querySelectorAll('#roomTable tbody tr');
+
+            const filterTable = () => {
+                const searchText = searchInput.value.toLowerCase();
+
+                tableRows.forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    let isMatch = false;
+
+                    cells.forEach(cell => {
+                        // Abaikan cell yang memiliki elemen HTML lain (seperti gambar)
+                        if (cell.querySelector('img') || cell.querySelector('ol')) {
+                            return;
+                        }
+
+                        const originalContent = cell.getAttribute('data-original-content') ||
+                            cell.textContent.trim();
+                        cell.setAttribute('data-original-content',
+                        originalContent); // Simpan teks asli
+
+                        if (originalContent.toLowerCase().includes(searchText) && searchText) {
+                            isMatch = true;
+                            const regex = new RegExp(`(${searchText})`, 'gi');
+                            cell.innerHTML = originalContent.replace(regex,
+                                `<span class="bg-yellow-200">$1</span>`);
+                        } else {
+                            cell.innerHTML = originalContent; // Kembalikan teks asli
+                        }
+                    });
+
+                    row.style.display = isMatch || searchText === '' ? '' : 'none';
+                });
+            };
+
+            searchInput.addEventListener('input', filterTable);
+        });
+    </script>
+
 
 @endsection
