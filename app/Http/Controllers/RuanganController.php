@@ -46,8 +46,6 @@ class RuanganController extends Controller
 
             if ($request->input('kondisi') === 'dalam_perbaikan') {
                 $ruangan->status = 'tidak_dapat_dipinjam';  // Jika kondisi dalam perbaikan, status menjadi tidak dapat dipinjam
-            } else {
-                $ruangan->status = $request->input('status');
             }
 
             // Menyimpan gambar jika ada
@@ -95,8 +93,6 @@ class RuanganController extends Controller
 
             if ($request->input('kondisi') === 'dalam_perbaikan') {
                 $ruangan->status = 'tidak_dapat_dipinjam';  // Jika kondisi dalam perbaikan, status menjadi tidak dapat dipinjam
-            } else {
-                $ruangan->status = $request->input('status');
             }
 
             // Menyimpan gambar jika ada dan mengganti gambar lama

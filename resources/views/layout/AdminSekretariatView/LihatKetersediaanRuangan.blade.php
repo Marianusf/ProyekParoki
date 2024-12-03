@@ -38,8 +38,6 @@
                                 <th class="py-3 px-6 text-left">Deskripsi</th>
                                 <th class="py-3 px-6 text-left">Fasilitas</th>
                                 <th class="py-3 px-6 text-center">Status</th>
-                                <th class="py-3 px-6 text-left">Tanggal Ditambahkan</th>
-                                <th class="py-3 px-6 text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="text-gray-800 text-sm">
@@ -86,9 +84,6 @@
                                             {{ ucfirst($room->status) }}
                                         </span>
                                     </td>
-
-                                    <!-- Tanggal Ditambahkan -->
-                                    <td class="py-3 px-6">{{ $room->created_at->format('d-m-Y') }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -106,20 +101,4 @@
         </div>
     </section>
 
-    <script>
-        function deleteRoom(roomId) {
-            Swal.fire({
-                title: 'Apakah Anda yakin?',
-                text: 'Tindakan ini tidak dapat dibatalkan!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Hapus',
-                cancelButtonText: 'Batal',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    document.getElementById('delete-form-' + roomId).submit();
-                }
-            });
-        }
-    </script>
 @endsection

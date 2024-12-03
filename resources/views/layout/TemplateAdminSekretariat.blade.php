@@ -103,7 +103,7 @@
             <div class="p-2.5 mt-1 flex items-center">
                 <img src="{{ asset('/logo.png') }}" alt="Logo Paroki Babadan" class="w-10 h-10 rounded-full">
                 <div class="ml-5">
-                    <div class="text-base font-medium text-white">Admin</div>
+                    <div class="text-base font-medium text-white">Admin Sekretariat</div>
                     <div class="text-sm font-medium text-gray-400">Paroki Babadan</div>
                 </div>
                 <i class="bi bi-x ml-auto cursor-pointer" onclick="toggleSidebar()"></i>

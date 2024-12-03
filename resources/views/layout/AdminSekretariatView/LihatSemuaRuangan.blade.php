@@ -38,7 +38,7 @@
                                 <th class="py-3 px-6 text-left">Gambar</th>
                                 <th class="py-3 px-6 text-left">Nama Ruangan</th>
                                 <th class="py-3 px-6 text-left">Kapasitas</th>
-                                <th class="py-3 px-6 text-left">Status</th>
+                                <th class="py-3 px-6 text-left">Kondisi</th>
                                 <th class="py-3 px-6 text-left">Deskripsi</th>
                                 <th class="py-3 px-6 text-left">Fasilitas</th>
                                 <th class="py-3 px-6 text-center">Status</th>
@@ -65,7 +65,16 @@
 
                                     <!-- Kapasitas -->
                                     <td class="py-3 px-6">{{ $room->kapasitas }}</td>
-                                    <td class="py-3 px-6">{{ $room->kondisi }}</td>
+                                    <td class="py-3 px-6">
+                                        @if ($room->kondisi === 'dalam_perbaikan')
+                                            <span class="text-yellow-500">Dalam Perbaikan</span>
+                                        @elseif ($room->kondisi === 'baik')
+                                            <span class="text-green-500">Baik</span>
+                                        @else
+                                            <span class="text-gray-500">Tidak diketahui</span>
+                                        @endif
+                                    </td>
+
 
                                     <!-- Deskripsi -->
                                     <td class="py-3 px-6">{{ Str::limit($room->deskripsi, 500) }}</td>
@@ -112,10 +121,6 @@
                                         </span>
                                     </td>
 
-
-
-
-                                    <!-- Tanggal Ditambahkan -->
                                     <td class="py-3 px-6">{{ $room->created_at->format('d-m-Y') }}</td>
 
                                     <!-- Aksi -->
@@ -152,10 +157,6 @@
                 @endif
             </div>
 
-            <!-- Pagination -->
-            <div class="mt-6">
-                {{ $ruangan->links() }}
-            </div>
         </div>
     </section>
 
