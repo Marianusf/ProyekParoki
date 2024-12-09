@@ -167,5 +167,14 @@
                 preview.style.display = 'none';
             }
         }
+
+        function addFasilitas() {
+            const wrapper = document.getElementById('fasilitas-wrapper');
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.name = 'fasilitas[]';
+            input.placeholder = 'Masukkan fasilitas';
+            wrapper.appendChild(input);
+        }
     </script>
 @endsection
