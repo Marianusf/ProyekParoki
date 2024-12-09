@@ -16,7 +16,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2"></script>
     <!-- Tambahkan di <head> -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.min.css" rel="stylesheet" />
     <style>
         body {
             overflow: hidden;
@@ -116,7 +116,7 @@
                 <i class="bi bi-house-door"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Home</span>
             </a>
-            <a href="{{ route('lihatPermintaanPeminjaman') }}"
+            <a href="{{ route('peminjaman.index') }}"
                 class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('lihatPermintaanPeminjaman') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-check-square-fill"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Persetujuan Peminjaman</span>
@@ -155,6 +155,8 @@
     <div class="main-content" id="mainContent">
         @yield('content')
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         const sidebar = document.getElementById('sidebar');

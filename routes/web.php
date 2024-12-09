@@ -6,10 +6,27 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PeminjamanController;
+use App\Http\Controllers\PeminjamanRuanganController;
 use App\Http\Controllers\PeminjamController;
 use App\Http\Controllers\PengembalianController;
 use App\Http\Controllers\RuanganController;
 
+
+
+//peminjamanRuangan
+// Route untuk Sekretariat - Mengelola Permintaan Peminjaman
+Route::middleware(['auth:admin'])->group(function () {
+    Route::get('/admin-sekretariat/permintaan-peminjaman', [PeminjamanRuanganController::class, 'index'])->name('peminjaman.index');
+    Route::post('/peminjaman/{id}/approve', [PeminjamanRuanganController::class, 'approve'])->name('peminjaman.approve');
+    Route::post('/peminjaman/{id}/reject', [PeminjamanRuanganController::class, 'reject'])->name('peminjaman.reject');
+});
+Route::get('/kalender', [PeminjamanRuanganController::class, 'showCalendar'])->name('kalender');
+
+// Route untuk Peminjam - Ajukan Peminjaman
+Route::middleware(['auth:peminjam'])->group(function () {
+    Route::get('/peminjam/pinjam-ruangan', [PeminjamanRuanganController::class, 'create'])->name('peminjaman.create');
+    Route::post('/peminjam/pinjam-ruangan', [PeminjamanRuanganController::class, 'store'])->name('peminjaman.store');
+});
 // KELOLA RUANGAN
 Route::get('ruangan/create', [RuanganController::class, 'create'])->name('ruangan.create');
 Route::post('ruanganStore', [RuanganController::class, 'store'])->name('ruangan.store');
