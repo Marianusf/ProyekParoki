@@ -9,15 +9,23 @@ use App\Models\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\MailPeminjamanStatus;
+use App\Mail\MailPeminjamanStatusRuangan;
+use Illuminate\Support\Facades\DB;
 
 class PeminjamanRuanganController extends Controller
 {
-    // Menampilkan daftar peminjaman
     public function index()
     {
-        $peminjaman = PeminjamanRuangan::with('ruangan', 'peminjam', 'admin')->get();
+        // Mengambil hanya peminjaman yang statusnya 'pending'
+        $peminjaman = PeminjamanRuangan::with('ruangan', 'peminjam', 'admin')
+            ->where('status_peminjaman', 'pending') // Filter berdasarkan status 'pending'
+            ->get();
+
         return view('layout.AdminSekretariatView.PermintaanPeminjaman', compact('peminjaman'));
     }
+
     public function create()
     {
         $ruangan = Ruangan::where('kondisi', 'baik')->get();
@@ -104,61 +112,129 @@ class PeminjamanRuanganController extends Controller
         return redirect()->route('peminjaman.create')->with('success', 'Pengajuan peminjaman berhasil dikirim.');
     }
 
+    public function batchAction(Request $request)
+    {
+        // Ambil daftar peminjaman yang dipilih
+        $selectedPeminjaman = $request->input('selected_peminjaman', []);
+        $action = $request->input('action');
+        $alasanPenolakan = $request->input('alasan_penolakan', null); // Ambil alasan penolakan jika ada
 
-    public function approve(Request $request, $id)
+        if (empty($selectedPeminjaman)) {
+            return back()->with('error', 'Tidak ada peminjaman yang dipilih.');
+        }
+
+        // Validasi action
+        if (!in_array($action, ['approve', 'reject', 'batch_reject'])) {
+            return back()->with('error', 'Aksi tidak valid.');
+        }
+
+        DB::beginTransaction(); // Mulai transaksi
+
+        try {
+            // Mengambil peminjaman berdasarkan ID yang dipilih
+            $peminjaman = PeminjamanRuangan::whereIn('id', $selectedPeminjaman)->get();
+
+            foreach ($peminjaman as $item) {
+                if ($action == 'approve') {
+                    $item->status = 'disetujui';
+                    $this->sendStatusEmail($item, 'disetujui', null); // Kirim email disetujui
+                } elseif ($action == 'reject' || $action == 'batch_reject') {
+                    $item->status = 'ditolak';
+                    $this->sendStatusEmail($item, 'ditolak', $alasanPenolakan); // Kirim email ditolak
+                }
+
+                // Simpan perubahan status
+                $item->save();
+            }
+
+            DB::commit(); // Commit transaksi
+            return back()->with('success', 'Aksi batch telah diterapkan.');
+        } catch (\Exception $e) {
+            DB::rollBack(); // Rollback jika terjadi kesalahan
+            return back()->with('error', 'Terjadi kesalahan saat menerapkan aksi batch.');
+        }
+    }
+
+
+    // public function batchReject(Request $request)
+    // {
+    //     $selectedPeminjaman = $request->input('selected_peminjaman', []);
+    //     $alasanPenolakan = $request->input('alasan_penolakan', 'Tidak ada alasan yang diberikan.');
+
+    //     if (empty($selectedPeminjaman)) {
+    //         return back()->with('error', 'Tidak ada peminjaman yang dipilih.');
+    //     }
+
+    //     DB::beginTransaction(); // Mulai transaksi
+
+    //     try {
+    //         // Loop untuk menolak semua peminjaman yang dipilih
+    //         $peminjaman = PeminjamanRuangan::whereIn('id', $selectedPeminjaman)->get();
+
+    //         foreach ($peminjaman as $item) {
+    //             // Update status peminjaman menjadi ditolak
+    //             $item->status = 'ditolak';
+    //             $item->save();
+
+    //             // Kirim email pemberitahuan ke peminjam
+    //             $this->sendStatusEmail($item, 'ditolak', $alasanPenolakan);
+    //         }
+
+    //         DB::commit(); // Commit transaksi
+    //         return back()->with('success', 'Peminjaman yang dipilih telah ditolak.');
+    //     } catch (\Exception $e) {
+    //         DB::rollBack(); // Rollback jika terjadi kesalahan
+    //         return back()->with('error', 'Terjadi kesalahan saat menolak peminjaman.');
+    //     }
+    // }
+
+    public function approvePeminjaman(Request $request, $id)
     {
         $peminjaman = PeminjamanRuangan::findOrFail($id);
 
-        if ($peminjaman->status_peminjaman !== 'pending') {
-            return redirect()->back()->withErrors('Peminjaman sudah diproses.');
-        }
-        $adminId = Auth::guard('admin')->user()->id;
-        $peminjaman->update([
-            'status_peminjaman' => 'disetujui',
-            'admin_id' => $adminId // Assigning the approver admin
-        ]);
+        // Update status peminjaman menjadi disetujui
+        $peminjaman->status_peminjaman = 'disetujui';
+        $peminjaman->save();
 
-        return redirect()->back()->with('success', 'Peminjaman berhasil disetujui.');
+        // Kirim email ke peminjam
+        $this->sendStatusEmail($peminjaman, 'disetujui', null);
+
+        return redirect()->back()->with('success', 'Peminjaman telah disetujui.');
     }
 
-    public function reject(Request $request, $id)
-    {
-        $request->validate([
-            'alasan_penolakan' => 'required|string',
-        ]);
 
+    public function rejectPeminjaman(Request $request, $id)
+    {
         $peminjaman = PeminjamanRuangan::findOrFail($id);
 
-        if ($peminjaman->status_peminjaman !== 'pending') {
-            return redirect()->back()->withErrors('Peminjaman sudah diproses.');
-        }
-        $adminId = Auth::guard('admin')->user()->id;
-        $peminjaman->update([
-            'status_peminjaman' => 'ditolak',
-            'alasan_penolakan' => $request->alasan_penolakan,
-            'admin_id' => $adminId, // Assigning the rejecting admin
-        ]);
+        // Update status peminjaman menjadi ditolak
+        $peminjaman->status_peminjaman = 'ditolak';
+        $peminjaman->save();
 
-        return redirect()->back()->with('success', 'Peminjaman berhasil ditolak.');
+        // Ambil alasan penolakan dari form
+        $alasanPenolakan = $request->input('alasan_penolakan', 'Tidak ada alasan yang diberikan.');
+
+        // Kirim email ke peminjam
+        $this->sendStatusEmail($peminjaman, 'ditolak', $alasanPenolakan);
+
+        return redirect()->back()->with('success', 'Peminjaman telah ditolak.');
     }
-    public function showCalendar()
+
+
+    private function sendStatusEmail($peminjaman, $status, $alasanPenolakan)
     {
-        // Mengambil semua peminjaman yang disetujui atau selesai, kecuali yang statusnya 'ditolak' atau 'pending'
-        $peminjaman = PeminjamanRuangan::with('ruangan')
-            ->whereIn('status', ['disetujui', 'selesai'])
-            ->get();
+        $peminjamName = $peminjaman->peminjam->name;
+        $email = $peminjaman->peminjam->email;
+        $tanggalMulai = Carbon::parse($peminjaman->tanggal_mulai)->format('d-m-Y TH:i:s');
+        $tanggalSelesai = Carbon::parse($peminjaman->tanggal_selesai)->format('d-m-Y TH:i:s');
+        // Data ruangan yang dipinjam
+        $ruanganDetails = [
+            'nama' => $peminjaman->ruangan->nama,
+            'tanggal_mulai' => $tanggalMulai,
+            'tanggal_selesai' => $tanggalSelesai
+        ];
 
-        // Membuat array event untuk kalender
-        $events = $peminjaman->map(function ($peminjaman) {
-            return [
-                'title' => $peminjaman->ruangan->nama_ruangan,
-                'start' => $peminjaman->tanggal_mulai,
-                'end' => $peminjaman->tanggal_selesai,
-                'color' => 'red', // Warna untuk peminjaman yang disetujui
-                'description' => 'Peminjam: ' . $peminjaman->peminjam->name,
-            ];
-        });
-
-        return view('kalender', compact('events'));
+        // Kirim email pemberitahuan status
+        Mail::to($email)->send(new MailPeminjamanStatusRuangan($status, $peminjamName, $alasanPenolakan, $ruanganDetails));
     }
 }
