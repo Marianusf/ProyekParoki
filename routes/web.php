@@ -18,9 +18,7 @@ use App\Http\Controllers\RuanganController;
 Route::middleware(['auth:admin'])->group(function () {
     Route::get('/admin-sekretariat/permintaan-peminjaman', [PeminjamanRuanganController::class, 'index'])->name('peminjaman.index');
     Route::post('/peminjaman/{id}/approve', [PeminjamanRuanganController::class, 'approvePeminjaman'])->name('peminjaman.approve');
-    Route::post('/peminjaman/{id}/reject', [PeminjamanRuanganController::class, 'reject'])->name('peminjaman.reject');
-    Route::post('/peminjaman/batch-action', [PeminjamanRuanganController::class, 'batchAction'])->name('peminjaman.batchAction');
-    Route::post('/peminjaman/batch-reject', [PeminjamanRuanganController::class, 'batchReject'])->name('peminjaman.batchReject');
+    Route::post('/peminjaman/reject/{id}', [PeminjamanRuanganController::class, 'rejectPeminjaman'])->name('peminjaman.reject');
 });
 Route::get('/kalender', [PeminjamanRuanganController::class, 'showCalendar'])->name('kalender');
 

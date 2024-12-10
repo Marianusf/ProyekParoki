@@ -112,112 +112,54 @@ class PeminjamanRuanganController extends Controller
         return redirect()->route('peminjaman.create')->with('success', 'Pengajuan peminjaman berhasil dikirim.');
     }
 
-    public function batchAction(Request $request)
-    {
-        // Ambil daftar peminjaman yang dipilih
-        $selectedPeminjaman = $request->input('selected_peminjaman', []);
-        $action = $request->input('action');
-        $alasanPenolakan = $request->input('alasan_penolakan', null); // Ambil alasan penolakan jika ada
-
-        if (empty($selectedPeminjaman)) {
-            return back()->with('error', 'Tidak ada peminjaman yang dipilih.');
-        }
-
-        // Validasi action
-        if (!in_array($action, ['approve', 'reject', 'batch_reject'])) {
-            return back()->with('error', 'Aksi tidak valid.');
-        }
-
-        DB::beginTransaction(); // Mulai transaksi
-
-        try {
-            // Mengambil peminjaman berdasarkan ID yang dipilih
-            $peminjaman = PeminjamanRuangan::whereIn('id', $selectedPeminjaman)->get();
-
-            foreach ($peminjaman as $item) {
-                if ($action == 'approve') {
-                    $item->status = 'disetujui';
-                    $this->sendStatusEmail($item, 'disetujui', null); // Kirim email disetujui
-                } elseif ($action == 'reject' || $action == 'batch_reject') {
-                    $item->status = 'ditolak';
-                    $this->sendStatusEmail($item, 'ditolak', $alasanPenolakan); // Kirim email ditolak
-                }
-
-                // Simpan perubahan status
-                $item->save();
-            }
-
-            DB::commit(); // Commit transaksi
-            return back()->with('success', 'Aksi batch telah diterapkan.');
-        } catch (\Exception $e) {
-            DB::rollBack(); // Rollback jika terjadi kesalahan
-            return back()->with('error', 'Terjadi kesalahan saat menerapkan aksi batch.');
-        }
-    }
 
 
-    // public function batchReject(Request $request)
-    // {
-    //     $selectedPeminjaman = $request->input('selected_peminjaman', []);
-    //     $alasanPenolakan = $request->input('alasan_penolakan', 'Tidak ada alasan yang diberikan.');
-
-    //     if (empty($selectedPeminjaman)) {
-    //         return back()->with('error', 'Tidak ada peminjaman yang dipilih.');
-    //     }
-
-    //     DB::beginTransaction(); // Mulai transaksi
-
-    //     try {
-    //         // Loop untuk menolak semua peminjaman yang dipilih
-    //         $peminjaman = PeminjamanRuangan::whereIn('id', $selectedPeminjaman)->get();
-
-    //         foreach ($peminjaman as $item) {
-    //             // Update status peminjaman menjadi ditolak
-    //             $item->status = 'ditolak';
-    //             $item->save();
-
-    //             // Kirim email pemberitahuan ke peminjam
-    //             $this->sendStatusEmail($item, 'ditolak', $alasanPenolakan);
-    //         }
-
-    //         DB::commit(); // Commit transaksi
-    //         return back()->with('success', 'Peminjaman yang dipilih telah ditolak.');
-    //     } catch (\Exception $e) {
-    //         DB::rollBack(); // Rollback jika terjadi kesalahan
-    //         return back()->with('error', 'Terjadi kesalahan saat menolak peminjaman.');
-    //     }
-    // }
-
-    public function approvePeminjaman(Request $request, $id)
+    public function approvePeminjaman($id)
     {
         $peminjaman = PeminjamanRuangan::findOrFail($id);
-
+        $adminId = Auth::guard('admin')->user()->id;
         // Update status peminjaman menjadi disetujui
         $peminjaman->status_peminjaman = 'disetujui';
+        $peminjaman->admin_id = $adminId;
         $peminjaman->save();
 
         // Kirim email ke peminjam
         $this->sendStatusEmail($peminjaman, 'disetujui', null);
 
-        return redirect()->back()->with('success', 'Peminjaman telah disetujui.');
+        return redirect()->back()->with('success', "Peminjaman Oleh {$peminjaman->peminjam->name} telah disetujui.");
     }
-
 
     public function rejectPeminjaman(Request $request, $id)
     {
+        // Cari peminjaman berdasarkan ID
         $peminjaman = PeminjamanRuangan::findOrFail($id);
 
+        // Validasi alasan penolakan
+        $request->validate([
+            'alasan_penolakan' => 'required|string|max:255',
+        ], [
+            'alasan_penolakan.required' => 'Alasan penolakan wajib diisi.',
+            'alasan_penolakan.string' => 'Alasan penolakan harus berupa teks.',
+            'alasan_penolakan.max' => 'Alasan penolakan tidak boleh lebih dari 255 karakter.',
+        ]);
+        $adminId = Auth::guard('admin')->user()->id;
         // Update status peminjaman menjadi ditolak
         $peminjaman->status_peminjaman = 'ditolak';
+        $peminjaman->admin_id = $adminId;
         $peminjaman->save();
 
         // Ambil alasan penolakan dari form
-        $alasanPenolakan = $request->input('alasan_penolakan', 'Tidak ada alasan yang diberikan.');
+        $alasanPenolakan = $request->input('alasan_penolakan');
 
         // Kirim email ke peminjam
-        $this->sendStatusEmail($peminjaman, 'ditolak', $alasanPenolakan);
+        try {
+            $this->sendStatusEmail($peminjaman, 'ditolak', $alasanPenolakan);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Peminjaman ditolak, tetapi email gagal dikirim.');
+        }
 
-        return redirect()->back()->with('success', 'Peminjaman telah ditolak.');
+        // Redirect kembali dengan pesan sukses
+        return redirect()->back()->with('success', "Peminjaman oleh {$peminjaman->peminjam->name} telah ditolak.");
     }
 
 
@@ -225,13 +167,14 @@ class PeminjamanRuanganController extends Controller
     {
         $peminjamName = $peminjaman->peminjam->name;
         $email = $peminjaman->peminjam->email;
-        $tanggalMulai = Carbon::parse($peminjaman->tanggal_mulai)->format('d-m-Y TH:i:s');
-        $tanggalSelesai = Carbon::parse($peminjaman->tanggal_selesai)->format('d-m-Y TH:i:s');
+        $tanggalMulai = Carbon::parse($peminjaman->tanggal_mulai)->format('d-m-Y H:i');
+        $tanggalSelesai = Carbon::parse($peminjaman->tanggal_selesai)->format('d-m-Y H:i');
+
         // Data ruangan yang dipinjam
         $ruanganDetails = [
             'nama' => $peminjaman->ruangan->nama,
             'tanggal_mulai' => $tanggalMulai,
-            'tanggal_selesai' => $tanggalSelesai
+            'tanggal_selesai' => $tanggalSelesai,
         ];
 
         // Kirim email pemberitahuan status

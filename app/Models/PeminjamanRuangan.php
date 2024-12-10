@@ -31,7 +31,7 @@ class PeminjamanRuangan extends Model
     // Relasi ke Peminjam
     public function peminjam()
     {
-        return $this->belongsTo(Peminjam::class);
+        return $this->belongsTo(Peminjam::class, 'peminjam_id');
     }
 
     // Relasi ke Admin

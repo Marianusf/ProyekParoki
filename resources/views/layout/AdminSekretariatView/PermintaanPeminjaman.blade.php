@@ -2,134 +2,158 @@
 
 @section('content')
     <div class="container mx-auto p-6">
-        <h1 class="text-2xl font-semibold mb-6">Kelola Peminjaman Ruangan</h1>
+        <h1 class="text-3xl font-bold mb-6 text-gray-800">Kelola Peminjaman Ruangan</h1>
 
-        <!-- Form Batch Action -->
-        {{-- <form method="POST" action="{{ route('peminjaman.batchAction') }}"> --}}
-        @csrf
-        <div class="flex justify-between mb-4">
-            <div class="flex items-center space-x-2">
-                <input type="checkbox" id="selectAll" class="form-checkbox text-green-500">
-                <label for="selectAll" class="text-sm text-gray-600">Pilih Semua</label>
-            </div>
-            <div class="flex space-x-4">
-                <button type="submit" name="action" value="approve"
-                    class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600">
-                    Setujui Semua
-                </button>
-                <button type="submit" name="action" value="reject"
-                    class="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600">
-                    Tolak Semua
-                </button>
-            </div>
+        <!-- Notifikasi -->
+        @if (session('success'))
+            <script>
+                Swal.fire({
+                    title: 'Berhasil!',
+                    text: "{{ session('success') }}",
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            </script>
+        @endif
+
+        <div class="relative mb-4">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                <i class="fas fa-search text-gray-400"></i>
+            </span>
+            <input type="text" id="search" class="p-3 pl-10 border rounded w-1/3"
+                placeholder="Cari berdasarkan nama peminjam, ruangan..." onkeyup="searchTable()">
         </div>
 
-        <table class="table-auto w-full bg-white border rounded-lg shadow-lg">
-            <thead class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                <tr>
-                    <th class="py-3 px-6 text-left">
-                        <input type="checkbox" id="selectAllRows" class="form-checkbox">
-                    </th>
-                    <th class="py-3 px-6 text-left">Nama Peminjam</th>
-                    <th class="py-3 px-6 text-left">Ruangan</th>
-                    <th class="py-3 px-6 text-left">Tanggal Mulai</th>
-                    <th class="py-3 px-6 text-left">Tanggal Selesai</th>
-                    <th class="py-3 px-6 text-center">Status</th>
-                    <th class="py-3 px-6 text-center">Aksi</th>
-                </tr>
-            </thead>
-            <tbody class="text-gray-600 text-sm font-light">
-                @foreach ($peminjaman as $item)
-                    <tr class="border-b border-gray-200 hover:bg-gray-100">
-                        <td class="py-3 px-6 text-left whitespace-nowrap">
-                            <input type="checkbox" name="selected_peminjaman[]" value="{{ $item->id }}"
-                                class="form-checkbox">
-                        </td>
-                        <td class="py-3 px-6 text-left">{{ $item->peminjam->name }}</td>
-                        <td class="py-3 px-6 text-left">{{ $item->ruangan->nama }}</td>
-                        <td class="py-3 px-6 text-left">{{ $item->tanggal_mulai }}</td>
-                        <td class="py-3 px-6 text-left">{{ $item->tanggal_selesai }}</td>
-                        <td class="py-3 px-6 text-center">
-                            <span
-                                class="py-1 px-3 rounded-full text-xs font-bold 
-                                    @if ($item->status_peminjaman === 'pending') bg-yellow-300 text-yellow-900
-                                    @elseif ($item->status_peminjaman === 'disetujui') bg-green-300 text-green-900
-                                    @elseif ($item->status_peminjaman === 'ditolak') bg-red-300 text-red-900
-                                    @else bg-gray-300 text-gray-900 @endif">
-                                {{ ucfirst($item->status_peminjaman) }}
-                            </span>
-                        </td>
-                        <td class="py-3 px-6 text-center">
-                            @if ($item->status_peminjaman === 'pending')
-                                <div class="flex items-center justify-center space-x-4">
-                                    {{-- Tombol Setujui --}}
-                                    <form method="POST" action="{{ route('peminjaman.approve', $item->id) }}">
+
+        <div class="overflow-x-auto bg-white shadow-md rounded-lg">
+            <table class="table-auto w-full" id="peminjamanTable">
+                <thead class="bg-blue-500 text-white uppercase text-sm">
+                    <tr>
+                        <th class="py-4 px-6 text-left">Nama Peminjam</th>
+                        <th class="py-4 px-6 text-left">Ruangan</th>
+                        <th class="py-4 px-6 text-left">Tanggal Mulai</th>
+                        <th class="py-4 px-6 text-left">Tanggal Selesai</th>
+                        <th class="py-4 px-6 text-left">Durasi</th>
+                        <th class="py-4 px-6 text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-800">
+                    @foreach ($peminjaman as $item)
+                        <tr class="border-b hover:bg-gray-100">
+                            <td class="py-3 px-6">{{ $item->peminjam->name }}</td>
+                            <td class="py-3 px-6">{{ $item->ruangan->nama }}</td>
+                            <td class="py-3 px-6">{{ \Carbon\Carbon::parse($item->tanggal_mulai)->format('d M Y H:i') }}
+                            </td>
+                            <td class="py-3 px-6">{{ \Carbon\Carbon::parse($item->tanggal_selesai)->format('d M Y H:i') }}
+                            </td>
+                            <td class="py-3 px-6">
+                                @php
+                                    $mulai = \Carbon\Carbon::parse($item->tanggal_mulai);
+                                    $selesai = \Carbon\Carbon::parse($item->tanggal_selesai);
+                                    $totalMenit = $mulai->diffInMinutes($selesai);
+                                    $hari = floor($totalMenit / 1440);
+                                    $jam = floor(($totalMenit % 1440) / 60);
+                                    $menit = $totalMenit % 60;
+                                    $durasi =
+                                        $hari > 0
+                                            ? "$hari hari $jam jam"
+                                            : ($jam > 0
+                                                ? "$jam jam $menit menit"
+                                                : "$menit menit");
+                                @endphp
+                                {{ $durasi }}
+                            </td>
+                            <td class="py-3 px-6 text-center">
+                                <div class="flex justify-between items-center space-x-2">
+                                    <!-- Tombol Setujui -->
+                                    <form id="approveForm-{{ $item->id }}" method="POST"
+                                        action="{{ route('peminjaman.approve', $item->id) }}">
                                         @csrf
-                                        <button type="submit"
-                                            class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">
-                                            Setujui
+                                        <button type="button" onclick="approveRequest({{ $item->id }})"
+                                            class="bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-md">
+                                            <i class="fas fa-check"></i> Setujui
                                         </button>
                                     </form>
-
-                                    {{-- Tombol Tolak --}}
-                                    <button onclick="showRejectionModal({{ $item->id }})"
-                                        class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
-                                        Tolak
+                                    <!-- Tombol Tolak -->
+                                    <button type="button" onclick="rejectRequest({{ $item->id }})"
+                                        class="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-md">
+                                        <i class="fas fa-times"></i> Tolak
                                     </button>
                                 </div>
-                            @endif
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-        </form> <!-- Form Batch Action End -->
+                            </td>
 
-        <!-- Modal Penolakan -->
-        <div id="rejectionModal"
-            class="hidden fixed z-50 inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
-            <div class="bg-white rounded-lg shadow-lg p-6 w-96">
-                <h3 class="text-xl font-semibold mb-4">Alasan Penolakan</h3>
-                {{-- <form method="POST" action="{{ route('batch.Action') }}" id="rejectionForm"> --}}
-                @csrf
-                <textarea name="alasan_penolakan" class="w-full border rounded p-2 mb-4" placeholder="Masukkan alasan..." required></textarea>
-                <input type="hidden" name="selected_peminjaman[]" id="selected_peminjaman_ids">
-                <div class="flex justify-end space-x-4">
-                    <button type="button" onclick="closeRejectionModal()"
-                        class="bg-gray-500 text-white px-4 py-2 rounded-lg">
-                        Batal
-                    </button>
-                    <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
-                        Kirim
-                    </button>
-                </div>
-                </form>
-            </div>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
-
     </div>
 
     <script>
-        // Menampilkan Modal Penolakan
-        function showRejectionModal(id) {
-            const selectedIds = document.querySelectorAll('input[name="selected_peminjaman[]"]:checked');
-            const selectedIdsArray = Array.from(selectedIds).map(checkbox => checkbox.value);
-            document.getElementById('selected_peminjaman_ids').value = selectedIdsArray.join(',');
+        // Fungsi untuk mencari tabel
+        function searchTable() {
+            var input = document.getElementById("search");
+            var filter = input.value.toLowerCase();
+            var table = document.getElementById("peminjamanTable");
+            var tr = table.getElementsByTagName("tr");
 
-            const form = document.getElementById('rejectionForm');
-            form.action = `/peminjaman/batch-reject`; // Sesuaikan dengan route untuk batch reject
-            document.getElementById('rejectionModal').classList.remove('hidden');
+            for (var i = 1; i < tr.length; i++) {
+                var tdName = tr[i].getElementsByTagName("td")[0];
+                var tdRoom = tr[i].getElementsByTagName("td")[1];
+                if (tdName || tdRoom) {
+                    var txtName = tdName.textContent || tdName.innerText;
+                    var txtRoom = tdRoom.textContent || tdRoom.innerText;
+
+                    if (txtName.toLowerCase().indexOf(filter) > -1 ||
+                        txtRoom.toLowerCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
         }
 
-        // Menutup Modal Penolakan
-        function closeRejectionModal() {
-            document.getElementById('rejectionModal').classList.add('hidden');
+        function approveRequest(id) {
+            Swal.fire({
+                title: 'Setujui Peminjaman',
+                text: "Apakah Anda yakin ingin menyetujui peminjaman ini?",
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Setujui',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.getElementById(`approveForm-${id}`);
+                    form.submit();
+                }
+            });
         }
 
-        // Select/Deselect All Checkboxes
-        document.getElementById('selectAll').addEventListener('change', function(e) {
-            const checkboxes = document.querySelectorAll('input[name="selected_peminjaman[]"]');
-            checkboxes.forEach(checkbox => checkbox.checked = e.target.checked);
-        });
+        function rejectRequest(id) {
+            Swal.fire({
+                title: 'Tolak Peminjaman',
+                input: 'textarea',
+                inputPlaceholder: 'Masukkan alasan penolakan...',
+                inputAttributes: {
+                    'aria-label': 'Masukkan alasan penolakan'
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Kirim',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed && result.value) {
+                    const rejectionForm = document.createElement('form');
+                    rejectionForm.method = 'POST';
+                    rejectionForm.action = `/peminjaman/reject/${id}`;
+                    rejectionForm.innerHTML = `
+                        @csrf
+                        <input type="hidden" name="alasan_penolakan" value="${result.value}">
+                    `;
+                    document.body.appendChild(rejectionForm);
+                    rejectionForm.submit();
+                }
+            });
+        }
     </script>
 @endsection
