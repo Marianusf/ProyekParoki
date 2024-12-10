@@ -18,6 +18,7 @@ class PeminjamanRuanganController extends Controller
 {
     public function index()
     {
+        $this->updateRoomAvailability();
         // Mengambil hanya peminjaman yang statusnya 'pending'
         $peminjaman = PeminjamanRuangan::with('ruangan', 'peminjam', 'admin')
             ->where('status_peminjaman', 'pending') // Filter berdasarkan status 'pending'
@@ -26,12 +27,35 @@ class PeminjamanRuanganController extends Controller
         return view('layout.AdminSekretariatView.PermintaanPeminjaman', compact('peminjaman'));
     }
 
+    // Fungsi untuk memperbarui status ruangan yang sudah selesai
+    public function updateRoomAvailability()
+    {
+        // Ambil waktu saat ini, termasuk jam, menit, dan detik
+        $now = now();
+
+        // Cari peminjaman yang sudah selesai dan update statusnya
+        $peminjamans = PeminjamanRuangan::where('tanggal_selesai', '<=', $now)
+            ->where('status_peminjaman', 'disetujui') // Hanya yang disetujui
+            ->get();
+
+        foreach ($peminjamans as $peminjaman) {
+            // Periksa apakah tanggal selesai sudah lebih kecil atau sama dengan waktu sekarang
+            if (Carbon::parse($peminjaman->tanggal_selesai)->lte($now)) {
+                // Perbarui status menjadi "tersedia" (available)
+                $peminjaman->update(['status_peminjaman' => 'tersedia']);
+            }
+        }
+    }
+
     public function create()
     {
-        $ruangan = Ruangan::where('kondisi', 'baik')->get();
-        $peminjaman = PeminjamanRuangan::with('ruangan', 'peminjam') // Pastikan relasi peminjam di-include
-            ->whereIn('status_peminjaman', ['disetujui', 'selesai', 'tidak_dapat_dipinjam'])
+        // Ambil data peminjaman yang statusnya 'disetujui' dan tanggal selesai masih valid
+        $peminjaman = PeminjamanRuangan::where('status_peminjaman', 'disetujui')
+            ->where('tanggal_selesai', '>=', now())  // Hanya tampilkan yang belum selesai
             ->get();
+
+        // Ambil data ruangan yang kondisi baik
+        $ruangan_baik = Ruangan::where('kondisi', 'baik')->get();
 
         // Membuat array event untuk kalender dengan waktu yang lebih terperinci
         $events = $peminjaman->map(function ($peminjaman) {
@@ -40,30 +64,24 @@ class PeminjamanRuanganController extends Controller
             $end = Carbon::parse($peminjaman->tanggal_selesai);
 
             // Tentukan warna berdasarkan status peminjaman
-            $color = null; // Default tidak ada warna (tanpa warna)
-
-            // Jika status peminjaman adalah 'disetujui' atau 'selesai', tandai sebagai sudah dipinjam (merah)
-            if ($peminjaman->status_peminjaman === 'disetujui') {
-                $color = 'red';  // Sudah dipinjam (merah)
-            } elseif ($peminjaman->status_peminjaman === 'selesai') {
-                $color = 'green'; // Sudah selesai (hijau)
-            } elseif ($peminjaman->status_peminjaman === 'tidak_dapat_dipinjam') {
-                $color = 'gray'; // Tidak dapat dipinjam (abu-abu)
-            }
+            $color = 'red';  // Selalu merah untuk peminjaman disetujui
 
             // Kembalikan data event untuk kalender
             return [
-                'title' => $peminjaman->ruangan->nama,
+                'title' => $peminjaman->ruangan->nama,  // Nama ruangan
                 'start' => $start->format('Y-m-d\TH:i:s'),
                 'end' => $end->format('Y-m-d\TH:i:s'),
-                'color' => $color,  // Set warna berdasarkan status
+                'color' => $color,  // Set warna merah
                 'description' => 'Peminjam: ' . $peminjaman->peminjam->name, // Menampilkan nama peminjam
                 'status' => $peminjaman->status_peminjaman, // Tambahkan status peminjaman
             ];
         });
 
-        return view('layout.PeminjamView.PinjamRuangan', compact('ruangan', 'events'));
+        // Kirim data ke view
+        return view('layout.PeminjamView.PinjamRuangan', compact('peminjaman', 'events', 'ruangan_baik'));
     }
+
+
 
     public function store(Request $request)
     {

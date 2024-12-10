@@ -16,7 +16,7 @@
                 <label for="ruangan_id" class="block text-lg font-semibold text-gray-700">Pilih Ruangan</label>
                 <select id="ruangan_id" name="ruangan_id"
                     class="w-full border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-300 py-3 mt-2 transition duration-300 ease-in-out hover:ring-blue-500">
-                    @foreach ($ruangan as $item)
+                    @foreach ($ruangan_baik as $item)
                         <option value="{{ $item->id }}">{{ $item->nama }}</option>
                     @endforeach
                 </select>
@@ -90,25 +90,40 @@
                     center: 'title',
                     right: 'dayGridMonth,timeGridWeek,timeGridDay'
                 },
-                initialView: 'dayGridMonth', // Mengubah default view menjadi month
-                slotDuration: '00:30:00', // Interval 30 menit (untuk waktu di tampilan mingguan dan harian)
-                slotLabelInterval: '01:00', // Interval label jam 1 jam (untuk tampilan mingguan dan harian)
-                events: {!! json_encode($events) !!},
+                initialView: 'dayGridMonth',
+                events: {!! json_encode($events) !!}, // Data dari controller
+
                 dateClick: function(info) {
                     // Isi tanggal peminjaman berdasarkan tanggal yang diklik di kalender
                     document.getElementById('tanggal_mulai').value = info.dateStr;
                     document.getElementById('tanggal_selesai').value = info.dateStr;
                 },
+
                 eventClick: function(info) {
                     var event = info.event;
 
-                    // Menyiapkan data yang ingin ditampilkan
+                    // Menyiapkan detail event untuk SweetAlert
+                    var startDate = event.start.toLocaleDateString('id-ID', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                    });
+                    var endDate = event.end ? event.end.toLocaleDateString('id-ID', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                    }) : 'Belum selesai';
+
                     var peminjamanDetail = `
-                        <p><strong>Peminjam:</strong> ${event.title}</p>
-                        <p><strong>Tanggal Mulai:</strong> ${event.start.toLocaleString()}</p>
-                        <p><strong>Tanggal Selesai:</strong> ${event.end ? event.end.toLocaleString() : 'Belum selesai'}</p>
-                        <p><strong>Status:</strong> ${event.extendedProps.status || 'Menunggu Persetujuan'}</p>
-                    `;
+                <p><strong>Peminjam:</strong> ${event.title}</p>
+                <p><strong>Tanggal Mulai:</strong> ${startDate}</p>
+                <p><strong>Tanggal Selesai:</strong> ${endDate}</p>
+                <p><strong>Status:</strong> ${event.extendedProps.status || 'Menunggu Persetujuan'}</p>
+            `;
 
                     // Menampilkan detail peminjaman dengan SweetAlert
                     Swal.fire({

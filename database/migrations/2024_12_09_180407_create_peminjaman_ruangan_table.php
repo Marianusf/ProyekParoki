@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('admin_id')->nullable(); // Null until approved/rejected
             $table->dateTime('tanggal_mulai'); // Start date and time
             $table->dateTime('tanggal_selesai'); // End date and time
-            $table->enum('status_peminjaman', ['pending', 'disetujui', 'ditolak', 'selesai'])->default('pending');
+            $table->enum('status_peminjaman', ['pending', 'disetujui', 'ditolak', 'tersedia'])->default('pending');
             $table->text('alasan_penolakan')->nullable(); // Reason for rejection
             $table->timestamps();
 
