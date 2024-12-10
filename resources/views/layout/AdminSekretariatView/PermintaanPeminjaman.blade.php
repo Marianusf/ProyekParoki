@@ -3,6 +3,17 @@
 @section('content')
     <div class="container mx-auto p-6">
         <h1 class="text-3xl font-bold mb-6 text-gray-800">Kelola Peminjaman Ruangan</h1>
+        @if (session('sweet-alert'))
+            <script>
+                Swal.fire({
+                    icon: '{{ session('sweet-alert.icon') }}',
+                    title: '{{ session('sweet-alert.title') }}',
+                    text: '{{ session('sweet-alert.text') }}',
+                    showConfirmButton: true,
+                    timer: 5000
+                });
+            </script>
+        @endif
 
         <!-- Notifikasi -->
         @if (session('success'))

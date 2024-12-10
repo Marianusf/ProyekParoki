@@ -102,7 +102,7 @@
         </div>
 
         <div class="footer">
-            &copy; {{ date('Y') }} Peminjaman Ruangan. Semua hak dilindungi.
+            &copy; {{ date('Y') }} Paroki Babadan. Semua Hak Dilindungi.
         </div>
     </div>
 </body>

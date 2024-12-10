@@ -102,6 +102,7 @@ class PeminjamanRuanganController extends Controller
 
         // Mengecek apakah ada peminjaman lain yang tumpang tindih
         $existingBooking = PeminjamanRuangan::where('ruangan_id', $request->ruangan_id)
+            ->where('status_peminjaman', 'disetujui')
             ->where(function ($query) use ($request) {
                 $query->whereBetween('tanggal_mulai', [$request->tanggal_mulai, $request->tanggal_selesai])
                     ->orWhereBetween('tanggal_selesai', [$request->tanggal_mulai, $request->tanggal_selesai])
@@ -130,22 +131,69 @@ class PeminjamanRuanganController extends Controller
         return redirect()->route('peminjaman.create')->with('success', 'Pengajuan peminjaman berhasil dikirim.');
     }
 
-
-
     public function approvePeminjaman($id)
     {
-        $peminjaman = PeminjamanRuangan::findOrFail($id);
-        $adminId = Auth::guard('admin')->user()->id;
-        // Update status peminjaman menjadi disetujui
-        $peminjaman->status_peminjaman = 'disetujui';
-        $peminjaman->admin_id = $adminId;
-        $peminjaman->save();
+        DB::beginTransaction();
 
-        // Kirim email ke peminjam
-        $this->sendStatusEmail($peminjaman, 'disetujui', null);
+        try {
+            $peminjaman = PeminjamanRuangan::findOrFail($id);
 
-        return redirect()->back()->with('success', "Peminjaman Oleh {$peminjaman->peminjam->name} telah disetujui.");
+            $adminId = Auth::guard('admin')->user()->id;
+
+            // Cek konflik waktu dengan peminjaman yang sudah disetujui
+            $conflict = PeminjamanRuangan::where('ruangan_id', $peminjaman->ruangan_id)
+                ->where('status_peminjaman', 'disetujui')
+                ->where(function ($query) use ($peminjaman) {
+                    $query->whereBetween('tanggal_mulai', [$peminjaman->tanggal_mulai, $peminjaman->tanggal_selesai])
+                        ->orWhereBetween('tanggal_selesai', [$peminjaman->tanggal_mulai, $peminjaman->tanggal_selesai])
+                        ->orWhere(function ($query) use ($peminjaman) {
+                            $query->where('tanggal_mulai', '<=', $peminjaman->tanggal_selesai)
+                                ->where('tanggal_selesai', '>=', $peminjaman->tanggal_mulai);
+                        });
+                })
+                ->lockForUpdate()
+                ->exists();
+
+            if ($conflict) {
+                DB::rollBack();
+                // Flash message untuk konflik
+                session()->flash('sweet-alert', [
+                    'icon' => 'error',
+                    'title' => 'Konflik Waktu!',
+                    'text' => 'Peminjaman tidak dapat disetujui karena konflik waktu dengan peminjaman lain.',
+                ]);
+                return redirect()->back();
+            }
+
+            // Jika tidak ada konflik, setujui peminjaman
+            $peminjaman->status_peminjaman = 'disetujui';
+            $peminjaman->admin_id = $adminId;
+            $peminjaman->save();
+
+            DB::commit();
+
+            // Flash message untuk sukses
+            session()->flash('sweet-alert', [
+                'icon' => 'success',
+                'title' => 'Berhasil!',
+                'text' => "Peminjaman oleh {$peminjaman->peminjam->name} telah disetujui.",
+            ]);
+
+            return redirect()->back();
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            // Flash message untuk error
+            session()->flash('sweet-alert', [
+                'icon' => 'error',
+                'title' => 'Gagal!',
+                'text' => 'Terjadi kesalahan saat menyetujui peminjaman.',
+            ]);
+
+            return redirect()->back();
+        }
     }
+
 
     public function rejectPeminjaman(Request $request, $id)
     {
