@@ -87,6 +87,7 @@ class PeminjamanRuanganController extends Controller
 
     public function store(Request $request)
     {
+        $this->updateRoomAvailability();
         $validated = $request->validate([
             'ruangan_id' => 'required|exists:ruangan,id',
             'tanggal_mulai' => 'required|date|before:tanggal_selesai',

@@ -13,27 +13,38 @@
             <hr class="mb-6 border-gray-300">
 
             @if (session('success'))
-                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4"
-                    role="alert">
-                    <strong class="font-bold">Sukses: </strong>
-                    <span class="block sm:inline">{{ session('success') }}</span>
-                </div>
+                <script>
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Sukses!',
+                        text: '{{ session('success') }}',
+                        confirmButtonText: 'OK'
+                    });
+                </script>
             @endif
+
             @if (session('message'))
-                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4"
-                    role="alert">
-                    <strong class="font-bold">PESAN: </strong>
-                    <span class="block sm:inline">{{ session('message') }}</span>
-                </div>
+                <script>
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'PESAN:',
+                        text: '{{ session('message') }}',
+                        confirmButtonText: 'OK'
+                    });
+                </script>
             @endif
 
             @if (session('error'))
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                    <strong class="font-bold">Error: </strong>
-                    <span class="block sm:inline">{{ session('error') }}</span>
-                </div>
+                <script>
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error:',
+                        text: '{{ session('error') }}',
+                        confirmButtonText: 'OK'
+                    });
+                </script>
             @endif
-            {{-- Profile Picture --}}
+
 
 
             <form action="{{ route('profile.update') }}" method="POST" id="profilForm" enctype="multipart/form-data">

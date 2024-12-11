@@ -35,7 +35,16 @@
                 placeholder="Cari berdasarkan nama peminjam, ruangan..." onkeyup="searchTable()">
         </div>
 
-
+        <!-- Sorting Dropdown -->
+        <div class="mb-4 flex justify-end">
+            <label for="sort" class="mr-2 text-gray-600">Sortir Berdasarkan:</label>
+            <select id="sort" class="p-2 border rounded" onchange="sortTable()">
+                <option value="nama_peminjam">Nama Peminjam</option>
+                <option value="ruangan">Ruangan</option>
+                <option value="tanggal_mulai">Tanggal Mulai</option>
+                <option value="tanggal_selesai">Tanggal Selesai</option>
+            </select>
+        </div>
         <div class="overflow-x-auto bg-white shadow-md rounded-lg">
             <table class="table-auto w-full" id="peminjamanTable">
                 <thead class="bg-blue-500 text-white uppercase text-sm">
@@ -45,6 +54,7 @@
                         <th class="py-4 px-6 text-left">Tanggal Mulai</th>
                         <th class="py-4 px-6 text-left">Tanggal Selesai</th>
                         <th class="py-4 px-6 text-left">Durasi</th>
+                        <th class="py-4 px-6 text-left">Tanggal Permintaan</th>
                         <th class="py-4 px-6 text-center">Aksi</th>
                     </tr>
                 </thead>
@@ -73,6 +83,8 @@
                                                 : "$menit menit");
                                 @endphp
                                 {{ $durasi }}
+                            </td>
+                            <td class="py-3 px-6">{{ \Carbon\Carbon::parse($item->created_at)->format('d M Y H:i') }}
                             </td>
                             <td class="py-3 px-6 text-center">
                                 <div class="flex justify-between items-center space-x-2">
