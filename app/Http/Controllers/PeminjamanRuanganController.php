@@ -42,17 +42,19 @@ class PeminjamanRuanganController extends Controller
             // Periksa apakah tanggal selesai sudah lebih kecil atau sama dengan waktu sekarang
             if (Carbon::parse($peminjaman->tanggal_selesai)->lte($now)) {
                 // Perbarui status menjadi "tersedia" (available)
-                $peminjaman->update(['status_peminjaman' => 'tersedia']);
+                $peminjaman->update(['status_peminjaman' => 'selesai']);
             }
         }
     }
 
     public function create()
     {
+        $this->updateRoomAvailability();
         // Ambil data peminjaman yang statusnya 'disetujui' dan tanggal selesai masih valid
         $peminjaman = PeminjamanRuangan::where('status_peminjaman', 'disetujui')
             ->where('tanggal_selesai', '>=', now())  // Hanya tampilkan yang belum selesai
             ->get();
+        $historiSelesai = PeminjamanRuangan::where('status_peminjaman', 'selesai')->get();
 
         // Ambil data ruangan yang kondisi baik
         $ruangan_baik = Ruangan::where('kondisi', 'baik')->get();
@@ -78,7 +80,7 @@ class PeminjamanRuanganController extends Controller
         });
 
         // Kirim data ke view
-        return view('layout.PeminjamView.PinjamRuangan', compact('peminjaman', 'events', 'ruangan_baik'));
+        return view('layout.PeminjamView.PinjamRuangan', compact('peminjaman', 'events', 'ruangan_baik', 'historiSelesai'));
     }
 
 
@@ -139,6 +141,26 @@ class PeminjamanRuanganController extends Controller
             $peminjaman = PeminjamanRuangan::findOrFail($id);
 
             $adminId = Auth::guard('admin')->user()->id;
+
+            // Cek apakah tanggal mulai peminjaman sudah lewat
+            if (\Carbon\Carbon::now()->greaterThan($peminjaman->tanggal_mulai)) {
+                // Jika sudah lewat, tolak peminjaman dengan alasan
+                $peminjaman->status_peminjaman = 'ditolak';
+                $peminjaman->alasan_penolakan = 'Peminjaman sudah melewati waktu yang ditentukan';
+                $peminjaman->admin_id = $adminId;
+                $peminjaman->save();
+
+                DB::commit();
+
+                // Flash message untuk penolakan
+                session()->flash('sweet-alert', [
+                    'icon' => 'error',
+                    'title' => 'Peminjaman Ditolak',
+                    'text' => 'Peminjaman tidak dapat disetujui karena sudah melewati waktu yang diminta.',
+                ]);
+
+                return redirect()->back();
+            }
 
             // Cek konflik waktu dengan peminjaman yang sudah disetujui
             $conflict = PeminjamanRuangan::where('ruangan_id', $peminjaman->ruangan_id)

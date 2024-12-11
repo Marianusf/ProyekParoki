@@ -2,6 +2,45 @@
 
 @section('content')
     <div class="container mx-auto p-6">
+        @if (session('sweet-alert'))
+            <script>
+                Swal.fire({
+                    icon: '{{ session('sweet-alert.icon') }}',
+                    title: '{{ session('sweet-alert.title') }}',
+                    text: '{{ session('sweet-alert.text') }}',
+                    showConfirmButton: true,
+                    timer: 5000
+                });
+            </script>
+        @endif
+        @if ($errors->any())
+            <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validasi Gagal',
+                    html: `
+                <ul style="text-align: left;">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            `,
+                    confirmButtonText: 'OK'
+                });
+            </script>
+        @endif
+        <!-- Notifikasi -->
+        @if (session('success'))
+            <script>
+                Swal.fire({
+                    title: 'Berhasil!',
+                    text: "{{ session('success') }}",
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            </script>
+        @endif
+
         <!-- Tabs Navigasi -->
         <div class="tabs flex justify-center space-x-4 mb-8">
             <button onclick="switchTab('form')" id="tab-form"
@@ -90,10 +129,11 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($peminjaman as $item)
+                        @foreach ($historiSelesai as $item)
                             <tr class="border-t hover:bg-gray-100">
                                 <td class="px-4 py-2">{{ $item->ruangan->nama }}</td>
-                                <td class="px-4 py-2">{{ \Carbon\Carbon::parse($item->tanggal_mulai)->format('d M Y H:i') }}
+                                <td class="px-4 py-2">
+                                    {{ \Carbon\Carbon::parse($item->tanggal_mulai)->format('d M Y H:i') }}
                                 </td>
                                 <td class="px-4 py-2">
                                     {{ \Carbon\Carbon::parse($item->tanggal_selesai)->format('d M Y H:i') }}</td>
@@ -115,8 +155,8 @@
                                     {{ $durasi }}
                                 </td>
                                 <td class="px-4 py-2">
-                                    @if ($item->status === 'approved')
-                                        <span class="text-green-500">Disetujui</span>
+                                    @if ($item->status_peminjaman === 'selesai')
+                                        <span class="text-green-500">SELESAI</span>
                                     @elseif ($item->status === 'rejected')
                                         <span class="text-red-500">Ditolak</span>
                                     @else

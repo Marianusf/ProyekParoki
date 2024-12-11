@@ -1,95 +1,109 @@
 @extends('layout.TemplatePeminjam')
-@section('title', 'PengajuanPengembalian')
+@section('title', 'Pengajuan Pengembalian')
 @section('content')
-    <div class="container mx-auto py-8">
-        <h2 class="text-2xl font-semibold mb-6">Form Peminjaman</h2>
+    <div class="container mx-auto py-10 px-6">
+        <h2 class="text-4xl font-extrabold text-center text-gray-800 mb-10">Formulir Peminjaman Aset</h2>
 
+        <!-- SweetAlert Notifications -->
         @if (session('success'))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-                <strong class="font-bold">Sukses: </strong>
-                <span class="block sm:inline">{{ session('success') }}</span>
-            </div>
-        @endif
-        @if (session('message'))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-                <strong class="font-bold">Sukses: </strong>
-                <span class="block sm:inline">{{ session('message') }}</span>
-            </div>
-        @endif
-
-        @if (session('error'))
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                <strong class="font-bold">Error: </strong>
-                <span class="block sm:inline">{{ session('error') }}</span>
-            </div>
+            <script>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: '{{ session('success') }}',
+                    confirmButtonText: 'OK',
+                    timer: 3000
+                });
+            </script>
         @endif
 
-        <form action="{{ route('keranjang.tambah') }}" method="POST">
+        @if ($errors->any())
+            <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validasi Gagal',
+                    html: `
+                    <ul style="text-align: left;">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                `,
+                    confirmButtonText: 'OK'
+                });
+            </script>
+        @endif
+
+        <!-- Form -->
+        <form action="{{ route('keranjang.tambah') }}" method="POST" class="bg-white shadow-lg rounded-xl p-8 space-y-6">
             @csrf
 
             <!-- Pilih Asset -->
-            <div class="mb-4">
-                <label for="id_asset" class="block text-sm font-medium text-gray-700">Pilih Asset</label>
-                <select id="id_asset" name="id_asset" class="mt-1 block w-full" required>
-                    @foreach ($asset as $item)
-                        <option value="{{ $item->id }}"
-                            data-stok="{{ $item->jumlah_barang - $item->jumlah_terpinjam }}">
-                            {{ $item->nama_barang }} - {{ $item->deskripsi }}
-                        </option>
-                    @endforeach
-                </select>
-                @error('id_asset')
-                    <p class="text-red-500 text-xs mt-2">{{ $message }}</p>
-                @enderror
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div>
+                    <label for="id_asset" class="block text-lg font-semibold text-gray-700 flex items-center">
+                        <i class="fas fa-box text-blue-500 mr-2"></i>Pilih Aset
+                    </label>
+                    <select id="id_asset" name="id_asset"
+                        class="mt-2 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+                        required>
+                        @foreach ($asset as $item)
+                            <option value="{{ $item->id }}" data-stok="{{ $item->stok_tersedia }}">
+                                {{ $item->nama_barang }} - {{ $item->deskripsi }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Jumlah -->
+                <div>
+                    <label for="jumlah" class="block text-lg font-semibold text-gray-700 flex items-center">
+                        <i class="fas fa-sort-numeric-up text-green-500 mr-2"></i>Jumlah
+                    </label>
+                    <input type="number" id="jumlah" name="jumlah"
+                        class="mt-2 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+                        required min="1">
+                    <p class="text-sm text-gray-600 mt-1 stok-info"></p>
+                </div>
             </div>
 
-            <!-- Jumlah Asset -->
-            <div class="mb-4">
-                <label for="jumlah" class="block text-sm font-medium text-gray-700">Jumlah</label>
-                <input type="number" id="jumlah" name="jumlah" class="mt-1 block w-full" required min="1">
-                @error('jumlah')
-                    <p class="text-red-500 text-xs mt-2">{{ $message }}</p>
-                @enderror
-            </div>
-            <p class="text-sm text-gray-600 stok-info"></p>
+            <!-- Tanggal Pinjam dan Kembali -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div>
+                    <label for="tanggal_peminjaman" class="block text-lg font-semibold text-gray-700 flex items-center">
+                        <i class="fas fa-calendar-alt text-purple-500 mr-2"></i>Tanggal Pinjam
+                    </label>
+                    <input type="date" id="tanggal_peminjaman" name="tanggal_peminjaman"
+                        class="mt-2 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+                        required>
+                </div>
 
-            <!-- Tanggal Pinjam -->
-            <div class="mb-4">
-                <label for="tanggal_peminjaman" class="block text-sm font-medium text-gray-700">Tanggal Pinjam</label>
-                <input type="date" id="tanggal_peminjaman" name="tanggal_peminjaman" class="mt-1 block w-full" required>
-                @error('tanggal_peminjaman')
-                    <p class="text-red-500 text-xs mt-2">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <!-- Tanggal Kembali -->
-            <div class="mb-4">
-                <label for="tanggal_pengembalian" class="block text-sm font-medium text-gray-700">Tanggal Kembali</label>
-                <input type="date" id="tanggal_pengembalian" name="tanggal_pengembalian" class="mt-1 block w-full"
-                    required>
-                @error('tanggal_pengembalian')
-                    <p class="text-red-500 text-xs mt-2">{{ $message }}</p>
-                @enderror
+                <div>
+                    <label for="tanggal_pengembalian" class="block text-lg font-semibold text-gray-700 flex items-center">
+                        <i class="fas fa-calendar-check text-green-500 mr-2"></i>Tanggal Kembali
+                    </label>
+                    <input type="date" id="tanggal_pengembalian" name="tanggal_pengembalian"
+                        class="mt-2 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+                        required>
+                </div>
             </div>
 
-            <!-- Submit Button dan Icon Keranjang -->
-            <div class="mb-4 flex items-center space-x-4">
-                <!-- Tombol Tambah ke Keranjang -->
-                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+            <!-- Tombol -->
+            <div class="flex items-center justify-between mt-4">
+                <button type="submit"
+                    class="bg-blue-500 text-white font-semibold px-8 py-3 rounded-lg shadow-md hover:bg-blue-600 transition duration-200 transform hover:scale-105">
                     Tambah ke Keranjang
                 </button>
 
-                <!-- Icon Keranjang -->
-                <a href="{{ route('lihatKeranjang') }}" class="text-blue-500 hover:text-blue-700">
-                    <i class="fas fa-shopping-cart text-2xl"></i>
-                    <span class="sr-only">Lihat Keranjang</span> <!-- Untuk aksesibilitas -->
+                <a href="{{ route('lihatKeranjang') }}"
+                    class="text-blue-500 hover:text-blue-700 flex items-center space-x-2">
+                    <i class="fas fa-shopping-cart text-3xl"></i>
+                    <span class="text-lg font-semibold">Lihat Keranjang</span>
                 </a>
             </div>
-
         </form>
     </div>
 
-    {{-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> --}}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const assetSelect = document.getElementById('id_asset');
@@ -97,18 +111,22 @@
             const stokInfo = document.querySelector('.stok-info');
             const submitButton = document.querySelector('button[type="submit"]');
 
-            // Fungsi untuk memperbarui stok tersedia
             const updateStok = () => {
                 const selectedOption = assetSelect.options[assetSelect.selectedIndex];
                 const stokTersedia = parseInt(selectedOption.getAttribute('data-stok'), 10);
 
                 if (stokTersedia === 0) {
-                    // Jika stok 0, tampilkan pesan dan nonaktifkan input serta tombol
-                    stokInfo.textContent = `Stok tidak tersedia.`;
+                    stokInfo.textContent = 'Stok tidak tersedia.';
                     jumlahInput.disabled = true;
                     submitButton.disabled = true;
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Stok Habis',
+                        text: 'Stok aset yang dipilih sudah habis.',
+                        confirmButtonText: 'OK'
+                    });
                 } else {
-                    // Jika stok tersedia, aktifkan input dan tombol
                     stokInfo.textContent = `Stok tersedia: ${stokTersedia}`;
                     jumlahInput.disabled = false;
                     jumlahInput.max = stokTersedia;
@@ -116,14 +134,13 @@
                 }
             };
 
-            // Event listener untuk validasi jumlah input saat blur (field kehilangan fokus)
             jumlahInput.addEventListener('blur', function() {
                 const max = parseInt(this.max, 10);
                 const value = parseInt(this.value, 10);
 
-                // Validasi jika nilai melebihi stok maksimum
                 if (value > max) {
-                    this.value = max; // Set nilai ke maksimum
+                    this.value = max;
+
                     Swal.fire({
                         icon: 'warning',
                         title: 'Jumlah Melebihi Stok',
@@ -134,10 +151,7 @@
                 }
             });
 
-            // Event listener untuk memperbarui stok saat opsi berubah
             assetSelect.addEventListener('change', updateStok);
-
-            // Inisialisasi pertama
             updateStok();
         });
     </script>

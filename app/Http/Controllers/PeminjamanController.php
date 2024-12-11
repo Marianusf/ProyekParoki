@@ -34,6 +34,13 @@ class PeminjamanController extends Controller
             ],
             'tanggal_peminjaman' => 'required|date|after_or_equal:today',
             'tanggal_pengembalian' => 'required|date|after:tanggal_peminjaman',
+        ], [
+            'tanggal_peminjaman.required' => 'Tanggal peminjaman harus diisi.',
+            'tanggal_peminjaman.date' => 'Tanggal peminjaman harus berupa format tanggal yang valid.',
+            'tanggal_peminjaman.after_or_equal' => 'Tanggal peminjaman Tidak dapat dilakukan Sebelum Hari ini!',
+            'tanggal_pengembalian.required' => 'Tanggal pengembalian harus diisi.',
+            'tanggal_pengembalian.date' => 'Tanggal pengembalian harus berupa format tanggal yang valid.',
+            'tanggal_pengembalian.after' => 'Tanggal Pengembalian Harus Setelah Tanggal Peminjaman.',
         ]);
 
 
@@ -311,7 +318,14 @@ class PeminjamanController extends Controller
 
     public function tampilPinjamAsset()
     {
-        $asset = Assets::where('kondisi', 'baik')->get();
+        // Ambil semua aset dengan kondisi baik
+        $asset = Assets::where('kondisi', 'baik')->get()
+            ->map(function ($item) {
+                // Hitung stok tersedia
+                $item->stok_tersedia = $item->jumlah_barang - $item->jumlah_terpinjam;
+                return $item;
+            });
+
         return view('layout.PeminjamView.PinjamAsset', compact('asset'));
     }
 }
