@@ -6,24 +6,41 @@
     <div class="container mx-auto py-8">
         <h2 class="text-2xl font-semibold mb-6">Daftar Ketersediaan Asset</h2>
         @if (session('success'))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-                <strong class="font-bold">Sukses: </strong>
-                <span class="block sm:inline">{{ session('success') }}</span>
-            </div>
+            <script>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sukses!',
+                    text: '{{ session('success') }}',
+                    showConfirmButton: true,
+                    timer: 5000
+                });
+            </script>
         @endif
+
         @if (session('message'))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-                <strong class="font-bold">PESAN: </strong>
-                <span class="block sm:inline">{{ session('message') }}</span>
-            </div>
+            <script>
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Pesan:',
+                    text: '{{ session('message') }}',
+                    showConfirmButton: true,
+                    timer: 5000
+                });
+            </script>
         @endif
 
         @if (session('error'))
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                <strong class="font-bold">Error: </strong>
-                <span class="block sm:inline">{{ session('error') }}</span>
-            </div>
+            <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error:',
+                    text: '{{ session('error') }}',
+                    showConfirmButton: true,
+                    timer: 5000
+                });
+            </script>
         @endif
+
 
         <!-- Tabel Ketersediaan Asset -->
         <div class="overflow-x-auto bg-white shadow-md rounded-md mb-6">

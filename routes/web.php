@@ -17,10 +17,11 @@ use App\Http\Controllers\RuanganController;
 // Route untuk Sekretariat - Mengelola Permintaan Peminjaman
 Route::middleware(['auth:admin'])->group(function () {
     Route::get('/admin-sekretariat/permintaan-peminjaman', [PeminjamanRuanganController::class, 'index'])->name('peminjaman.index');
-    Route::post('/peminjaman/{id}/approve', [PeminjamanRuanganController::class, 'approve'])->name('peminjaman.approve');
-    Route::post('/peminjaman/{id}/reject', [PeminjamanRuanganController::class, 'reject'])->name('peminjaman.reject');
+    Route::post('/peminjaman/{id}/approve', [PeminjamanRuanganController::class, 'approvePeminjaman'])->name('peminjaman.approve');
+    Route::post('/peminjaman/reject/{id}', [PeminjamanRuanganController::class, 'rejectPeminjaman'])->name('peminjaman.reject');
 });
 Route::get('/kalender', [PeminjamanRuanganController::class, 'showCalendar'])->name('kalender');
+
 
 // Route untuk Peminjam - Ajukan Peminjaman
 Route::middleware(['auth:peminjam'])->group(function () {

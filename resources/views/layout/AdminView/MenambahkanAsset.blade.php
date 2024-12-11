@@ -6,26 +6,39 @@
     <div class="container mx-auto px-6 py-8">
         <h2 class="text-3xl font-semibold text-center mb-8 text-gray-800">{{ isset($asset) ? 'Edit Asset' : 'Tambah Asset' }}
         </h2>
-
         @if (session('success'))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-                <strong class="font-bold">Sukses: </strong>
-                <span class="block sm:inline">{{ session('success') }}</span>
-            </div>
+            <script>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sukses!',
+                    text: '{{ session('success') }}',
+                    confirmButtonText: 'OK'
+                });
+            </script>
         @endif
+
         @if (session('message'))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-                <strong class="font-bold">Sukses: </strong>
-                <span class="block sm:inline">{{ session('message') }}</span>
-            </div>
+            <script>
+                Swal.fire({
+                    icon: 'info',
+                    title: 'PESAN:',
+                    text: '{{ session('message') }}',
+                    confirmButtonText: 'OK'
+                });
+            </script>
         @endif
 
         @if (session('error'))
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                <strong class="font-bold">Error: </strong>
-                <span class="block sm:inline">{{ session('error') }}</span>
-            </div>
+            <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error:',
+                    text: '{{ session('error') }}',
+                    confirmButtonText: 'OK'
+                });
+            </script>
         @endif
+
 
 
         <form action="{{ isset($asset) ? route('asset.update', $asset->id) : route('asset.store') }}" method="POST"
