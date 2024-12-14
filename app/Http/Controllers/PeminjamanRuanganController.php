@@ -79,10 +79,29 @@ class PeminjamanRuanganController extends Controller
     }
 
 
-
     public function store(Request $request)
     {
         $this->updateRoomAvailability();
+
+        $now = now();
+
+        // Validasi tambahan untuk waktu peminjaman
+        if (Carbon::parse($request->tanggal_mulai)->lessThan($now->addMinutes(15))) {
+            return back()->withInput()->with('sweet-alert', [
+                'icon' => 'error',
+                'title' => 'Gagal Menyimpan Peminjaman',
+                'text' => 'Waktu mulai peminjaman harus minimal 15 menit dari sekarang.'
+            ]);
+        }
+
+        if (Carbon::parse($request->tanggal_mulai)->diffInMinutes(Carbon::parse($request->tanggal_selesai)) < 60) {
+            return back()->withInput()->with('sweet-alert', [
+                'icon' => 'error',
+                'title' => 'Gagal Menyimpan Peminjaman',
+                'text' => 'Durasi peminjaman minimal adalah 1 jam.'
+            ]);
+        }
+
         $validated = $request->validate([
             'ruangan_id' => 'required|exists:ruangan,id',
             'tanggal_mulai' => 'required|date|before:tanggal_selesai',
@@ -100,7 +119,6 @@ class PeminjamanRuanganController extends Controller
             'tanggal_selesai.after' => 'Tanggal selesai harus setelah tanggal mulai.',
         ]);
 
-
         // Mengecek apakah ada peminjaman lain yang tumpang tindih
         $existingBooking = PeminjamanRuangan::where('ruangan_id', $request->ruangan_id)
             ->where('status_peminjaman', 'disetujui')
@@ -108,14 +126,12 @@ class PeminjamanRuanganController extends Controller
                 $query->whereBetween('tanggal_mulai', [$request->tanggal_mulai, $request->tanggal_selesai])
                     ->orWhereBetween('tanggal_selesai', [$request->tanggal_mulai, $request->tanggal_selesai])
                     ->orWhere(function ($query) use ($request) {
-                        // Cek juga jika peminjaman baru berada di antara waktu yang ada, seperti 'mulai' baru setelah 'selesai' lama
                         $query->where('tanggal_mulai', '<=', $request->tanggal_selesai)
                             ->where('tanggal_selesai', '>=', $request->tanggal_mulai);
                     });
             })
             ->exists();
         if ($existingBooking) {
-            // Jika ada peminjaman yang tumpang tindih, kembalikan dengan pesan error
             return back()->withInput()->with('sweet-alert', [
                 'icon' => 'error',
                 'title' => 'Gagal Menyimpan Peminjaman',
@@ -132,6 +148,7 @@ class PeminjamanRuanganController extends Controller
             'status_peminjaman' => 'pending',
             'tujuan_peminjaman' => $request->tujuan_peminjaman
         ]);
+
         return redirect()->route('peminjaman.create')->with('success', 'Pengajuan peminjaman berhasil dikirim.');
     }
 
