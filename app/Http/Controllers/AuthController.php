@@ -118,16 +118,22 @@ class AuthController extends Controller
         // Check if the user exists and is approved
         $peminjam = peminjam::where('email', $request->email)->first();
         if (!$peminjam || !$peminjam->is_approved) {
-            return back()->withErrors(['email' => 'Email ini tidak terdaftar atau belum disetujui,sehingga tidak dapat diproses!!']);
+            // Redirect back with error and SweetAlert
+            return back()->with('error', 'Email ini tidak terdaftar atau belum disetujui, sehingga tidak dapat diproses.');
         }
 
         // Send the password reset email
         $status = Password::broker('peminjam')->sendResetLink($request->only('email'));
 
-        return $status === Password::RESET_LINK_SENT
-            ? back()->with('status', __($status))
-            : back()->withErrors(['email' => __($status)]);
+        if ($status === Password::RESET_LINK_SENT) {
+            // Success
+            return back()->with('status', 'Link reset password telah dikirimkan ke email Anda.');
+        } else {
+            // Error
+            return back()->with('error', 'Gagal mengirimkan link reset password. Coba lagi nanti.');
+        }
     }
+
 
 
     // Menampilkan formulir reset password
