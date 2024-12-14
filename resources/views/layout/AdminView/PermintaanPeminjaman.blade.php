@@ -32,7 +32,7 @@
         @else
             <form action="{{ route('peminjaman.batch_action') }}" method="POST" id="batch-form">
                 @csrf
-                <div class="overflow-x-auto shadow-md sm:rounded-lg">
+                <div class="overflow-x-auto overflow-y-auto max-h-[500px] bg-white shadow-md rounded-lg">
                     <table class="w-full text-sm text-left text-gray-500">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-200 sticky top-0">
                             <tr>

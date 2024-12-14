@@ -41,7 +41,7 @@
                 <i class="fas fa-sync-alt text-xl"></i> <!-- Ikon refresh -->
             </button>
             <!-- Room Table -->
-            <div class="bg-white shadow-md rounded-lg overflow-x-auto">
+            <div class="overflow-x-auto overflow-y-auto max-h-[500px] bg-white shadow-md rounded-lg">
                 @if ($ruangan->count() > 0)
                     <table class="min-w-full table-auto" id="roomTable">
                         <thead class="bg-blue-600 text-white uppercase text-sm">

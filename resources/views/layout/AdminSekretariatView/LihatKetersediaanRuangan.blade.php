@@ -55,7 +55,7 @@
             </div>
 
             <!-- Room Table -->
-            <div class="bg-white shadow-lg rounded-lg overflow-auto">
+            <div class="overflow-x-auto overflow-y-auto max-h-[500px] bg-white shadow-md rounded-lg">
                 @if ($rooms->count() > 0)
                     <table id="roomTable" class="min-w-full table-auto">
                         <thead class="bg-indigo-600 text-white text-sm uppercase">

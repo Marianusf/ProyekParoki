@@ -39,7 +39,7 @@
                 </script>
             @endif
 
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto overflow-y-auto max-h-[500px] bg-white shadow-md rounded-lg">
                 <table class="min-w-full bg-white border border-gray-200 rounded-lg">
                     <thead>
                         <tr class="w-full bg-blue-600 text-white uppercase text-sm leading-normal">
