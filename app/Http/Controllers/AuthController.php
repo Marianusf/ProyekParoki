@@ -70,6 +70,8 @@ class AuthController extends Controller
                 return redirect()->route('admin.dashboard')->with('message', 'Login berhasil sebagai Admin');
             } elseif ($admin->role === 'sekretariat') {
                 return redirect()->route('sekretariat.dashboard')->with('message', 'Login berhasil sebagai Sekretariat');
+            } elseif ($admin->role === 'paramenta') {
+                return redirect()->route('paramenta.dashboard')->with('message', 'Login berhasil sebagai Paramenta');
             }
         }
 

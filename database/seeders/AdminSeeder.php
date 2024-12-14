@@ -25,12 +25,12 @@ class AdminSeeder extends Seeder
             'password' => Hash::make(env('SEKRETARIAT_PASSWORD')), // Mengambil password dari .env
             'role' => 'sekretariat',
         ]);
-        // Admin::create([
-        //     'nama' => 'Admin Paramenta',
-        //     'email' => 'sekretariat@gmail.com',
-        //     'nomor_telepon' => '081234567891',
-        //     'password' => Hash::make(env('PARAMENTA_PASSWORD')), // Mengambil password dari .env
-        //     'role' => 'paramenta',
-        // ]);
+        Admin::create([
+            'nama' => 'Admin Paramenta',
+            'email' => 'paramenta@gmail.com',
+            'nomor_telepon' => '081234567891',
+            'password' => Hash::make(env('PARAMENTA_PASSWORD')), // Mengambil password dari .env
+            'role' => 'paramenta',
+        ]);
     }
 }

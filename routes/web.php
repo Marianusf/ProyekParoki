@@ -88,6 +88,9 @@ Route::middleware('auth:admin')->group(function () {
     Route::get('/sekretariat/dashboard', function () {
         return view('layout.AdminSekretariatView.HomeAdminSekretariat');
     })->name('sekretariat.dashboard');
+    Route::get('/paramenta/dashboard', function () {
+        return view('layout.AdminParamentaView.HomeAdminParamenta');
+    })->name('paramenta.dashboard');
 
     // Rute untuk memproses persetujuan akun peminjam hanya untuk admin
     Route::post('/approve/{id}', [AuthController::class, 'approve'])->name('approve.peminjam');
