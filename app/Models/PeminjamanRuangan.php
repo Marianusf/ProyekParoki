@@ -19,6 +19,7 @@ class PeminjamanRuangan extends Model
         'admin_id',
         'tanggal_mulai',
         'tanggal_selesai',
+        'tujuan_peminjaman',
         'status_peminjaman',
         'alasan_penolakan',
     ];

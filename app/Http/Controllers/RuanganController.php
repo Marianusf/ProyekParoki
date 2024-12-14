@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ruangan;
+use App\Models\PeminjamanRuangan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -142,12 +143,30 @@ class RuanganController extends Controller
             'fasilitas' => $fasilitas,  // Pass the existing fasilitas data
         ]);
     }
-
     public function cekKetersediaanRuangan()
     {
-        $room = Ruangan::where('kondisi', 'baik')->get();
-        return view('layout.AdminSekretariatView.LihatKetersediaanRuangan', compact('room'));
+        // Ambil semua ruangan dengan kondisi baik
+        $rooms = Ruangan::where('kondisi', 'baik')->get();
+
+        foreach ($rooms as $room) {
+            // Cek apakah ada peminjaman aktif untuk ruangan ini
+            $isBooked = PeminjamanRuangan::where('ruangan_id', $room->id)
+                ->where('status_peminjaman', 'disetujui')
+                ->where(function ($query) {
+                    $query->where('tanggal_mulai', '<=', now())
+                        ->where('tanggal_selesai', '>=', now());
+                })
+                ->exists();
+
+            // Tambahkan status peminjaman sementara (tidak disimpan di database)
+            $room->status_peminjaman = $isBooked ? 'dipinjam' : 'tersedia';
+        }
+
+        // Kirim data ke view
+        return view('layout.AdminSekretariatView.LihatKetersediaanRuangan', compact('rooms'));
     }
+
+
     public function lihatSemuaRuangan()
     {
         $ruangan = Ruangan::paginate(1000); // Ambil semua data asset dari database

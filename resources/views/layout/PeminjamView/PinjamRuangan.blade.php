@@ -49,13 +49,19 @@
                 class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition">Histori
                 Peminjaman</button>
         </div>
-
+        <button onclick="window.location.reload();"
+            class="bg-transparent text-blue-500 hover:text-blue-700 p-2 rounded-full transition duration-200 ease-in-out"
+            title="Refresh halaman">
+            <i class="fas fa-sync-alt text-xl"></i> <!-- Ikon refresh -->
+        </button>
         <!-- Formulir Peminjaman -->
         <div id="form-tab" class="tab-content">
             <h1 class="text-3xl font-extrabold text-center text-gray-800 mb-8">Ajukan Peminjaman Ruangan</h1>
+
             <form method="POST" action="{{ route('peminjaman.store') }}"
                 class="bg-white rounded-lg shadow-lg p-8 space-y-6 transition-all duration-300 ease-in-out transform hover:scale-105">
                 @csrf
+
                 <!-- Input Hidden untuk Peminjam ID -->
                 <input type="hidden" name="peminjam_id" value="{{ Auth::user()->id }}">
 
@@ -67,52 +73,69 @@
                     <select id="ruangan_id" name="ruangan_id"
                         class="w-full border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-300 py-3 mt-2 transition duration-300 ease-in-out hover:ring-blue-500">
                         <option value="" disabled selected>Pilih ruangan...</option>
-                        @foreach ($ruangan_baik as $item)
-                            <option value="{{ $item->id }}" data-fasilitas="{{ $item->fasilitas }}">{{ $item->nama }}
-                            </option>
+                        @foreach ($ruangan_baik as $ruang)
+                            <option value="{{ $ruang->id }}">{{ $ruang->nama }}</option>
                         @endforeach
                     </select>
-                </div>
-
-                <!-- Tampilkan Fasilitas -->
-                <div class="mb-6">
-                    <label for="fasilitas" class="block text-lg font-semibold text-gray-700 flex items-center">
-                        <i class="fas fa-tools mr-2 text-green-500"></i> Fasilitas
-                    </label>
-                    <div id="fasilitas" class="p-4 border border-gray-300 rounded-lg bg-gray-100 text-gray-700">
-                        Pilih ruangan untuk melihat fasilitas
-                    </div>
+                    @error('ruangan_id')
+                        <div class="text-red-500 text-sm mt-2">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <!-- Tanggal Mulai -->
                 <div class="mb-6">
                     <label for="tanggal_mulai" class="block text-lg font-semibold text-gray-700 flex items-center">
-                        <i class="fas fa-calendar-alt mr-2 text-purple-500"></i> Tanggal Mulai
+                        <i class="fas fa-calendar-alt mr-2 text-blue-500"></i> Tanggal Mulai
                     </label>
                     <input type="datetime-local" id="tanggal_mulai" name="tanggal_mulai"
                         class="w-full border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-300 py-3 mt-2 transition duration-300 ease-in-out hover:ring-blue-500"
-                        required>
+                        value="{{ old('tanggal_mulai') }}">
+                    @error('tanggal_mulai')
+                        <div class="text-red-500 text-sm mt-2">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <!-- Tanggal Selesai -->
                 <div class="mb-6">
                     <label for="tanggal_selesai" class="block text-lg font-semibold text-gray-700 flex items-center">
-                        <i class="fas fa-calendar-check mr-2 text-green-500"></i> Tanggal Selesai
+                        <i class="fas fa-calendar-check mr-2 text-blue-500"></i> Tanggal Selesai
                     </label>
                     <input type="datetime-local" id="tanggal_selesai" name="tanggal_selesai"
                         class="w-full border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-300 py-3 mt-2 transition duration-300 ease-in-out hover:ring-blue-500"
-                        required>
+                        value="{{ old('tanggal_selesai') }}">
+                    @error('tanggal_selesai')
+                        <div class="text-red-500 text-sm mt-2">{{ $message }}</div>
+                    @enderror
+                </div>
+                <!-- Tujuan Peminjaman -->
+                <div class="mb-6">
+                    <label for="tujuan_peminjaman" class="block text-lg font-semibold text-gray-700 flex items-center">
+                        <i class="fas fa-info-circle mr-2 text-blue-500"></i> Tujuan Peminjaman
+                    </label>
+                    <textarea id="tujuan_peminjaman" name="tujuan_peminjaman" rows="4"
+                        class="w-full border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-300 py-3 mt-2 transition duration-300 ease-in-out hover:ring-blue-500"
+                        placeholder="Jelaskan tujuan peminjaman ruangan...">{{ old('tujuan_peminjaman') }}</textarea>
+
+                    @error('tujuan_peminjaman')
+                        <div class="text-red-500 text-sm mt-2">{{ $message }}</div>
+                    @enderror
                 </div>
 
-                <!-- Submit Button -->
-                <div class="text-right">
+
+                <!-- Button Submit -->
+                <div class="mb-6">
                     <button type="submit"
-                        class="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition duration-200 transform hover:scale-105">
+                        class="w-full bg-blue-500 text-white py-3 rounded-lg text-lg font-semibold transition-all duration-300 hover:bg-blue-600">
                         Ajukan Peminjaman
                     </button>
+
                 </div>
+
             </form>
+
+
         </div>
+
 
         <!-- Histori Peminjaman -->
         <div id="history-tab" class="tab-content hidden">

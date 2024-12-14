@@ -26,14 +26,7 @@
                     </span>
                 </div>
                 <!-- Filtering -->
-                <div class="flex gap-4 w-full md:w-1/2">
-                    <select id="filterStatus"
-                        class="border border-gray-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-blue-500">
-                        <option value="">Semua Status</option>
-                        <option value="tersedia">Tersedia</option>
-                        <option value="dipinjam">Sedang Dipinjam</option>
-                        <option value="tidak_bisa_dipinjam">Tidak Bisa Dipinjam</option>
-                    </select>
+                <div class="w-full md:w-1/2">
                     <select id="filterCondition"
                         class="border border-gray-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-blue-500">
                         <option value="">Semua Kondisi</option>
@@ -42,7 +35,11 @@
                     </select>
                 </div>
             </div>
-
+            <button onclick="window.location.reload();"
+                class="bg-transparent text-blue-500 hover:text-blue-700 p-2 rounded-full transition duration-200 ease-in-out"
+                title="Refresh halaman">
+                <i class="fas fa-sync-alt text-xl"></i> <!-- Ikon refresh -->
+            </button>
             <!-- Room Table -->
             <div class="bg-white shadow-md rounded-lg overflow-x-auto">
                 @if ($ruangan->count() > 0)
@@ -55,14 +52,14 @@
                                 <th class="py-3 px-6 text-left">Kondisi</th>
                                 <th class="py-3 px-6 text-left">Deskripsi</th>
                                 <th class="py-3 px-6 text-left">Fasilitas</th>
-                                <th class="py-3 px-6 text-center">Status</th>
                                 <th class="py-3 px-6 text-left">Tanggal Ditambahkan</th>
                                 <th class="py-3 px-6 text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="text-gray-800 text-sm">
                             @foreach ($ruangan as $room)
-                                <tr class="border-b hover:bg-gray-100 transition duration-300">
+                                <tr class="border-b hover:bg-gray-100 transition duration-300"
+                                    data-condition="{{ strtolower(str_replace(' ', '_', $room->kondisi)) }}">
                                     <td class="py-3 px-6">
                                         @if ($room->gambar)
                                             <img src="{{ asset('storage/' . $room->gambar) }}"
@@ -74,16 +71,8 @@
                                     </td>
                                     <td class="py-3 px-6">{{ $room->nama }}</td>
                                     <td class="py-3 px-6">{{ $room->kapasitas }}</td>
-                                    <td class="py-3 px-6">
-                                        @if ($room->kondisi === 'dalam_perbaikan')
-                                            <span class="text-yellow-500">Dalam Perbaikan</span>
-                                        @elseif ($room->kondisi === 'baik')
-                                            <span class="text-green-500">Baik</span>
-                                        @else
-                                            <span class="text-gray-500">Tidak diketahui</span>
-                                        @endif
-                                    </td>
-                                    <td class="py-3 px-6">{{ Str::limit($room->deskripsi, 50) }}</td>
+                                    <td class="py-3 px-6">{{ ucfirst(str_replace('_', ' ', $room->kondisi)) }}</td>
+                                    <td class="py-3 px-6">{{ Str::limit($room->deskripsi, 70) }}</td>
                                     <td class="py-3 px-6">
                                         @if ($room->fasilitas)
                                             <ol class="list-decimal list-inside text-gray-600">
@@ -95,28 +84,15 @@
                                             <span class="text-gray-500">Tidak ada fasilitas</span>
                                         @endif
                                     </td>
-                                    <td class="py-3 px-6 text-center">
-                                        <span
-                                            class="px-3 py-1 rounded-full text-white text-xs
-                                            {{ $room->status === 'tersedia'
-                                                ? 'bg-green-500'
-                                                : ($room->status === 'dipinjam'
-                                                    ? 'bg-yellow-500'
-                                                    : ($room->status === 'tidak_bisa_dipinjam'
-                                                        ? 'bg-red-500'
-                                                        : 'bg-gray-500')) }}">
-                                            {{ ucfirst(str_replace('_', ' ', $room->status)) }}
-                                        </span>
-                                    </td>
                                     <td class="py-3 px-6">{{ $room->created_at->format('d-m-Y') }}</td>
                                     <td class="py-3 px-6 text-center flex justify-center space-x-2">
                                         <a href="{{ route('ruangan.edit', $room->id) }}"
-                                            class="text-yellow-500 hover:text-yellow-700 transition duration-300"
+                                            class="text-yellow-500 hover:text-yellow-700 transition duration-300 btn-edit"
                                             title="Edit Ruangan">
                                             <i class="fas fa-pencil-alt"></i>
                                         </a>
                                         <button type="button" onclick="deleteRoom({{ $room->id }})"
-                                            class="text-red-500 hover:text-red-700 transition duration-300"
+                                            class="text-red-500 hover:text-red-700 transition duration-300 btn-delete"
                                             title="Hapus Ruangan">
                                             <i class="fas fa-trash"></i>
                                         </button>
@@ -137,42 +113,69 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const searchInput = document.getElementById('search');
-            const filterStatus = document.getElementById('filterStatus');
             const filterCondition = document.getElementById('filterCondition');
             const tableRows = document.querySelectorAll('#roomTable tbody tr');
 
             const filterTable = () => {
                 const searchText = searchInput.value.toLowerCase();
-                const statusFilter = filterStatus.value.toLowerCase();
                 const conditionFilter = filterCondition.value.toLowerCase();
 
                 tableRows.forEach(row => {
-                    const cells = row.querySelectorAll('td');
-                    const name = cells[1]?.textContent.toLowerCase() || '';
-                    const status = cells[6]?.textContent.toLowerCase().trim() ||
-                    ''; // Pastikan status juga lowercase
-                    const condition = cells[3]?.textContent.toLowerCase().trim() ||
-                    ''; // Pastikan kondisi juga lowercase
+                    const name = row.querySelectorAll('td')[1]?.textContent.toLowerCase() || '';
+                    const condition = row.dataset.condition || '';
                     let isMatch = true;
 
                     // Filter berdasarkan pencarian teks
                     if (searchText && !name.includes(searchText)) isMatch = false;
 
-                    // Filter berdasarkan status
-                    if (statusFilter && statusFilter !== '' && !status.includes(statusFilter)) isMatch =
-                        false;
-
                     // Filter berdasarkan kondisi
-                    if (conditionFilter && conditionFilter !== '' && !condition.includes(
-                            conditionFilter)) isMatch = false;
+                    if (conditionFilter && conditionFilter !== '' && condition !== conditionFilter) {
+                        isMatch = false;
+                    }
 
                     row.style.display = isMatch ? '' : 'none';
                 });
             };
 
             searchInput.addEventListener('input', filterTable);
-            filterStatus.addEventListener('change', filterTable);
             filterCondition.addEventListener('change', filterTable);
+
+            // SweetAlert untuk tombol
+            document.querySelectorAll('.btn-delete').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: 'Anda yakin?',
+                        text: "Data ruangan ini akan dihapus secara permanen!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Ya, hapus!',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            Swal.fire(
+                                'Dihapus!',
+                                'Ruangan berhasil dihapus.',
+                                'success'
+                            );
+                        }
+                    });
+                });
+            });
+
+            document.querySelectorAll('.btn-edit').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Edit Ruangan',
+                        text: 'Mengedit ruangan ini.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                });
+            });
         });
     </script>
 @endsection
