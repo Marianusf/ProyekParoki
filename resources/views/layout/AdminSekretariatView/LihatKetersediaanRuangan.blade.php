@@ -24,20 +24,39 @@
                     <span class="block sm:inline">{{ session('error') }}</span>
                 </div>
             @endif
+            <button onclick="window.location.reload();"
+                class="bg-transparent text-blue-500 hover:text-blue-700 p-2 rounded-full transition duration-200 ease-in-out"
+                title="Refresh halaman">
+                <i class="fas fa-sync-alt text-xl"></i> <!-- Ikon refresh -->
+            </button>
+            <!-- Filter dan Search -->
+            <div class="flex space-x-4 mb-6">
+                <!-- Search -->
+                <div class="relative flex-grow">
+                    <input type="text" id="search"
+                        class="border border-gray-300 rounded-lg p-3 w-full pl-12 focus:ring-2 focus:ring-blue-500"
+                        placeholder="Cari ruangan...">
+                    <span class="absolute left-4 top-3 text-gray-400">
+                        <i class="fas fa-search text-lg"></i> <!-- FontAwesome Icon -->
+                    </span>
+                </div>
 
-            <!-- Searching -->
-            <div class="relative mb-6">
-                <input type="text" id="search"
-                    class="border border-gray-300 rounded-lg p-3 w-full pl-12 focus:ring-2 focus:ring-blue-500"
-                    placeholder="Cari ruangan...">
-                <span class="absolute left-4 top-3 text-gray-400">
-                    <i class="fas fa-search text-lg"></i> <!-- FontAwesome Icon -->
-                </span>
+                <!-- Filter Dropdown -->
+                <select id="statusFilter" class="border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500">
+                    <option value="all">Semua</option>
+                    <option value="tersedia">Tersedia</option>
+                    <option value="dipinjam">Dipinjam</option>
+                </select>
+
+                <!-- Sorting Button -->
+                <button id="sortByName" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+                    Urutkan Berdasarkan Nama
+                </button>
             </div>
 
             <!-- Room Table -->
-            <div class="bg-white shadow-lg rounded-lg overflow-auto">
-                @if ($room->count() > 0)
+            <div class="overflow-x-auto overflow-y-auto max-h-[500px] bg-white shadow-md rounded-lg">
+                @if ($rooms->count() > 0)
                     <table id="roomTable" class="min-w-full table-auto">
                         <thead class="bg-indigo-600 text-white text-sm uppercase">
                             <tr>
@@ -50,8 +69,9 @@
                             </tr>
                         </thead>
                         <tbody class="text-gray-800 text-sm">
-                            @foreach ($room as $room)
-                                <tr class="border-b hover:bg-gray-100 transition duration-300">
+                            @foreach ($rooms as $room)
+                                <tr class="border-b hover:bg-gray-100 transition duration-300"
+                                    data-status="{{ $room->status_peminjaman }}">
                                     <!-- Gambar -->
                                     <td class="py-3 px-6">
                                         @if ($room->gambar)
@@ -64,7 +84,7 @@
                                     </td>
 
                                     <!-- Nama -->
-                                    <td class="py-3 px-6 highlight-cell" data-highlight="true">{{ $room->nama }}</td>
+                                    <td class="py-3 px-6 highlight-cell">{{ $room->nama }}</td>
 
                                     <!-- Kapasitas -->
                                     <td class="py-3 px-6">{{ $room->kapasitas }}</td>
@@ -86,11 +106,11 @@
                                     </td>
 
                                     <!-- Status -->
-                                    <td class="py-3 px-6 text-center">
+                                    <td class="py-3 px-6 text-center status-column">
                                         <span
-                                            class="px-3 py-1 rounded-full text-white text-xs 
-                                        {{ $room->status == 'tersedia' ? 'bg-green-500' : 'bg-red-500' }}">
-                                            {{ ucfirst($room->status) }}
+                                            class="px-3 py-1 rounded-full text-white text-xs
+                                            {{ $room->status_peminjaman == 'tersedia' ? 'bg-green-500' : 'bg-red-500' }}">
+                                            {{ ucfirst($room->status_peminjaman) }}
                                         </span>
                                     </td>
                                 </tr>
@@ -101,17 +121,21 @@
                     <!-- Empty State -->
                     <div class="p-6 text-center">
                         <h3 class="text-gray-600 text-lg">Belum ada ruangan yang tersedia.</h3>
-                        <p class="text-gray-500">Anda dapat menambahkan ruangan baru dengan tombol di atas.</p>
                     </div>
                 @endif
             </div>
         </div>
     </section>
+
+    <!-- Script untuk Filtering, Sorting, dan Pencarian -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const searchInput = document.getElementById('search');
+            const statusFilter = document.getElementById('statusFilter');
+            const sortByNameButton = document.getElementById('sortByName');
             const tableRows = document.querySelectorAll('#roomTable tbody tr');
 
+            // Filter berdasarkan pencarian
             const filterTable = () => {
                 const searchText = searchInput.value.toLowerCase();
 
@@ -120,23 +144,9 @@
                     let isMatch = false;
 
                     cells.forEach(cell => {
-                        // Abaikan cell yang memiliki elemen HTML lain (seperti gambar)
-                        if (cell.querySelector('img') || cell.querySelector('ol')) {
-                            return;
-                        }
-
-                        const originalContent = cell.getAttribute('data-original-content') ||
-                            cell.textContent.trim();
-                        cell.setAttribute('data-original-content',
-                        originalContent); // Simpan teks asli
-
-                        if (originalContent.toLowerCase().includes(searchText) && searchText) {
+                        if (!cell.textContent) return; // Abaikan sel kosong
+                        if (cell.textContent.toLowerCase().includes(searchText)) {
                             isMatch = true;
-                            const regex = new RegExp(`(${searchText})`, 'gi');
-                            cell.innerHTML = originalContent.replace(regex,
-                                `<span class="bg-yellow-200">$1</span>`);
-                        } else {
-                            cell.innerHTML = originalContent; // Kembalikan teks asli
                         }
                     });
 
@@ -144,9 +154,39 @@
                 });
             };
 
-            searchInput.addEventListener('input', filterTable);
+            // Filter berdasarkan status
+            const filterByStatus = () => {
+                const selectedStatus = statusFilter.value;
+
+                tableRows.forEach(row => {
+                    const rowStatus = row.getAttribute('data-status');
+                    row.style.display = (selectedStatus === 'all' || rowStatus === selectedStatus) ?
+                        '' : 'none';
+                });
+            };
+
+            // Sorting berdasarkan nama
+            const sortByName = () => {
+                const tableBody = document.querySelector('#roomTable tbody');
+                const rowsArray = Array.from(tableRows);
+
+                rowsArray.sort((a, b) => {
+                    const nameA = a.querySelector('td:nth-child(2)').textContent.trim().toLowerCase();
+                    const nameB = b.querySelector('td:nth-child(2)').textContent.trim().toLowerCase();
+                    return nameA.localeCompare(nameB);
+                });
+
+                rowsArray.forEach(row => tableBody.appendChild(row));
+            };
+
+            // Event listeners
+            searchInput.addEventListener('input', () => {
+                filterTable();
+                filterByStatus();
+            });
+
+            statusFilter.addEventListener('change', filterByStatus);
+            sortByNameButton.addEventListener('click', sortByName);
         });
     </script>
-
-
 @endsection

@@ -47,7 +47,7 @@
         </div>
 
         <!-- Tabel Ketersediaan Asset -->
-        <div class="overflow-x-auto bg-white shadow-md rounded-md mb-6 max-h-96">
+        <div class="overflow-x-auto overflow-y-auto max-h-[500px] bg-white shadow-md rounded-lg">
             <table class="min-w-full table-auto">
                 <thead>
                     <tr class="bg-gray-100 text-left text-sm text-gray-600">

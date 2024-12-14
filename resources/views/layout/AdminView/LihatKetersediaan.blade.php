@@ -41,9 +41,7 @@
             </script>
         @endif
 
-
-        <!-- Tabel Ketersediaan Asset -->
-        <div class="overflow-x-auto bg-white shadow-md rounded-md mb-6">
+        <div class="overflow-x-auto overflow-y-auto max-h-[500px] bg-white shadow-md rounded-lg">
             <table class="min-w-full table-auto">
                 <thead>
                     <tr class="bg-gray-100 text-left text-sm text-gray-600">
@@ -60,7 +58,6 @@
                             <td class="px-6 py-4 text-sm text-gray-800">{{ $asset->nama_barang }}</td>
                             <td class="py-6 px-4 text-sm">
                                 @if ($asset->gambar)
-                                    <!-- Debugging: Outputkan URL gambar untuk memeriksa jalur yang benar -->
                                     <img src="{{ asset('storage/' . $asset->gambar) }}"
                                         alt="Gambar {{ $asset->nama_barang }}" class="w-20 h-20 object-cover rounded-lg">
                                 @else

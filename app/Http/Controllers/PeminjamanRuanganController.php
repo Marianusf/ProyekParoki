@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\MailPeminjamanStatus;
 use App\Mail\MailPeminjamanStatusRuangan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class PeminjamanRuanganController extends Controller
 {
@@ -37,13 +38,8 @@ class PeminjamanRuanganController extends Controller
         $peminjamans = PeminjamanRuangan::where('tanggal_selesai', '<=', $now)
             ->where('status_peminjaman', 'disetujui') // Hanya yang disetujui
             ->get();
-
-        foreach ($peminjamans as $peminjaman) {
-            // Periksa apakah tanggal selesai sudah lebih kecil atau sama dengan waktu sekarang
-            if (Carbon::parse($peminjaman->tanggal_selesai)->lte($now)) {
-                // Perbarui status menjadi "tersedia" (available)
-                $peminjaman->update(['status_peminjaman' => 'selesai']);
-            }
+        foreach ($peminjamans as $booking) {
+            $booking->update(['status_peminjaman' => 'selesai']);
         }
     }
 
@@ -55,7 +51,6 @@ class PeminjamanRuanganController extends Controller
             ->where('tanggal_selesai', '>=', now())  // Hanya tampilkan yang belum selesai
             ->get();
         $historiSelesai = PeminjamanRuangan::where('status_peminjaman', 'selesai')->get();
-
         // Ambil data ruangan yang kondisi baik
         $ruangan_baik = Ruangan::where('kondisi', 'baik')->get();
 
@@ -84,19 +79,40 @@ class PeminjamanRuanganController extends Controller
     }
 
 
-
     public function store(Request $request)
     {
         $this->updateRoomAvailability();
+
+        $now = now();
+
+        // Validasi tambahan untuk waktu peminjaman
+        if (Carbon::parse($request->tanggal_mulai)->lessThan($now->addMinutes(15))) {
+            return back()->withInput()->with('sweet-alert', [
+                'icon' => 'error',
+                'title' => 'Gagal Menyimpan Peminjaman',
+                'text' => 'Waktu mulai peminjaman harus minimal 15 menit dari sekarang.'
+            ]);
+        }
+
+        if (Carbon::parse($request->tanggal_mulai)->diffInMinutes(Carbon::parse($request->tanggal_selesai)) < 60) {
+            return back()->withInput()->with('sweet-alert', [
+                'icon' => 'error',
+                'title' => 'Gagal Menyimpan Peminjaman',
+                'text' => 'Durasi peminjaman minimal adalah 1 jam.'
+            ]);
+        }
+
         $validated = $request->validate([
             'ruangan_id' => 'required|exists:ruangan,id',
             'tanggal_mulai' => 'required|date|before:tanggal_selesai',
             'tanggal_selesai' => 'required|date|after:tanggal_mulai',
+            'tujuan_peminjaman' => 'required'
         ], [
             'ruangan_id.required' => 'Ruangan harus dipilih.',
             'ruangan_id.exists' => 'Ruangan yang dipilih tidak ada.',
             'tanggal_mulai.required' => 'Tanggal mulai harus diisi.',
             'tanggal_mulai.date' => 'Tanggal mulai tidak valid.',
+            'tujuan_peminjaman' => 'Tujuan Peminjaman Ruangan Harus di isi.',
             'tanggal_mulai.before' => 'Tanggal mulai harus sebelum tanggal selesai.',
             'tanggal_selesai.required' => 'Tanggal selesai harus diisi.',
             'tanggal_selesai.date' => 'Tanggal selesai tidak valid.',
@@ -110,15 +126,17 @@ class PeminjamanRuanganController extends Controller
                 $query->whereBetween('tanggal_mulai', [$request->tanggal_mulai, $request->tanggal_selesai])
                     ->orWhereBetween('tanggal_selesai', [$request->tanggal_mulai, $request->tanggal_selesai])
                     ->orWhere(function ($query) use ($request) {
-                        // Cek juga jika peminjaman baru berada di antara waktu yang ada, seperti 'mulai' baru setelah 'selesai' lama
                         $query->where('tanggal_mulai', '<=', $request->tanggal_selesai)
                             ->where('tanggal_selesai', '>=', $request->tanggal_mulai);
                     });
             })
             ->exists();
-
         if ($existingBooking) {
-            return back()->with('error', 'Ruangan sudah dipinjam pada waktu tersebut.');
+            return back()->withInput()->with('sweet-alert', [
+                'icon' => 'error',
+                'title' => 'Gagal Menyimpan Peminjaman',
+                'text' => 'Ruangan sudah dipinjam pada waktu tersebut.'
+            ]);
         }
 
         // Simpan peminjaman
@@ -127,10 +145,10 @@ class PeminjamanRuanganController extends Controller
             'peminjam_id' => auth()->guard('peminjam')->id(),
             'tanggal_mulai' => $request->tanggal_mulai,
             'tanggal_selesai' => $request->tanggal_selesai,
-            'status' => 'pending',
+            'status_peminjaman' => 'pending',
+            'tujuan_peminjaman' => $request->tujuan_peminjaman
         ]);
 
-        // Redirect dengan pesan sukses
         return redirect()->route('peminjaman.create')->with('success', 'Pengajuan peminjaman berhasil dikirim.');
     }
 
@@ -194,14 +212,12 @@ class PeminjamanRuanganController extends Controller
             $peminjaman->save();
 
             DB::commit();
-
-            // Flash message untuk sukses
             session()->flash('sweet-alert', [
                 'icon' => 'success',
                 'title' => 'Berhasil!',
                 'text' => "Peminjaman oleh {$peminjaman->peminjam->name} telah disetujui.",
             ]);
-
+            $this->sendStatusEmail($peminjaman, 'disetujui', null);
             return redirect()->back();
         } catch (\Exception $e) {
             DB::rollBack();
