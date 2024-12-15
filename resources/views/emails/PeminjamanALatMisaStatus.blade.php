@@ -103,8 +103,8 @@
                 @endif
             @endif
             <ul class="item-list">
-                @foreach ($alatMisaDetails as $item)
-                    <li>{{ $item['nama_barang'] }} (Jumlah: {{ $item['jumlah'] }})</li>
+                @foreach ($alatmisa as $item)
+                    <li>{{ $item['nama_alat'] }} (Jumlah: {{ $item['jumlah'] }})</li>
                 @endforeach
             </ul>
 

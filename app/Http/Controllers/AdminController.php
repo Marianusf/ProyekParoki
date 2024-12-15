@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Peminjam;
 use App\Models\Peminjaman;
+use App\Models\PeminjamanAlatMisa;
 use App\Models\Pengembalian;
 use Illuminate\Http\Request;
 
@@ -33,5 +34,10 @@ class AdminController extends Controller
             ->get();
 
         return view('layout.AdminView.PermintaanPengembalian', compact('pengembalian'));
+    }
+    public function lihatPermintaanPeminjamanAlatMisa()
+    {
+        $alatMisaRequests = PeminjamanAlatMisa::where('status_peminjaman', 'pending')->with(['alatmisa', 'peminjam'])->get();
+        return view('layout.AdminParamentaView.PermintaanPeminjamanAlatMisa', compact('alatMisaRequests'));
     }
 }

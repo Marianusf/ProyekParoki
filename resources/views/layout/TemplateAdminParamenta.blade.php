@@ -127,8 +127,8 @@
                 <i class="bi bi-person-check-fill"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Persetujuan Akun</span>
             </a>
-            <a href="{{ route('lihatPermintaanPeminjaman') }}"
-                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('lihatPermintaanPeminjaman') ? 'bg-gray-700' : '' }}">
+            <a href="{{ route('lihatPermintaanPeminjamanAlatMisa') }}"
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('lihatPermintaanPeminjamanAlatMisa') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-check-square-fill"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Persetujuan Peminjaman</span>
             </a>
@@ -147,10 +147,10 @@
                 <i class="bi bi-list-ul"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Lihat Alat Misa</span>
             </a>
-            <a href="{{ route('ketersediaanAsset') }}"
-                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('ketersediaanAsset') ? 'bg-gray-700' : '' }}">
+            <a href="{{ route('lihatKetersediaanAlatMisa') }}"
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('lihatKetersediaanAlatMisa') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-eye-fill"></i>
-                <span class="text-[15px] ml-4 text-gray-200">Cek Ketersediaan Aset</span>
+                <span class="text-[15px] ml-4 text-gray-200">Cek Ketersediaan Alat Misa</span>
             </a>
             <hr class="my-4 text-gray-600">
             <a href="{{ route('lihat.peminjam.aktif') }}"

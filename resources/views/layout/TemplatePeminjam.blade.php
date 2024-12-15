@@ -149,8 +149,8 @@
                 class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('riwayatPeminjaman') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-clock-history"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Riwayat Peminjaman</span>
-            </a>
- --}}
+            </a> --}}
+
 
             <!-- Grup Menu Peminjaman Alat Misa -->
             <div class="p-2.5 mt-4 text-gray-400 uppercase">Peminjaman Alat Misa</div>

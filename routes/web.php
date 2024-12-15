@@ -12,8 +12,7 @@ use App\Http\Controllers\PeminjamanRuanganController;
 use App\Http\Controllers\PeminjamController;
 use App\Http\Controllers\PengembalianController;
 use App\Http\Controllers\RuanganController;
-
-
+use App\Models\Alat_Misa;
 
 //peminjamanRuangan
 // Route untuk Sekretariat - Mengelola Permintaan Peminjaman
@@ -162,7 +161,7 @@ Route::post('/peminjaman/{id}/tolak', [PeminjamanController::class, 'tolakPeminj
 Route::post('/peminjaman/batch-action', [PeminjamanController::class, 'batchAction'])->name('peminjaman.batch_action');
 
 // });
-Route::get('/admin/peminjaman', [AdminController::class, 'lihatPermintaanPeminjaman'])->name('lihatPermintaanPeminjaman');
+Route::get('/admin/peminjamanasset', [AdminController::class, 'lihatPermintaanPeminjaman'])->name('lihatPermintaanPeminjaman');
 Route::get('/ketersediaan-asset', [AssetController::class, 'cekKetersediaanAsset'])->name('ketersediaanAsset');
 
 
@@ -208,4 +207,10 @@ Route::get('/riwayat-peminjaman', [PeminjamanAlatMisaController::class, 'lihatRi
 // Route untuk menampilkan halaman form peminjaman
 Route::get('/pinjam-asset', [PeminjamanAlatMisaController::class, 'tampilPinjamAlatMisa'])->name('pinjam.alatmisa');
 Route::get('/peminjam/ketersediaan-asset', [AlatMisaController::class, 'peminjamLihatKetersediaanAsset'])->name('peminjam.ketersediaanAsset');
+Route::get('/admin/peminjamanalatmisa', [AdminController::class, 'lihatPermintaanPeminjamanAlatMisa'])->name('lihatPermintaanPeminjamanAlatMisa');
 // });
+Route::post('/peminjamanalatmisa/{id}/setujui', [PeminjamanALatMisaController::class, 'setujuiPeminjamanAlatMisa'])->name('alatmisa.setujui');
+Route::post('/peminjamanalatmisa/{id}/tolak', [PeminjamanALatMisaController::class, 'tolakPeminjaman'])->name('alatmisa.tolak');
+// Batch action untuk setujui atau tolak peminjaman sekaligus banyak
+Route::post('/peminjamanalatmisa/batch-action', [PeminjamanALatMisaController::class, 'batchAction'])->name('alatmisa.batch_action');
+Route::get('/ketersediaan-alatmisa', [AlatMisaController::class, 'cekKetersediaanAlatMisa'])->name('lihatKetersediaanAlatMisa');

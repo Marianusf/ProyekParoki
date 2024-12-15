@@ -49,12 +49,18 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div>
                     <label for="id_alatmisa">Pilih Alat Misa</label>
-                    <select name="id_alatmisa" id="id_alatmisa" class="form-control" required>
+                    <select name="id_alatmisa" id="id_alatmisa"
+                        class="mt-2 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-400 focus:border-blue-400"
+                        required>
                         <option value="" disabled selected>Pilih Alat</option>
                         @foreach ($alat_misa as $alat)
-                            <option value="{{ $alat->id }}">{{ $alat->nama_alat }} - {{ $alat->jenis_alat }}</option>
+                            <option value="{{ $alat->id }}" data-stok="{{ $alat->stok_tersedia }}"
+                                data-detail='@json($alat->detail_alat ?? [])'>
+                                {{ $alat->nama_alat }} - {{ $alat->jenis_alat }}
+                            </option>
                         @endforeach
                     </select>
+
 
                 </div>
 
@@ -69,7 +75,11 @@
                     <p class="text-sm text-gray-600 mt-1 stok-info"></p>
                 </div>
             </div>
-
+            <!-- Detail Alat -->
+            <div id="detail_alat" class="hidden mt-6">
+                <h3 class="text-lg font-semibold mb-2 text-gray-800">Detail Alat</h3>
+                <ul id="detail_list" class="list-disc pl-6 text-gray-600"></ul>
+            </div>
             <!-- Tanggal Pinjam dan Kembali -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div>
@@ -109,9 +119,48 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const alatMisaSelect = document.getElementById('id_alat_misa');
+            const alatMisaSelect = document.getElementById('id_alatmisa');
             const jumlahInput = document.getElementById('jumlah');
             const stokInfo = document.querySelector('.stok-info');
+            const detailAlatDiv = document.getElementById('detail_alat');
+            const detailList = document.getElementById('detail_list');
+
+            alatMisaSelect.addEventListener('change', function() {
+                const selectedOption = alatMisaSelect.options[alatMisaSelect.selectedIndex];
+                const stokTersedia = parseInt(selectedOption.getAttribute('data-stok'), 10);
+                const detailAlat = JSON.parse(selectedOption.getAttribute('data-detail'));
+
+                // Update stok info
+                stokInfo.textContent = stokTersedia > 0 ? `Stok tersedia: ${stokTersedia}` : 'Stok habis';
+                jumlahInput.max = stokTersedia;
+                jumlahInput.value = '';
+
+                // Update detail alat
+                detailList.innerHTML = '';
+                if (detailAlat.length > 0) {
+                    detailAlat.forEach(detail => {
+                        const li = document.createElement('li');
+                        li.textContent = `${detail.nama_detail} - Jumlah: ${detail.jumlah}`;
+                        detailList.appendChild(li);
+                    });
+                    detailAlatDiv.classList.remove('hidden');
+                } else {
+                    detailAlatDiv.classList.add('hidden');
+                }
+            });
+
+            jumlahInput.addEventListener('input', function() {
+                if (parseInt(this.value, 10) > parseInt(this.max, 10)) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Jumlah Melebihi Stok',
+                        text: `Jumlah maksimum: ${this.max}`,
+                        confirmButtonText: 'OK'
+                    });
+                    this.value = this.max;
+                }
+            });
+
             const submitButton = document.querySelector('button[type="submit"]');
 
             const updateStok = () => {
