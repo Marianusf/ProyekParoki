@@ -4,34 +4,93 @@
     <div class="container mx-auto py-8">
         <h2 class="text-2xl font-bold mb-6">Permintaan Pengembalian</h2>
 
+        @if (session('sweet-alert'))
+            <script>
+                Swal.fire({
+                    icon: '{{ session('sweet-alert.icon') }}',
+                    title: '{{ session('sweet-alert.title') }}',
+                    text: '{{ session('sweet-alert.text') }}',
+                    showConfirmButton: true,
+                    timer: 5000
+                });
+            </script>
+        @endif
         @if ($errors->any())
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
-                <strong class="font-bold">Pemberitahuan: </strong>
-                <ul class="list-disc pl-5">
+            <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validasi Gagal',
+                    html: `
+            <ul style="text-align: left;">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        `,
+                    confirmButtonText: 'OK'
+                });
+            </script>
+        @endif
+        <!-- Notifikasi -->
+        @if (session('success'))
+            <script>
+                Swal.fire({
+                    title: 'Berhasil!',
+                    text: "{{ session('success') }}",
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            </script>
+        @endif
+        @if (session('sweet-alert'))
+            <script>
+                Swal.fire({
+                    icon: '{{ session('sweet-alert.icon') }}',
+                    title: '{{ session('sweet-alert.title') }}',
+                    text: '{{ session('sweet-alert.text') }}',
+                    showConfirmButton: true,
+                    timer: 5000
+                });
+            </script>
+        @endif
+        @if ($errors->any())
+            <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validasi Gagal',
+                    html: `
+                <ul style="text-align: left;">
                     @foreach ($errors->all() as $error)
-                        <li><strong>{{ $error }}</strong></li>
+                        <li>{{ $error }}</li>
                     @endforeach
                 </ul>
-            </div>
+            `,
+                    confirmButtonText: 'OK'
+                });
+            </script>
         @endif
+        <!-- Notifikasi -->
         @if (session('success'))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-                <strong class="font-bold">Sukses: </strong>
-                <span class="block sm:inline">{{ session('success') }}</span>
-            </div>
-        @endif
-        @if (session('message'))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-                <strong class="font-bold">PESAN : </strong>
-                <span class="block sm:inline">{{ session('message') }}</span>
-            </div>
-        @endif
-
+            <script>
+                Swal.fire({
+                    title: 'Berhasil!',
+                    text: "{{ session('success') }}",
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            </script>
+        @endif <button onclick="window.location.reload();"
+            class="bg-transparent text-blue-500 hover:text-blue-700 p-2 rounded-full transition duration-200 ease-in-out"
+            title="Refresh halaman">
+            <i class="fas fa-sync-alt text-xl"></i> <!-- Ikon refresh -->
+        </button>
         @if ($pengembalian->isEmpty())
             <p class="text-gray-700">Tidak ada permintaan pengembalian saat ini.</p>
         @else
             <form action="{{ route('pengembalian.batch_action') }}" method="POST" id="batch-form">
                 @csrf
+                <input type="hidden" name="action" value="">
+                <input type="hidden" name="alasan_penolakan" value="">
                 <div class="overflow-x-auto overflow-y-auto max-h-[500px] bg-white shadow-md rounded-lg">
                     <table class="w-full text-sm text-left text-gray-500">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-200 sticky top-0">
@@ -249,13 +308,27 @@
             }
 
             function batchRejectRequests() {
+                const selectedRequests = Array.from(document.querySelectorAll('.request-checkbox:checked'))
+                    .map(checkbox => checkbox.value);
+
+                if (selectedRequests.length === 0) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Tidak Ada Pilihan!',
+                        text: 'Harap pilih setidaknya satu permintaan untuk ditolak.',
+                    });
+                    return; // Hentikan proses jika tidak ada checkbox yang dipilih
+                }
+
                 Swal.fire({
-                    title: "Tolak Pengembalian",
+                    title: "Tolak Semua Pengembalian",
                     input: 'textarea',
                     inputPlaceholder: 'Alasan penolakan...',
                     showCancelButton: true,
                     confirmButtonText: 'Kirim Penolakan',
                     cancelButtonText: 'Batal',
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
                     inputValidator: (value) => {
                         if (!value) {
                             return 'Anda harus memberikan alasan!';
@@ -263,12 +336,16 @@
                     }
                 }).then((result) => {
                     if (result.isConfirmed) {
+                        // Tambahkan data alasan ke input hidden
                         document.querySelector('input[name="action"]').value = 'reject';
                         document.querySelector('input[name="alasan_penolakan"]').value = result.value;
-                        batchForm.submit();
+
+                        // Submit form
+                        document.getElementById('batch-form').submit();
                     }
                 });
             }
+
 
             function submitActionForm(actionUrl, reason = null) {
                 const form = document.createElement('form');

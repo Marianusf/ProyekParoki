@@ -1,8 +1,8 @@
 @extends('layout.TemplatePeminjam')
-@section('title', 'Pengajuan Pengembalian')
+@section('title', 'Pengajuan Peminjaman Alat Misa')
 @section('content')
     <div class="container mx-auto py-10 px-6">
-        <h2 class="text-4xl font-extrabold text-center text-gray-800 mb-10">Formulir Peminjaman Aset</h2>
+        <h2 class="text-4xl font-extrabold text-center text-gray-800 mb-10">Formulir Peminjaman Alat Misa</h2>
 
         <!-- SweetAlert Notifications -->
         @if (session('success'))
@@ -33,35 +33,34 @@
                 });
             </script>
         @endif
+
         <button onclick="window.location.reload();"
             class="bg-transparent text-blue-500 hover:text-blue-700 p-2 rounded-full transition duration-200 ease-in-out"
             title="Refresh halaman">
             <i class="fas fa-sync-alt text-xl"></i> <!-- Ikon refresh -->
         </button>
+
         <!-- Form -->
-        <form action="{{ route('keranjang.tambah') }}" method="POST" class="bg-white shadow-lg rounded-xl p-8 space-y-6">
+        <form action="{{ route('keranjangAlatMisa.tambah') }}" method="POST"
+            class="bg-white shadow-lg rounded-xl p-8 space-y-6">
             @csrf
 
-            <!-- Pilih Asset -->
+            <!-- Pilih Alat Misa -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div>
-                    <label for="id_asset" class="block text-lg font-semibold text-gray-700 flex items-center">
-                        <i class="fas fa-box text-blue-500 mr-2"></i>Pilih Aset
-                    </label>
-                    <select id="id_asset" name="id_asset"
-                        class="mt-2 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
-                        required>
-                        @foreach ($asset as $item)
-                            <option value="{{ $item->id }}" data-stok="{{ $item->stok_tersedia }}">
-                                {{ $item->nama_barang }} - {{ $item->deskripsi }}
-                            </option>
+                    <label for="id_alatmisa">Pilih Alat Misa</label>
+                    <select name="id_alatmisa" id="id_alatmisa" class="form-control" required>
+                        <option value="" disabled selected>Pilih Alat</option>
+                        @foreach ($alat_misa as $alat)
+                            <option value="{{ $alat->id }}">{{ $alat->nama_alat }} - {{ $alat->jenis_alat }}</option>
                         @endforeach
                     </select>
+
                 </div>
 
                 <!-- Jumlah -->
                 <div>
-                    <label for="jumlah" class="block text-lg font-semibold text-gray-700 flex items-center">
+                    <label for="jumlah" class="block text-lg font-semibold text-gray-700 ">
                         <i class="fas fa-sort-numeric-up text-green-500 mr-2"></i>Jumlah
                     </label>
                     <input type="number" id="jumlah" name="jumlah"
@@ -74,7 +73,7 @@
             <!-- Tanggal Pinjam dan Kembali -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div>
-                    <label for="tanggal_peminjaman" class="block text-lg font-semibold text-gray-700 flex items-center">
+                    <label for="tanggal_peminjaman" class="text-lg font-semibold text-gray-700 flex items-center gap-2">
                         <i class="fas fa-calendar-alt text-purple-500 mr-2"></i>Tanggal Pinjam
                     </label>
                     <input type="date" id="tanggal_peminjaman" name="tanggal_peminjaman"
@@ -83,7 +82,7 @@
                 </div>
 
                 <div>
-                    <label for="tanggal_pengembalian" class="block text-lg font-semibold text-gray-700 flex items-center">
+                    <label for="tanggal_pengembalian" class="text-lg font-semibold text-gray-700 flex items-center gap-2">
                         <i class="fas fa-calendar-check text-green-500 mr-2"></i>Tanggal Kembali
                     </label>
                     <input type="date" id="tanggal_pengembalian" name="tanggal_pengembalian"
@@ -99,7 +98,7 @@
                     Tambah ke Keranjang
                 </button>
 
-                <a href="{{ route('lihatKeranjang') }}"
+                <a href="{{ route('lihatKeranjangAlatMisa') }}"
                     class="text-blue-500 hover:text-blue-700 flex items-center space-x-2">
                     <i class="fas fa-shopping-cart text-3xl"></i>
                     <span class="text-lg font-semibold">Lihat Keranjang</span>
@@ -110,13 +109,13 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const assetSelect = document.getElementById('id_asset');
+            const alatMisaSelect = document.getElementById('id_alat_misa');
             const jumlahInput = document.getElementById('jumlah');
             const stokInfo = document.querySelector('.stok-info');
             const submitButton = document.querySelector('button[type="submit"]');
 
             const updateStok = () => {
-                const selectedOption = assetSelect.options[assetSelect.selectedIndex];
+                const selectedOption = alatMisaSelect.options[alatMisaSelect.selectedIndex];
                 const stokTersedia = parseInt(selectedOption.getAttribute('data-stok'), 10);
 
                 if (stokTersedia === 0) {
@@ -127,7 +126,7 @@
                     Swal.fire({
                         icon: 'error',
                         title: 'Stok Habis',
-                        text: 'Stok aset yang dipilih sudah habis.',
+                        text: 'Stok alat misa yang dipilih sudah habis.',
                         confirmButtonText: 'OK'
                     });
                 } else {
@@ -148,14 +147,14 @@
                     Swal.fire({
                         icon: 'warning',
                         title: 'Jumlah Melebihi Stok',
-                        text: `Stok maksimum untuk aset ini adalah ${max}.`,
+                        text: `Stok maksimum untuk alat misa ini adalah ${max}.`,
                         confirmButtonText: 'OK',
                         timer: 3000
                     });
                 }
             });
 
-            assetSelect.addEventListener('change', updateStok);
+            alatMisaSelect.addEventListener('change', updateStok);
             updateStok();
         });
     </script>

@@ -6,6 +6,9 @@ use App\Models\Peminjaman;
 use App\Models\Pengembalian;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Mail\MailPengembalianBarangStatus;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 
 class PengembalianController extends Controller
 {
@@ -62,78 +65,163 @@ class PengembalianController extends Controller
         return redirect()->back()->with('success', 'Permintaan pengembalian berhasil dikirim');
     }
 
-
-
-    public function setujui($id)
+    // Fungsi Approve
+    public function approve($id)
     {
-        $pengembalian = Pengembalian::findOrFail($id);
 
-        // Mengakses asset melalui relasi peminjaman
-        $asset = $pengembalian->peminjaman->asset;
+        if (Auth::guard('admin')->check()) {
+            // Ambil ID admin yang sedang login
+            $adminId = Auth::guard('admin')->user()->id;
 
-        if ($asset) {
-            // Kurangi jumlah terpinjam pada asset
-            $asset->jumlah_terpinjam -= 1;
-            $asset->save();  // Simpan perubahan ke database
+            // Ambil model Pengembalian berdasarkan ID
+            $pengembalian = Pengembalian::findOrFail($id); // ID Pengembalian yang diterima
+
+            // Perbarui status pengembalian
+            $pengembalian->update([
+                'status' => 'approved',  // Ubah status pengembalian menjadi disetujui
+                'id_admin' => $adminId,   // Simpan ID admin yang meng-approve
+            ]);
+            // Mengurangi jumlah terpinjam pada asset terkait sesuai jumlah yang dikembalikan
+            $jumlahDikembalikan = $pengembalian->peminjaman->jumlah; // Ambil jumlah yang dipinjam
+            $asset = $pengembalian->peminjaman->asset;
+            if ($asset && $asset->jumlah_terpinjam >= $jumlahDikembalikan) {
+                $asset->jumlah_terpinjam -= $jumlahDikembalikan; // Kurangi dengan jumlah yang dikembalikan
+                $asset->save();
+            }
+            // Kirim email notifikasi ke peminjam
+            $peminjamName = $pengembalian->peminjaman->peminjam->name;
+            $assetDetails = [
+                'nama_barang' => $pengembalian->peminjaman->asset->nama_barang,
+                'jumlah' => $pengembalian->peminjaman->jumlah,
+            ];
+
+            Mail::to($pengembalian->peminjaman->peminjam->email)->send(
+                new MailPengembalianBarangStatus('approved', null, $peminjamName, $assetDetails)
+            );
+
+            return redirect()->back()->with('success', 'Pengembalian berhasil disetujui.');
         }
-
-        // Ubah status pengembalian menjadi approved
-        $pengembalian->status = 'approved';
-        $pengembalian->save();
-
-        // Logika untuk mengirim email atau pemberitahuan lainnya jika diperlukan
-        return redirect()->back()->with('success', 'Permintaan pengembalian disetujui.');
     }
-
-
-    public function tolak(Request $request, $id)
+    // Fungsi Reject
+    public function reject(Request $request, $id)
     {
-        $pengembalian = Pengembalian::findOrFail($id);
-        $pengembalian->status = 'rejected';
-        $pengembalian->alasan_penolakan = $request->alasan_penolakan;
-        $pengembalian->save();
+        $request->validate([
+            'alasan_penolakan' => 'required|string|max:255',
+        ]);
 
-        // Kirim email notifikasi ke peminjam
-        // Mail::to($pengembalian->peminjam->email)->send(new \App\Mail\PenolakanPengembalianMail($pengembalian));
-        return redirect()->back()->with('success', 'Permintaan Pengembalian Berhasil ditolak');
+        if (Auth::guard('admin')->check()) {
+            // Ambil ID admin yang sedang login
+            $adminId = Auth::guard('admin')->user()->id;
+
+            // Ambil model Pengembalian berdasarkan ID
+            $pengembalian = Pengembalian::findOrFail($id); // ID Pengembalian yang diterima
+
+            // Perbarui status pengembalian
+            $pengembalian->update([
+                'status' => 'rejected',  // Ubah status pengembalian menjadi disetujui
+                'id_admin' => $adminId,   // Simpan ID admin yang meng-approve
+                $pengembalian->alasan_penolakan = $request->alasan_penolakan
+            ]);
+            // Kirim email notifikasi ke peminjam
+            $peminjamName = $pengembalian->peminjaman->peminjam->name;
+            $assetDetails = [
+                'nama_barang' => $pengembalian->peminjaman->asset->nama_barang,
+                'jumlah' => $pengembalian->peminjaman->jumlah,
+            ];
+            Mail::to($pengembalian->peminjaman->peminjam->email)->send(
+                new MailPengembalianBarangStatus('rejected', $pengembalian->alasan_penolakan, $peminjamName, $assetDetails)
+            );
+
+            return redirect()->back()->with('success', 'Pengembalian berhasil ditolak.');
+        }
     }
-
     public function batchAction(Request $request)
     {
+        // Validasi manual
+        $validator = Validator::make($request->all(), [
+            'selected_requests' => 'required|array',
+            'action' => 'required|string|in:approve,reject',
+            'alasan_penolakan' => 'nullable|string|max:255',
+        ], [
+            'selected_requests.required' => 'Anda harus memilih setidaknya satu permintaan.',
+            'selected_requests.array' => 'Format data tidak valid.',
+            'action.required' => 'Aksi harus dipilih.',
+            'action.in' => 'Aksi tidak valid.',
+            'alasan_penolakan.string' => 'Alasan penolakan harus berupa teks.',
+            'alasan_penolakan.max' => 'Alasan penolakan tidak boleh lebih dari 255 karakter.',
+        ]);
+
+        // Jika validasi gagal
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+
+            return redirect()->back()->with([
+                'sweet-alert' => [
+                    'icon' => 'error',
+                    'title' => 'Validasi Gagal',
+                    'text' => implode(' ', $errors), // Gabungkan semua pesan error
+                ],
+            ]);
+        }
+
         $selectedRequests = $request->input('selected_requests', []);
         $action = $request->input('action');
         $alasan_penolakan = $request->input('alasan_penolakan', null);
 
-        if ($action == 'approve') {
-            $pengembalian = Pengembalian::whereIn('id', $selectedRequests)->get();
-            foreach ($pengembalian as $item) {
-                $item->status = 'approved';
-                $item->save();
+        $pengembalians = Pengembalian::whereIn('id', $selectedRequests)->get();
 
-                // Mengurangi jumlah terpinjam pada asset yang terkait
-                $asset = $item->peminjaman->asset;  // Mengakses asset melalui relasi peminjaman
-                if ($asset && $asset->jumlah_terpinjam > 0) {
-                    $asset->jumlah_terpinjam -= 1;  // Mengurangi jumlah terpinjam
-                    $asset->save();
+        foreach ($pengembalians as $item) {
+            // Periksa apakah admin sedang login
+            if (Auth::guard('admin')->check()) {
+                $adminId = Auth::guard('admin')->user()->id;
+
+                if ($action == 'approve') {
+                    // Perbarui status menjadi approved
+                    $item->update([
+                        'status' => 'approved',
+                        'id_admin' => $adminId,
+                    ]);
+
+                    // Mengurangi jumlah terpinjam pada asset terkait
+                    $asset = $item->peminjaman->asset;
+                    $jumlahDikembalikan = $item->peminjaman->jumlah;
+                    if ($asset && $asset->jumlah_terpinjam >= $jumlahDikembalikan) {
+                        $asset->jumlah_terpinjam -= $jumlahDikembalikan;
+                        $asset->save();
+                    }
+
+                    // Kirim email notifikasi ke peminjam
+                    $peminjamName = $item->peminjaman->peminjam->name;
+                    $assetDetails = [
+                        'nama_barang' => $item->peminjaman->asset->nama_barang,
+                        'jumlah' => $item->peminjaman->jumlah,
+                    ];
+
+                    Mail::to($item->peminjaman->peminjam->email)->send(
+                        new MailPengembalianBarangStatus('approved', null, $peminjamName, $assetDetails)
+                    );
+                } elseif ($action == 'reject' && $alasan_penolakan) {
+                    // Perbarui status menjadi rejected
+                    $item->update([
+                        'status' => 'rejected',
+                        'id_admin' => $adminId,
+                        'alasan_penolakan' => $alasan_penolakan,
+                    ]);
+
+                    // Kirim email notifikasi ke peminjam
+                    $peminjamName = $item->peminjaman->peminjam->name;
+                    $assetDetails = [
+                        'nama_barang' => $item->peminjaman->asset->nama_barang,
+                        'jumlah' => $item->peminjaman->jumlah,
+                    ];
+
+                    Mail::to($item->peminjaman->peminjam->email)->send(
+                        new MailPengembalianBarangStatus('rejected', $alasan_penolakan, $peminjamName, $assetDetails)
+                    );
                 }
             }
-            return redirect()->back()->with('success', 'Permintaan pengembalian yang dipilih berhasil disetujui.');
-        } elseif ($action == 'reject' && $alasan_penolakan) {
-            // Update status penolakan dan alasan penolakan
-            Pengembalian::whereIn('id', $selectedRequests)->update([
-                'status' => 'rejected',
-                'alasan_penolakan' => $alasan_penolakan
-            ]);
-
-            // Kirim email notifikasi penolakan untuk setiap peminjam
-            foreach ($selectedRequests as $requestId) {
-                $pengembalian = Pengembalian::findOrFail($requestId);
-                // Mail::to($pengembalian->peminjaman->peminjam->email)
-                //     ->send(new \App\Mail\PenolakanPengembalianMail($pengembalian));
-            }
-            return redirect()->back()->with('success', 'Permintaan pengembalian yang dipilih berhasil ditolak.');
         }
 
-        return redirect()->back()->withErrors(['error' => 'Aksi tidak valid.']);
+        return redirect()->back()->with('success', 'Batch pengembalian berhasil diproses.');
     }
 }

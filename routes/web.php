@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PeminjamanController;
+use App\Http\Controllers\AlatMisaController;
+use App\Http\Controllers\PeminjamanAlatMisaController;
 use App\Http\Controllers\PeminjamanRuanganController;
 use App\Http\Controllers\PeminjamController;
 use App\Http\Controllers\PengembalianController;
@@ -88,6 +90,9 @@ Route::middleware('auth:admin')->group(function () {
     Route::get('/sekretariat/dashboard', function () {
         return view('layout.AdminSekretariatView.HomeAdminSekretariat');
     })->name('sekretariat.dashboard');
+    Route::get('/paramenta/dashboard', function () {
+        return view('layout.AdminParamentaView.HomeAdminParamenta');
+    })->name('paramenta.dashboard');
 
     // Rute untuk memproses persetujuan akun peminjam hanya untuk admin
     Route::post('/approve/{id}', [AuthController::class, 'approve'])->name('approve.peminjam');
@@ -148,7 +153,6 @@ Route::get('/riwayat-peminjaman', [PeminjamanController::class, 'lihatRiwayatPem
 // Route untuk menampilkan halaman form peminjaman
 Route::get('/pinjam-asset', [PeminjamanController::class, 'tampilPinjamAsset'])->name('pinjam.asset');
 Route::get('/peminjam/ketersediaan-asset', [AssetController::class, 'peminjamLihatKetersediaanAsset'])->name('peminjam.ketersediaanAsset');
-
 // });
 
 // Route::middleware(['auth', 'can:isAdmin'])->group(function () {
@@ -176,6 +180,32 @@ Route::patch('/admin/pengembalian/{id}/approve', [PengembalianController::class,
 Route::patch('/admin/pengembalian/{id}/reject', [PengembalianController::class, 'rejectPengembalian'])->name('pengembalian.reject');
 
 Route::get('/pengembalian', [PengembalianController::class, 'index'])->name('pengembalian.index');
-Route::post('/pengembalian/setujui/{id}', [PengembalianController::class, 'setujui'])->name('pengembalian.setujui');
-Route::post('/pengembalian/tolak/{id}', [PengembalianController::class, 'tolak'])->name('pengembalian.tolak');
+Route::post('/pengembalian/setujui/{id}', [PengembalianController::class, 'approve'])->name('pengembalian.setujui');
+Route::post('/pengembalian/tolak/{id}', [PengembalianController::class, 'reject'])->name('pengembalian.tolak');
 Route::post('/pengembalian/batch_action', [PengembalianController::class, 'batchAction'])->name('pengembalian.batch_action');
+
+
+
+
+Route::prefix('alat-misa')->group(function () {
+    Route::get('/', [AlatMisaController::class, 'index'])->name('alat_misa.index');
+    Route::get('/create', [AlatMisaController::class, 'create'])->name('alat_misa.create');
+    Route::post('/', [AlatMisaController::class, 'store'])->name('alat_misa.store');
+    Route::get('/{id}/edit', [AlatMisaController::class, 'edit'])->name('alat_misa.edit');
+    Route::put('/{id}', [AlatMisaController::class, 'update'])->name('alat_misa.update');
+    Route::delete('/{id}', [AlatMisaController::class, 'destroy'])->name('alat_misa.destroy');
+});
+
+
+
+//untuk Paramenta alat misa
+// Route::middleware(['auth:peminjam'])->group(function () {
+Route::post('/keranjang/tambah', [PeminjamanAlatMisaController::class, 'tambahKeKeranjangAlatMisa'])->name('keranjangAlatMisa.tambah');
+Route::get('/keranjang', [PeminjamanAlatMisaController::class, 'lihatKeranjangAlatMisa'])->name('lihatKeranjangAlatMisa');
+Route::post('/checkout', [PeminjamanAlatMisaController::class, 'prosesCheckoutAlatMisa'])->name('checkout');
+Route::get('/riwayat-peminjaman', [PeminjamanAlatMisaController::class, 'lihatRiwayatPeminjaman'])->name('riwayatPeminjamanAlatMisa');
+// Menampilkan halaman peminjaman asset
+// Route untuk menampilkan halaman form peminjaman
+Route::get('/pinjam-asset', [PeminjamanAlatMisaController::class, 'tampilPinjamAlatMisa'])->name('pinjam.alatmisa');
+Route::get('/peminjam/ketersediaan-asset', [AlatMisaController::class, 'peminjamLihatKetersediaanAsset'])->name('peminjam.ketersediaanAsset');
+// });
