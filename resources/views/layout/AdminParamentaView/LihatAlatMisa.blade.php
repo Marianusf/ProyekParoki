@@ -20,69 +20,71 @@
         @if ($alatMisa->isEmpty())
             <p class="text-center text-gray-500">Belum ada data alat misa.</p>
         @else
-            <table class="min-w-full bg-white shadow-md rounded-lg">
-                <thead class="bg-blue-600 text-white">
-                    <tr>
-                        <th class="py-3 px-6 text-left">Gambar</th>
-                        <th class="py-3 px-6 text-left">Nama Alat</th>
-                        <th class="py-3 px-6 text-left">Jenis</th>
-                        <th class="py-3 px-6 text-center">Jumlah</th>
-                        <th class="py-3 px-6 text-center">Detail Alat</th>
-                        <th class="py-3 px-6 text-center">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($alatMisa as $alat)
-                        <tr class="hover:bg-gray-100 border-b">
-                            <td class="py-4 px-6 text-center">
-                                @if (!empty($alat->gambar))
-                                    <img src="{{ asset('storage/' . $alat->gambar) }}" alt="Gambar {{ $alat->nama_alat }}"
-                                        class="w-16 h-16 rounded shadow">
-                                @else
-                                    <span class="text-gray-500">Tidak ada gambar</span>
-                                @endif
-                            </td>
-                            <td class="py-4 px-6">{{ $alat->nama_alat }}</td>
-                            <td class="py-4 px-6">{{ $alat->jenis_alat }}</td>
-                            <td class="py-4 px-6 text-center">{{ $alat->jumlah }}</td>
-                            <td class="py-4 px-6 text-center">
-                                @if (!empty($alat->detail_alat) && is_array($alat->detail_alat))
-                                    <ol class="list-decimal list-inside text-gray-600">
-                                        @foreach ($alat->detail_alat as $detail)
-                                            <li>{{ $detail['nama_detail'] ?? 'Nama Tidak Ada' }} (Jumlah:
-                                                {{ $detail['jumlah'] ?? 0 }})</li>
-                                        @endforeach
-                                    </ol>
-                                @else
-                                    <span class="text-gray-500">Tidak ada Detail Alat</span>
-                                @endif
-                            </td>
-
-
-
-
-                            <!-- Tombol Edit dan Hapus -->
-                            <td class="py-4 px-6 flex justify-center gap-3">
-                                <a href="{{ route('alat_misa.edit', $alat->id) }}"
-                                    class="bg-yellow-500 text-white px-3 py-2 rounded-lg hover:bg-yellow-600">
-                                    Edit
-                                </a>
-
-                                <form id="delete-form-{{ $alat->id }}"
-                                    action="{{ route('alat_misa.destroy', $alat->id) }}" method="POST" class="inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="button" onclick="confirmDelete({{ $alat->id }})"
-                                        class="bg-red-500 text-white px-3 py-2 rounded-lg hover:bg-red-600">
-                                        Hapus
-                                    </button>
-                                </form>
-                            </td>
+            <div class="overflow-x-auto overflow-y-auto max-h-[500px] bg-white shadow-md rounded-lg">
+                <table class="min-w-full bg-white shadow-md rounded-lg">
+                    <thead class="bg-blue-600 text-white">
+                        <tr>
+                            <th class="py-3 px-6 text-left">Gambar</th>
+                            <th class="py-3 px-6 text-left">Nama Alat</th>
+                            <th class="py-3 px-6 text-left">Jenis</th>
+                            <th class="py-3 px-6 text-center">Jumlah</th>
+                            <th class="py-3 px-6 text-center">Detail Alat</th>
+                            <th class="py-3 px-6 text-center">Aksi</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach ($alatMisa as $alat)
+                            <tr class="hover:bg-gray-100 border-b">
+                                <td class="py-4 px-6 text-center">
+                                    @if (!empty($alat->gambar))
+                                        <img src="{{ asset('storage/' . $alat->gambar) }}"
+                                            alt="Gambar {{ $alat->nama_alat }}" class="w-16 h-16 rounded shadow">
+                                    @else
+                                        <span class="text-gray-500">Tidak ada gambar</span>
+                                    @endif
+                                </td>
+                                <td class="py-4 px-6">{{ $alat->nama_alat }}</td>
+                                <td class="py-4 px-6">{{ $alat->jenis_alat }}</td>
+                                <td class="py-4 px-6 text-center">{{ $alat->jumlah }}</td>
+                                <td class="py-4 px-6 text-center">
+                                    @if (!empty($alat->detail_alat) && is_array($alat->detail_alat))
+                                        <ol class="list-decimal list-inside text-gray-600">
+                                            @foreach ($alat->detail_alat as $detail)
+                                                <li>{{ $detail['nama_detail'] ?? 'Nama Tidak Ada' }} (Jumlah:
+                                                    {{ $detail['jumlah'] ?? 0 }})</li>
+                                            @endforeach
+                                        </ol>
+                                    @else
+                                        <span class="text-gray-500">Tidak ada Detail Alat</span>
+                                    @endif
+                                </td>
+
+
+
+
+                                <!-- Tombol Edit dan Hapus -->
+                                <td class="py-4 px-6 flex justify-center gap-3">
+                                    <a href="{{ route('alat_misa.edit', $alat->id) }}"
+                                        class="bg-yellow-500 text-white px-3 py-2 rounded-lg hover:bg-yellow-600">
+                                        Edit
+                                    </a>
+
+                                    <form id="delete-form-{{ $alat->id }}"
+                                        action="{{ route('alat_misa.destroy', $alat->id) }}" method="POST" class="inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="button" onclick="confirmDelete({{ $alat->id }})"
+                                            class="bg-red-500 text-white px-3 py-2 rounded-lg hover:bg-red-600">
+                                            Hapus
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
         @endif
+    </div>
     </div>
     <script>
         function confirmDelete(id) {

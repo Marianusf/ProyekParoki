@@ -16,7 +16,6 @@ return new class extends Migration
             $table->unsignedBigInteger('id_peminjam');
             $table->unsignedBigInteger('id_alatmisa');
             $table->unsignedBigInteger('id_admin')->nullable();
-            $table->string('nama');
             $table->integer('jumlah');
             $table->date('tanggal_peminjaman');
             $table->date('tanggal_pengembalian');

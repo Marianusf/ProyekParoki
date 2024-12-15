@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class PeminjamanAlatMisa extends Model
 {
     use HasFactory;
-
+    protected $table = 'peminjaman_alat_misa'; // Penamaan tabel yang benar
     protected $fillable = [
         'id_peminjam',
         'id_alatmisa',
@@ -31,7 +31,7 @@ class PeminjamanAlatMisa extends Model
     // Relasi dengan alat misa
     public function alatMisa()
     {
-        return $this->belongsTo(AlatMisa::class);
+        return $this->belongsTo(Alat_Misa::class, 'id_alatmisa');
     }
     public function admin()
     {

@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\AlatMisa;
+use App\Models\Alat_Misa;
 
 class AlatMisaController extends Controller
 {
     // Menampilkan daftar alat misa (index)
     public function index()
     {
-        $alatMisa = AlatMisa::paginate(10); // Ambil data alat misa dengan paginasi
+        $alatMisa = Alat_Misa::paginate(10); // Ambil data alat misa dengan paginasi
         return view('layout.AdminParamentaView.LihatAlatMisa', compact('alatMisa'));
     }
 
@@ -58,7 +58,7 @@ class AlatMisaController extends Controller
             : null;
         $detailAlat = $request->has('detail_alat') ? $request->input('detail_alat') : null;
 
-        AlatMisa::create([
+        Alat_Misa::create([
             'nama_alat' => $validated['nama_alat'],
             'jenis_alat' => $validated['jenis_alat'],
             'deskripsi' => $validated['deskripsi'],
@@ -76,7 +76,7 @@ class AlatMisaController extends Controller
     public function edit($id)
     {
 
-        $alatMisa = AlatMisa::findOrFail($id);
+        $alatMisa = Alat_Misa::findOrFail($id);
 
         return view('layout.AdminParamentaView.TambahEditAlatMisa', compact('alatMisa'));
     }
@@ -84,7 +84,7 @@ class AlatMisaController extends Controller
 
     public function update(Request $request, $id)
     {
-        $alatMisa = AlatMisa::findOrFail($id);
+        $alatMisa = Alat_Misa::findOrFail($id);
         // Validasi Input
         // dd($request->all());
 
@@ -147,7 +147,7 @@ class AlatMisaController extends Controller
     // Menghapus data alat misa
     public function destroy($id)
     {
-        $alatMisa = AlatMisa::findOrFail($id);
+        $alatMisa = Alat_Misa::findOrFail($id);
 
         // Hapus gambar jika ada
         if ($alatMisa->gambar && file_exists(public_path('storage/' . $alatMisa->gambar))) {
@@ -163,7 +163,7 @@ class AlatMisaController extends Controller
     // Menampilkan alat misa dengan kondisi "baik" untuk pengguna peminjam
     public function cekKetersediaan()
     {
-        $alatMisa = AlatMisa::where('kondisi', 'baik')->get();
+        $alatMisa = Alat_Misa::where('kondisi', 'baik')->get();
         return view('layout.PeminjamView.LihatKetersediaanAlatMisa', compact('alatMisa'));
     }
 }

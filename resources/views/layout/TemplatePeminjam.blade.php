@@ -123,7 +123,7 @@
             </a>
 
 
-            <!-- Grup Menu Peminjaman Barang dan Aset -->
+            {{-- <!-- Grup Menu Peminjaman Barang dan Aset -->
             <div class="p-2.5 mt-4 text-gray-400 uppercase">Peminjaman Barang dan Aset</div>
             <a href="{{ route('pinjam.asset') }}"
                 class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('pinjam.asset') ? 'bg-gray-700' : '' }}">
@@ -150,17 +150,17 @@
                 <i class="bi bi-clock-history"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Riwayat Peminjaman</span>
             </a>
-
+ --}}
 
             <!-- Grup Menu Peminjaman Alat Misa -->
             <div class="p-2.5 mt-4 text-gray-400 uppercase">Peminjaman Alat Misa</div>
-            <a href=""
+            <a href="{{ route('pinjam.alatmisa') }}"
                 class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('pinjam.alatmisa') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-cone-striped"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Alat Misa</span>
             </a>
-            <a href=""
-                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('lihatKeranjangMisa') ? 'bg-gray-700' : '' }}">
+            <a href="{{ route('lihatKeranjangAlatMisa') }}"
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('lihatKeranjangAlatMisa') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-cart"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Keranjang Alat Misa</span>
             </a>

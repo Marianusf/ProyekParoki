@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class AlatMisa extends Model
+class Alat_Misa extends Model
 {
     use HasFactory;
     protected $table = 'alat_misa'; // Nama tabel di database
@@ -27,7 +27,7 @@ class AlatMisa extends Model
 
     public function keranjang()
     {
-        return $this->hasMany(Keranjang::class);
+        return $this->hasMany(KeranjangAlatMisa::class, 'id_alatmisa');
     }
 
     // Relasi ke peminjaman
@@ -40,8 +40,8 @@ class AlatMisa extends Model
     {
         return $this->jumlah - $this->jumlah_terpinjam;
     }
-    public function pengembalian()
-    {
-        return $this->hasMany(Pengembalian::class); // Menghubungkan dengan model Pengembalian
-    }
+    // public function pengembalian()
+    // {
+    //     return $this->hasMany(Pengembalian::class); // Menghubungkan dengan model Pengembalian
+    // }
 }

@@ -81,7 +81,7 @@
                     {{ old('jenis_alat', $alatMisa->jenis_alat ?? '') == 'alat pendukung' ? 'selected' : '' }}>Alat
                     Pendukung</option>
                 <option value="lainnya"
-                    {{ old('jenis_alat', $alatMisa->jenis_alat ?? '') == 'lainnya' ? 'selected' : '' }}>Lainya</option>
+                    {{ old('jenis_alat', $alatMisa->jenis_alat ?? '') == 'lainnya' ? 'selected' : '' }}>Lainnya</option>
             </select>
 
             <!-- Jumlah -->

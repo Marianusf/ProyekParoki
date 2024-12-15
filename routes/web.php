@@ -7,6 +7,7 @@ use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\AlatMisaController;
+use App\Http\Controllers\PeminjamanAlatMisaController;
 use App\Http\Controllers\PeminjamanRuanganController;
 use App\Http\Controllers\PeminjamController;
 use App\Http\Controllers\PengembalianController;
@@ -152,7 +153,6 @@ Route::get('/riwayat-peminjaman', [PeminjamanController::class, 'lihatRiwayatPem
 // Route untuk menampilkan halaman form peminjaman
 Route::get('/pinjam-asset', [PeminjamanController::class, 'tampilPinjamAsset'])->name('pinjam.asset');
 Route::get('/peminjam/ketersediaan-asset', [AssetController::class, 'peminjamLihatKetersediaanAsset'])->name('peminjam.ketersediaanAsset');
-
 // });
 
 // Route::middleware(['auth', 'can:isAdmin'])->group(function () {
@@ -195,3 +195,17 @@ Route::prefix('alat-misa')->group(function () {
     Route::put('/{id}', [AlatMisaController::class, 'update'])->name('alat_misa.update');
     Route::delete('/{id}', [AlatMisaController::class, 'destroy'])->name('alat_misa.destroy');
 });
+
+
+
+//untuk Paramenta alat misa
+// Route::middleware(['auth:peminjam'])->group(function () {
+Route::post('/keranjang/tambah', [PeminjamanAlatMisaController::class, 'tambahKeKeranjangAlatMisa'])->name('keranjangAlatMisa.tambah');
+Route::get('/keranjang', [PeminjamanAlatMisaController::class, 'lihatKeranjangAlatMisa'])->name('lihatKeranjangAlatMisa');
+Route::post('/checkout', [PeminjamanAlatMisaController::class, 'prosesCheckoutAlatMisa'])->name('checkout');
+Route::get('/riwayat-peminjaman', [PeminjamanAlatMisaController::class, 'lihatRiwayatPeminjaman'])->name('riwayatPeminjamanAlatMisa');
+// Menampilkan halaman peminjaman asset
+// Route untuk menampilkan halaman form peminjaman
+Route::get('/pinjam-asset', [PeminjamanAlatMisaController::class, 'tampilPinjamAlatMisa'])->name('pinjam.alatmisa');
+Route::get('/peminjam/ketersediaan-asset', [AlatMisaController::class, 'peminjamLihatKetersediaanAsset'])->name('peminjam.ketersediaanAsset');
+// });
