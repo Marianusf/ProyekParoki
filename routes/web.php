@@ -179,6 +179,6 @@ Route::patch('/admin/pengembalian/{id}/approve', [PengembalianController::class,
 Route::patch('/admin/pengembalian/{id}/reject', [PengembalianController::class, 'rejectPengembalian'])->name('pengembalian.reject');
 
 Route::get('/pengembalian', [PengembalianController::class, 'index'])->name('pengembalian.index');
-Route::post('/pengembalian/setujui/{id}', [PengembalianController::class, 'setujui'])->name('pengembalian.setujui');
-Route::post('/pengembalian/tolak/{id}', [PengembalianController::class, 'tolak'])->name('pengembalian.tolak');
+Route::post('/pengembalian/setujui/{id}', [PengembalianController::class, 'approve'])->name('pengembalian.setujui');
+Route::post('/pengembalian/tolak/{id}', [PengembalianController::class, 'reject'])->name('pengembalian.tolak');
 Route::post('/pengembalian/batch_action', [PengembalianController::class, 'batchAction'])->name('pengembalian.batch_action');

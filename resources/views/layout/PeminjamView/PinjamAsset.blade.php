@@ -33,7 +33,11 @@
                 });
             </script>
         @endif
-
+        <button onclick="window.location.reload();"
+            class="bg-transparent text-blue-500 hover:text-blue-700 p-2 rounded-full transition duration-200 ease-in-out"
+            title="Refresh halaman">
+            <i class="fas fa-sync-alt text-xl"></i> <!-- Ikon refresh -->
+        </button>
         <!-- Form -->
         <form action="{{ route('keranjang.tambah') }}" method="POST" class="bg-white shadow-lg rounded-xl p-8 space-y-6">
             @csrf
