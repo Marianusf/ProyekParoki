@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class AlatMisa extends Model
 {
     use HasFactory;
-
+    protected $table = 'alat_misa'; // Nama tabel di database
     // Tentukan atribut yang dapat diisi dengan mass assignment
     protected $fillable = [
         'nama_alat',

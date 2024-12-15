@@ -16,6 +16,9 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2"></script>
     <!-- SweetAlert2 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.0/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-Kfw6bRRXLgXjOd+7Kf4Yx8qEzHGGw5FZZDdJx/0SGpBrlgqeycZTArbJm/MJlyZ5ATh8WlhjZGvj7ZwQ3NA76g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.0/dist/sweetalert2.all.min.js"></script>
@@ -134,15 +137,15 @@
                 <i class="bi bi-arrow-return-left"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Persetujuan Pengembalian Aset</span>
             </a>
-            <a href="{{ route('asset.create') }}"
+            <a href="{{ route('alat_misa.create') }}"
                 class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('admin/asset/tambah') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-plus-circle"></i>
-                <span class="text-[15px] ml-4 text-gray-200">Tambah Aset</span>
+                <span class="text-[15px] ml-4 text-gray-200">Tambah Alat Misa</span>
             </a>
-            <a href="{{ route('asset.index') }}"
+            <a href="{{ route('alat_misa.index') }}"
                 class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('admin/asset') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-list-ul"></i>
-                <span class="text-[15px] ml-4 text-gray-200">Lihat Aset</span>
+                <span class="text-[15px] ml-4 text-gray-200">Lihat Alat Misa</span>
             </a>
             <a href="{{ route('ketersediaanAsset') }}"
                 class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('ketersediaanAsset') ? 'bg-gray-700' : '' }}">

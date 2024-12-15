@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PeminjamanController;
+use App\Http\Controllers\AlatMisaController;
 use App\Http\Controllers\PeminjamanRuanganController;
 use App\Http\Controllers\PeminjamController;
 use App\Http\Controllers\PengembalianController;
@@ -182,3 +183,15 @@ Route::get('/pengembalian', [PengembalianController::class, 'index'])->name('pen
 Route::post('/pengembalian/setujui/{id}', [PengembalianController::class, 'approve'])->name('pengembalian.setujui');
 Route::post('/pengembalian/tolak/{id}', [PengembalianController::class, 'reject'])->name('pengembalian.tolak');
 Route::post('/pengembalian/batch_action', [PengembalianController::class, 'batchAction'])->name('pengembalian.batch_action');
+
+
+
+
+Route::prefix('alat-misa')->group(function () {
+    Route::get('/', [AlatMisaController::class, 'index'])->name('alat_misa.index');
+    Route::get('/create', [AlatMisaController::class, 'create'])->name('alat_misa.create');
+    Route::post('/', [AlatMisaController::class, 'store'])->name('alat_misa.store');
+    Route::get('/{id}/edit', [AlatMisaController::class, 'edit'])->name('alat_misa.edit');
+    Route::put('/{id}', [AlatMisaController::class, 'update'])->name('alat_misa.update');
+    Route::delete('/{id}', [AlatMisaController::class, 'destroy'])->name('alat_misa.destroy');
+});
