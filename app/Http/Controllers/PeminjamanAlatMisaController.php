@@ -120,20 +120,27 @@ class PeminjamanAlatMisaController extends Controller
         return redirect()->back()->with('success', 'Checkout berhasil! Menunggu persetujuan admin.');
     }
 
-
     public function tampilPinjamAlatMisa()
     {
-        // Ambil semua alat misa dengan kondisi baik
         $alat_misa = Alat_Misa::where('kondisi', 'baik')->get()
             ->map(function ($item) {
-                // Hitung stok tersedia
+                // Pastikan detail_alat berupa array
+                if (is_string($item->detail_alat)) {
+                    $decoded = json_decode($item->detail_alat, true);
+                    $item->detail_alat = array_values($decoded ?? []);
+                } elseif (is_array($item->detail_alat)) {
+                    $item->detail_alat = array_values($item->detail_alat);
+                } else {
+                    $item->detail_alat = [];
+                }
+
+                // Tambahkan stok
                 $item->stok_tersedia = $item->jumlah - $item->jumlah_terpinjam;
                 return $item;
             });
 
         return view('layout.PeminjamView.PinjamAlatMisa', compact('alat_misa'));
     }
-
 
 
     public function setujuiPeminjamanAlatMisa($id)

@@ -22,189 +22,142 @@
                 Swal.fire({
                     icon: 'error',
                     title: 'Validasi Gagal',
-                    html: `
-                    <ul style="text-align: left;">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                `,
+                    html: `<ul style="text-align: left;">@foreach ($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>`,
                     confirmButtonText: 'OK'
                 });
             </script>
         @endif
-
         <button onclick="window.location.reload();"
             class="bg-transparent text-blue-500 hover:text-blue-700 p-2 rounded-full transition duration-200 ease-in-out"
             title="Refresh halaman">
             <i class="fas fa-sync-alt text-xl"></i> <!-- Ikon refresh -->
         </button>
-
         <!-- Form -->
         <form action="{{ route('keranjangAlatMisa.tambah') }}" method="POST"
             class="bg-white shadow-lg rounded-xl p-8 space-y-6">
             @csrf
-
-            <!-- Pilih Alat Misa -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div>
-                    <label for="id_alatmisa">Pilih Alat Misa</label>
-                    <select name="id_alatmisa" id="id_alatmisa"
-                        class="mt-2 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-400 focus:border-blue-400"
-                        required>
-                        <option value="" disabled selected>Pilih Alat</option>
+            <div class="container mx-auto py-10 px-4">
+                <div class="mb-6">
+                    <!-- Dropdown Pilih Alat Misa -->
+                    <label for="id_alatmisa" class="block text-lg font-semibold text-gray-700 flex items-center">
+                        <i class="fas fa-box mr-2 text-blue-500"></i> Pilih Alat Misa
+                    </label>
+                    <select id="id_alatmisa" name="id_alatmisa"
+                        class="w-full border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-300 py-3 mt-2 transition duration-300 ease-in-out hover:ring-blue-500">
+                        <option value="" disabled selected>Pilih alat misa...</option>
                         @foreach ($alat_misa as $alat)
-                            <option value="{{ $alat->id }}" data-stok="{{ $alat->stok_tersedia }}"
-                                data-detail='@json($alat->detail_alat ?? [])'>
+                            <option value="{{ $alat->id }}" data-detail="{{ json_encode($alat->detail_alat) }}"
+                                data-stok="{{ $alat->stok_tersedia }}">
                                 {{ $alat->nama_alat }} - {{ $alat->jenis_alat }}
                             </option>
                         @endforeach
                     </select>
 
+                    <!-- Stok Tersedia -->
+                    <div id="stok_container" class="mt-2 p-4 bg-gray-100 rounded-lg shadow hidden">
+                        <h3 class="text-lg font-semibold text-gray-700 mb-2">Stok Tersedia</h3>
+                        <p id="stok_info" class="text-green-600 font-bold"></p>
+                    </div>
 
-                </div>
-
-                <!-- Jumlah -->
-                <div>
-                    <label for="jumlah" class="block text-lg font-semibold text-gray-700 ">
-                        <i class="fas fa-sort-numeric-up text-green-500 mr-2"></i>Jumlah
-                    </label>
-                    <input type="number" id="jumlah" name="jumlah"
-                        class="mt-2 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
-                        required min="1">
-                    <p class="text-sm text-gray-600 mt-1 stok-info"></p>
+                    <!-- Detail Alat Misa -->
+                    <div id="detail_alat_container" class="mt-6 p-6 bg-gray-100 rounded-lg shadow hidden">
+                        <h3 class="text-xl font-bold text-gray-700 mb-4">Detail Alat Misa</h3>
+                        <ul id="detail_alat_list" class="list-disc list-inside text-gray-600 space-y-2"></ul>
+                    </div>
                 </div>
             </div>
-            <!-- Detail Alat -->
-            <div id="detail_alat" class="hidden mt-6">
-                <h3 class="text-lg font-semibold mb-2 text-gray-800">Detail Alat</h3>
-                <ul id="detail_list" class="list-disc pl-6 text-gray-600"></ul>
+            <!-- Jumlah -->
+            <div>
+                <label for="jumlah" class="block text-lg font-semibold text-gray-700">
+                    <i class="fas fa-sort-numeric-up text-green-500 mr-2"></i> Jumlah
+                </label>
+                <input type="number" id="jumlah" name="jumlah"
+                    class="block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-400 focus:border-blue-400 py-3"
+                    required min="1">
             </div>
+
             <!-- Tanggal Pinjam dan Kembali -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div>
-                    <label for="tanggal_peminjaman" class="text-lg font-semibold text-gray-700 flex items-center gap-2">
-                        <i class="fas fa-calendar-alt text-purple-500 mr-2"></i>Tanggal Pinjam
+                    <label for="tanggal_peminjaman" class="block text-lg font-semibold text-gray-700">
+                        <i class="fas fa-calendar-alt text-purple-500 mr-2"></i> Tanggal Pinjam
                     </label>
                     <input type="date" id="tanggal_peminjaman" name="tanggal_peminjaman"
-                        class="mt-2 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+                        class="block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-400 focus:border-blue-400 py-3"
                         required>
                 </div>
 
                 <div>
-                    <label for="tanggal_pengembalian" class="text-lg font-semibold text-gray-700 flex items-center gap-2">
-                        <i class="fas fa-calendar-check text-green-500 mr-2"></i>Tanggal Kembali
+                    <label for="tanggal_pengembalian" class="block text-lg font-semibold text-gray-700">
+                        <i class="fas fa-calendar-check text-green-500 mr-2"></i> Tanggal Kembali
                     </label>
                     <input type="date" id="tanggal_pengembalian" name="tanggal_pengembalian"
-                        class="mt-2 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+                        class="block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-400 focus:border-blue-400 py-3"
                         required>
                 </div>
             </div>
 
             <!-- Tombol -->
-            <div class="flex items-center justify-between mt-4">
+            <div class="flex items-center justify-between">
                 <button type="submit"
-                    class="bg-blue-500 text-white font-semibold px-8 py-3 rounded-lg shadow-md hover:bg-blue-600 transition duration-200 transform hover:scale-105">
+                    class="bg-blue-500 text-white px-8 py-3 rounded-lg shadow-md hover:bg-blue-600 transition-transform transform hover:scale-105">
                     Tambah ke Keranjang
                 </button>
-
-                <a href="{{ route('lihatKeranjangAlatMisa') }}"
-                    class="text-blue-500 hover:text-blue-700 flex items-center space-x-2">
+                <a href="{{ route('lihatKeranjangAlatMisa') }}" class="text-blue-500 hover:text-blue-700 flex items-center">
                     <i class="fas fa-shopping-cart text-3xl"></i>
-                    <span class="text-lg font-semibold">Lihat Keranjang</span>
+                    <span class="ml-2 font-semibold">Lihat Keranjang</span>
                 </a>
             </div>
         </form>
     </div>
 
+    <!-- Script JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const alatMisaSelect = document.getElementById('id_alatmisa');
-            const jumlahInput = document.getElementById('jumlah');
-            const stokInfo = document.querySelector('.stok-info');
-            const detailAlatDiv = document.getElementById('detail_alat');
-            const detailList = document.getElementById('detail_list');
+            const detailContainer = document.getElementById('detail_alat_container');
+            const detailList = document.getElementById('detail_alat_list');
+            const stokContainer = document.getElementById('stok_container');
+            const stokInfo = document.getElementById('stok_info');
 
             alatMisaSelect.addEventListener('change', function() {
                 const selectedOption = alatMisaSelect.options[alatMisaSelect.selectedIndex];
-                const stokTersedia = parseInt(selectedOption.getAttribute('data-stok'), 10);
-                const detailAlat = JSON.parse(selectedOption.getAttribute('data-detail'));
+                const detailJSON = selectedOption.getAttribute('data-detail');
+                const stokTersedia = selectedOption.getAttribute('data-stok');
 
-                // Update stok info
-                stokInfo.textContent = stokTersedia > 0 ? `Stok tersedia: ${stokTersedia}` : 'Stok habis';
-                jumlahInput.max = stokTersedia;
-                jumlahInput.value = '';
-
-                // Update detail alat
+                // Kosongkan list sebelumnya
                 detailList.innerHTML = '';
-                if (detailAlat.length > 0) {
-                    detailAlat.forEach(detail => {
-                        const li = document.createElement('li');
-                        li.textContent = `${detail.nama_detail} - Jumlah: ${detail.jumlah}`;
-                        detailList.appendChild(li);
-                    });
-                    detailAlatDiv.classList.remove('hidden');
-                } else {
-                    detailAlatDiv.classList.add('hidden');
+
+                // Tampilkan stok
+                if (stokTersedia) {
+                    stokInfo.textContent = `Tersisa ${stokTersedia} item`;
+                    stokContainer.classList.remove('hidden');
+                }
+
+                // Tampilkan detail alat misa
+                if (detailJSON) {
+                    try {
+                        const detailArray = JSON.parse(detailJSON);
+
+                        if (detailArray.length > 0) {
+                            detailArray.forEach(item => {
+                                const listItem = document.createElement('li');
+                                listItem.textContent =
+                                    `${item.nama_detail} - Jumlah: ${item.jumlah}`;
+                                detailList.appendChild(listItem);
+                            });
+                        } else {
+                            detailList.innerHTML =
+                                '<li class="text-gray-500 italic">Tidak ada detail tersedia.</li>';
+                        }
+                        detailContainer.classList.remove('hidden');
+                    } catch (error) {
+                        console.error("Error parsing JSON:", error);
+                        detailList.innerHTML = '<li class="text-red-500">Gagal memuat detail alat.</li>';
+                        detailContainer.classList.remove('hidden');
+                    }
                 }
             });
-
-            jumlahInput.addEventListener('input', function() {
-                if (parseInt(this.value, 10) > parseInt(this.max, 10)) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Jumlah Melebihi Stok',
-                        text: `Jumlah maksimum: ${this.max}`,
-                        confirmButtonText: 'OK'
-                    });
-                    this.value = this.max;
-                }
-            });
-
-            const submitButton = document.querySelector('button[type="submit"]');
-
-            const updateStok = () => {
-                const selectedOption = alatMisaSelect.options[alatMisaSelect.selectedIndex];
-                const stokTersedia = parseInt(selectedOption.getAttribute('data-stok'), 10);
-
-                if (stokTersedia === 0) {
-                    stokInfo.textContent = 'Stok tidak tersedia.';
-                    jumlahInput.disabled = true;
-                    submitButton.disabled = true;
-
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Stok Habis',
-                        text: 'Stok alat misa yang dipilih sudah habis.',
-                        confirmButtonText: 'OK'
-                    });
-                } else {
-                    stokInfo.textContent = `Stok tersedia: ${stokTersedia}`;
-                    jumlahInput.disabled = false;
-                    jumlahInput.max = stokTersedia;
-                    submitButton.disabled = false;
-                }
-            };
-
-            jumlahInput.addEventListener('blur', function() {
-                const max = parseInt(this.max, 10);
-                const value = parseInt(this.value, 10);
-
-                if (value > max) {
-                    this.value = max;
-
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Jumlah Melebihi Stok',
-                        text: `Stok maksimum untuk alat misa ini adalah ${max}.`,
-                        confirmButtonText: 'OK',
-                        timer: 3000
-                    });
-                }
-            });
-
-            alatMisaSelect.addEventListener('change', updateStok);
-            updateStok();
         });
     </script>
 @endsection

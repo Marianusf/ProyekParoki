@@ -53,6 +53,13 @@ class PeminjamanRuanganController extends Controller
         $historiSelesai = PeminjamanRuangan::where('status_peminjaman', 'selesai')->get();
         // Ambil data ruangan yang kondisi baik
         $ruangan_baik = Ruangan::where('kondisi', 'baik')->get();
+        $ruangan_baik = Ruangan::where('kondisi', 'baik')->get()->map(function ($ruang) {
+            $ruang->fasilitas = is_string($ruang->fasilitas)
+                ? json_decode($ruang->fasilitas, true) ?? []
+                : (is_array($ruang->fasilitas) ? $ruang->fasilitas : []);
+
+            return $ruang;
+        });
 
         // Membuat array event untuk kalender dengan waktu yang lebih terperinci
         $events = $peminjaman->map(function ($peminjaman) {
