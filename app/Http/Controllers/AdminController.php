@@ -8,6 +8,7 @@ use App\Models\Peminjam;
 use App\Models\Peminjaman;
 use App\Models\PeminjamanAlatMisa;
 use App\Models\Pengembalian;
+use App\Models\PengembalianAlatMisa;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -20,6 +21,22 @@ class AdminController extends Controller
 
         // Menampilkan view khusus untuk daftar peminjam aktif di lokasi baru
         return view('layout.AdminView.LihatPeminjamAktif', compact('peminjam'));
+    }
+    public function listPeminjamAktifbyparamenta()
+    {
+        // Mengambil data peminjam yang sudah disetujui (is_approved = true)
+        $peminjam = Peminjam::where('is_approved', true)->get();
+
+        // Menampilkan view khusus untuk daftar peminjam aktif di lokasi baru
+        return view('layout.AdminParamentaView.LihatPeminjamAktif', compact('peminjam'));
+    }
+    public function listPeminjamAktifbysekretariat()
+    {
+        // Mengambil data peminjam yang sudah disetujui (is_approved = true)
+        $peminjam = Peminjam::where('is_approved', true)->get();
+
+        // Menampilkan view khusus untuk daftar peminjam aktif di lokasi baru
+        return view('layout.AdminSekretariatView.LihatPeminjamAktif', compact('peminjam'));
     }
     public function lihatPermintaanPeminjaman()
     {
@@ -39,5 +56,13 @@ class AdminController extends Controller
     {
         $alatMisaRequests = PeminjamanAlatMisa::where('status_peminjaman', 'pending')->with(['alatmisa', 'peminjam'])->get();
         return view('layout.AdminParamentaView.PermintaanPeminjamanAlatMisa', compact('alatMisaRequests'));
+    }
+    public function adminLihatPermintaanPengembalianAlatMisa()
+    {
+        $pengembalianAlatMisa = PengembalianAlatMisa::with('peminjaman')
+            ->where('status', 'pending') // Menampilkan pengembalian yang statusnya pending
+            ->get();
+
+        return view('layout.AdminParamentaView.PermintaanPengembalianAlatMisa', compact('pengembalianAlatMisa'));
     }
 }

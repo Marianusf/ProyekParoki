@@ -32,6 +32,10 @@ class PeminjamanAlatMisa extends Model
     {
         return $this->belongsTo(peminjam::class, 'id_peminjam', 'id');
     }
+    public function pengembalianALatMisa()
+    {
+        return $this->belongsTo(PengembalianAlatMisa::class, 'id');
+    }
 
     public function admin()
     {

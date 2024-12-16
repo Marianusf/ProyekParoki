@@ -111,31 +111,27 @@
             <div class="p-2.5 mt-1 flex items-center">
                 <img src="{{ asset('/logo.png') }}" alt="Logo Paroki Babadan" class="w-10 h-10 rounded-full">
                 <div class="ml-5">
-                    <div class="text-base font-medium text-white">Admin</div>
+                    <div class="text-base font-medium text-white">Admin Paramenta</div>
                     <div class="text-sm font-medium text-gray-400">Paroki Babadan</div>
                 </div>
                 <i class="bi bi-x ml-auto cursor-pointer" onclick="toggleSidebar()"></i>
             </div>
             <hr class="my-2 text-gray-600">
-            <a href="{{ route('admin.dashboard') }}"
+            <a href="{{ route('paramenta.dashboard') }}"
                 class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('admin.dashboard') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-house-door"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Home</span>
             </a>
-            <a href="{{ route('requests') }}"
-                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('requests') ? 'bg-gray-700' : '' }}">
-                <i class="bi bi-person-check-fill"></i>
-                <span class="text-[15px] ml-4 text-gray-200">Persetujuan Akun</span>
-            </a>
+
             <a href="{{ route('lihatPermintaanPeminjamanAlatMisa') }}"
                 class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('lihatPermintaanPeminjamanAlatMisa') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-check-square-fill"></i>
-                <span class="text-[15px] ml-4 text-gray-200">Persetujuan Peminjaman</span>
+                <span class="text-[15px] ml-4 text-gray-200">Persetujuan Peminjaman Alat Misa</span>
             </a>
-            <a href="{{ route('admin.PermintaanPengembalianAsset') }}"
+            <a href="{{ route('admin.PermintaanPengembalianALatMisa') }}"
                 class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('admin.PermintaanPengembalianAsset') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-arrow-return-left"></i>
-                <span class="text-[15px] ml-4 text-gray-200">Persetujuan Pengembalian Aset</span>
+                <span class="text-[15px] ml-4 text-gray-200">Persetujuan Pengembalian Alat Misa</span>
             </a>
             <a href="{{ route('alat_misa.create') }}"
                 class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('admin/asset/tambah') ? 'bg-gray-700' : '' }}">
@@ -153,10 +149,10 @@
                 <span class="text-[15px] ml-4 text-gray-200">Cek Ketersediaan Alat Misa</span>
             </a>
             <hr class="my-4 text-gray-600">
-            <a href="{{ route('lihat.peminjam.aktif') }}"
-                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('peminjamaktif') ? 'bg-gray-700' : '' }}">
+            <a href="{{ route('lihat.peminjam.aktif.byparamenta') }}"
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('lihat.peminjam.aktif.byparamenta') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-people-fill"></i>
-                <span class="text-[15px] ml-4 text-gray-200">Lihat Peminjam</span>
+                <span class="text-[15px] ml-4 text-gray-200">Lihat Peminjam Terdaftar</span>
             </a>
             <form action="{{ route('logout') }}" method="POST">
                 @csrf

@@ -1,4 +1,4 @@
-@extends('layout.TemplateAdmin')
+@extends('layout.TemplateAdminParamenta')
 
 @section('title', 'Ketersediaan Alat Misa')
 

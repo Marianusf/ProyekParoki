@@ -119,29 +119,31 @@
                 <span class="text-[15px] ml-4 text-gray-200">Home</span>
             </a>
             <a href="{{ route('peminjaman.index') }}"
-                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('lihatPermintaanPeminjaman') ? 'bg-gray-700' : '' }}">
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('peminjaman.index') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-check-square-fill"></i>
-                <span class="text-[15px] ml-4 text-gray-200">Persetujuan Peminjaman</span>
+                <span class="text-[15px] ml-4 text-gray-200">Persetujuan Peminjaman Ruangan</span>
             </a>
-            <a href="{{ route('admin.PermintaanPengembalianAsset') }}"
-                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('return-requests*') ? 'bg-gray-700' : '' }}">
-                <i class="bi bi-arrow-return-left"></i>
-                <span class="text-[15px] ml-4 text-gray-200">Persetujuan Pengembalian Aset</span>
-            </a>
+
             <a href="{{ route('ruangan.create') }}"
-                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('ruangan.store') ? 'bg-gray-700' : '' }}">
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('ruangan.create') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-plus-circle"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Tambah Ruangan</span>
             </a>
             <a href="{{ route('lihatSemuaRuangan') }}"
-                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('') ? 'bg-gray-700' : '' }}">
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('lihatSemuaRuangan') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-list-ul"></i>
-                <span class="text-[15px] ml-4 text-gray-200">Lihat Ruangan</span>
+                <span class="text-[15px] ml-4 text-gray-200">Lihat Semua Ruangan</span>
             </a>
             <a href="{{ route('cekKetersediaanRuangan') }}"
-                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('lihatKetersediaanRuangan') ? 'bg-gray-700' : '' }}">
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('cekKetersediaanRuangan') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-eye-fill"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Cek Ketersediaan Ruangan</span>
+            </a>
+            <hr class="my-4 text-gray-600">
+            <a href="{{ route('lihat.peminjam.aktif.bysekretariat') }}"
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('lihat.peminjam.aktif.bysekretariat') ? 'bg-gray-700' : '' }}">
+                <i class="bi bi-people-fill"></i>
+                <span class="text-[15px] ml-4 text-gray-200">Lihat Peminjam Terdaftar</span>
             </a>
             <form action="{{ route('logout') }}" method="POST">
                 @csrf

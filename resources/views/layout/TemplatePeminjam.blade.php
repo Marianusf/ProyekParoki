@@ -123,7 +123,7 @@
             </a>
 
 
-            {{-- <!-- Grup Menu Peminjaman Barang dan Aset -->
+            <!-- Grup Menu Peminjaman Barang dan Aset -->
             <div class="p-2.5 mt-4 text-gray-400 uppercase">Peminjaman Barang dan Aset</div>
             <a href="{{ route('pinjam.asset') }}"
                 class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('pinjam.asset') ? 'bg-gray-700' : '' }}">
@@ -149,7 +149,7 @@
                 class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('riwayatPeminjaman') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-clock-history"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Riwayat Peminjaman</span>
-            </a> --}}
+            </a>
 
 
             <!-- Grup Menu Peminjaman Alat Misa -->
@@ -164,13 +164,13 @@
                 <i class="bi bi-cart"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Keranjang Alat Misa</span>
             </a>
-            <a href=""
-                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('peminjam.ketersediaanAsset') ? 'bg-gray-700' : '' }}">
+            <a href="{{ route('peminjam.ketersediaanAlatMisa') }}"
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('peminjam.ketersediaanAlatMisa') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-file-earmark-text"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Daftar Alat Misa Tersedia</span>
             </a>
-            <a href=""
-                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('pengembalian.misa') ? 'bg-gray-700' : '' }}">
+            <a href="{{ route('pengembalianAlatMisa.form') }}"
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('pengembalianAlatMisa.form') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-arrow-counterclockwise"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Pengembalian</span>
             </a>
