@@ -114,9 +114,4 @@ class AssetController extends Controller
 
         return redirect()->route('asset.index')->with('success', 'Asset berhasil dihapus!');
     }
-    public function peminjamLihatKetersediaanAsset()
-    {
-        $assets = Assets::where('kondisi', 'baik')->get();
-        return view('layout.PeminjamView.LihatKetersediaan', compact('assets'));
-    }
 }

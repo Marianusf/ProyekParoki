@@ -22,17 +22,21 @@ class PeminjamanAlatMisa extends Model
     ];
 
 
-    // Relasi dengan peminjam
-    public function peminjam()
-    {
-        return $this->belongsTo(Peminjam::class);
-    }
-
-    // Relasi dengan alat misa
+    // app/Models/PeminjamanAlatMisa.php
     public function alatMisa()
     {
-        return $this->belongsTo(Alat_Misa::class, 'id_alatmisa');
+        return $this->belongsTo(Alat_Misa::class, 'id_alatmisa', 'id');
     }
+
+    public function peminjam()
+    {
+        return $this->belongsTo(peminjam::class, 'id_peminjam', 'id');
+    }
+    public function pengembalianALatMisa()
+    {
+        return $this->belongsTo(PengembalianAlatMisa::class, 'id');
+    }
+
     public function admin()
     {
         return $this->belongsTo(Admin::class, 'id_admin');

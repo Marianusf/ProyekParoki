@@ -120,13 +120,36 @@ class PeminjamanAlatMisaController extends Controller
         return redirect()->back()->with('success', 'Checkout berhasil! Menunggu persetujuan admin.');
     }
 
-    public function setujuiPeminjaman($id)
+    public function tampilPinjamAlatMisa()
+    {
+        $alat_misa = Alat_Misa::where('kondisi', 'baik')->get()
+            ->map(function ($item) {
+                // Pastikan detail_alat berupa array
+                if (is_string($item->detail_alat)) {
+                    $decoded = json_decode($item->detail_alat, true);
+                    $item->detail_alat = array_values($decoded ?? []);
+                } elseif (is_array($item->detail_alat)) {
+                    $item->detail_alat = array_values($item->detail_alat);
+                } else {
+                    $item->detail_alat = [];
+                }
+
+                // Tambahkan stok
+                $item->stok_tersedia = $item->jumlah - $item->jumlah_terpinjam;
+                return $item;
+            });
+
+        return view('layout.PeminjamView.PinjamAlatMisa', compact('alat_misa'));
+    }
+
+
+    public function setujuiPeminjamanAlatMisa($id)
     {
         $peminjaman = PeminjamanAlatMisa::findOrFail($id);
-        $alatMisa = Alat_Misa::findOrFail($peminjaman->id_alatmisa);
+        $alatMisa = Alat_Misa::findOrFail($peminjaman->id_alatmisa); // Change to AlatMisa model
 
-        // Cek stok alat misa
-        $stokTersedia = $alatMisa->jumlah_barang - $alatMisa->jumlah_terpinjam;
+        // Cek stok barang
+        $stokTersedia = $alatMisa->jumlah - $alatMisa->jumlah_terpinjam;
 
         if ($peminjaman->jumlah > $stokTersedia) {
             return redirect()->back()->withErrors(['jumlah' => 'Stok tidak cukup untuk memproses peminjaman.']);
@@ -134,7 +157,6 @@ class PeminjamanAlatMisaController extends Controller
 
         // Update jumlah terpinjam
         $alatMisa->increment('jumlah_terpinjam', $peminjaman->jumlah);
-
         if (Auth::guard('admin')->check()) {
             $adminId = Auth::guard('admin')->user()->id;
             $peminjaman->update([
@@ -147,14 +169,14 @@ class PeminjamanAlatMisaController extends Controller
 
         // Kirim email ke peminjam
         $peminjam = Peminjam::findOrFail($peminjaman->id_peminjam);
-        $alatMisaName = $alatMisa->nama_barang; // Nama alat misa
+        $alatMisaName = $alatMisa->nama_alat; // Nama alat misa
         Mail::to($peminjam->email)->send(new MailPeminjamanAlatMisaStatus(
             'disetujui', // Status peminjaman
             null, // Tidak ada alasan penolakan
             $peminjam->name,
             [
                 [
-                    'nama_barang' => $alatMisa->nama_barang,
+                    'nama_alat' => $alatMisa->nama_alat,
                     'jumlah' => $peminjaman->jumlah,
                 ]
             ]
@@ -162,16 +184,134 @@ class PeminjamanAlatMisaController extends Controller
 
         return redirect()->back()->with('success', 'Permintaan Peminjaman Alat Misa oleh ' . $peminjam->name . ' Berhasil disetujui.');
     }
-    public function tampilPinjamAlatMisa()
+    public function tolakPeminjaman(Request $request, $id)
     {
-        // Ambil semua alat misa dengan kondisi baik
-        $alat_misa = Alat_Misa::where('kondisi', 'baik')->get()
-            ->map(function ($item) {
-                // Hitung stok tersedia
-                $item->stok_tersedia = $item->jumlah - $item->jumlah_terpinjam;
-                return $item;
-            });
+        $request->validate([
+            'alasan_penolakan' => 'required|string'
+        ]);
 
-        return view('layout.PeminjamView.PinjamAlatMisa', compact('alat_misa'));
+        $peminjaman = PeminjamanAlatMisa::findOrFail($id);
+        $alatmisa = Alat_Misa::findOrFail($peminjaman->id_alatmisa);
+
+        if (Auth::guard('admin')->check()) {
+            $adminId = Auth::guard('admin')->user()->id;
+            $peminjaman->update([
+                'status_peminjaman' => 'ditolak',
+                'id_admin' => $adminId,
+                'alasan_penolakan' => $request->alasan_penolakan
+            ]);
+        } else {
+            return redirect()->route('/login')->with('error', 'Admin belum login.');
+        }
+
+        // Send the email after rejecting
+        $peminjam = Peminjam::findOrFail($peminjaman->id_peminjam);
+        Mail::to($peminjam->email)->send(new MailPeminjamanALatMisaStatus(
+            'ditolak', // Status peminjaman
+            $peminjaman->alasan_penolakan, // Kirimkan alasan penolakan yang sebenarnya
+            $peminjam->name,
+            [
+                [
+                    'nama_alat' => $alatmisa->nama_alat,
+                    'jumlah' => $peminjaman->jumlah,
+                    'alasan' => $peminjaman->alasan_penolakan,
+                ]
+            ]
+        ));
+
+        return redirect()->back()->with('success', 'Permintaan Peminjaman Alat Misa oleh ' . $peminjam->name . ' berhasil ditolak.');
+    }
+    public function batchAction(Request $request)
+    {
+        // Validate the input data
+        $validated = $request->validate([
+            'action' => 'required|in:approve,reject',
+            'selected_requests' => 'required|array',
+            'selected_requests.*' => 'exists:peminjaman_alat_misa,id', // Ensure valid loan IDs
+        ], [
+            'action.required' => 'Pilih tindakan yang ingin dilakukan.',
+            'selected_requests.required' => 'Tidak ada permintaan yang dipilih.',
+        ]);
+
+        // Initialize arrays to store errors and borrower details
+        $errors = [];
+        $peminjamDetails = [];
+
+        // Step 1: Check if any of the selected requests have insufficient stock
+        foreach ($request->selected_requests as $requestId) {
+            $peminjaman = PeminjamanAlatMisa::find($requestId);
+            $alatMisa = Alat_Misa::find($peminjaman->id_alatmisa); // Change to AlatMisa model
+            $peminjaman->id_admin = auth('admin')->user()->id;
+
+            // Check stock availability
+            $stokTersedia = $alatMisa->jumlah - $alatMisa->jumlah_terpinjam;
+
+            if ($peminjaman->jumlah > $stokTersedia) {
+                // If stock is insufficient, add to errors and break the loop
+                $errors[] = "Stok tidak cukup untuk peminjaman {$peminjaman->jumlah} unit dari alat misa '{$alatMisa->nama_barang}'";
+                break; // Exit the loop immediately, no need to process further
+            }
+        }
+
+        // If there are any errors (insufficient stock), return them
+        if (!empty($errors)) {
+            return redirect()->back()->withErrors($errors);
+        }
+
+        // Step 2: Process each selected request (approval or rejection)
+        foreach ($request->selected_requests as $requestId) {
+            $peminjaman = PeminjamanAlatMisa::find($requestId);
+            $alatMisa = Alat_Misa::find($peminjaman->id_alatmisa); // Change to AlatMisa model
+
+            // Proceed with the approval/rejection logic
+            if ($validated['action'] === 'approve') {
+                $alatMisa->increment('jumlah_terpinjam', $peminjaman->jumlah);
+                $peminjaman->update(['status_peminjaman' => 'disetujui']);
+            } elseif ($validated['action'] === 'reject') {
+                $peminjaman->update(['status_peminjaman' => 'ditolak', 'alasan_penolakan' => $request->alasan_penolakan]);
+            }
+
+            if (Auth::guard('admin')->check()) {
+                $adminId = Auth::guard('admin')->user()->id;
+                $peminjaman->update([
+                    'id_admin' => $adminId,
+                ]);
+            } else {
+                return redirect()->route('/login')->with('error', 'Admin belum login.');
+            }
+
+            // Group the request details by borrower
+            $peminjam = $peminjaman->peminjam; // Get the borrower
+            $peminjamDetails[$peminjam->id][] = [
+                'nama_alat' => $alatMisa->nama_alat,
+                'jumlah' => $peminjaman->jumlah,
+            ];
+        }
+
+        // Step 3: Send individual emails to each borrower
+        foreach ($peminjamDetails as $peminjamId => $assetDetailsForPeminjam) {
+            $peminjam = Peminjam::find($peminjamId);
+            $status = $validated['action'] === 'approve' ? 'disetujui' : 'ditolak';
+            $alasanPenolakan = $validated['action'] === 'reject' ? $request->alasan_penolakan : null;
+
+            // Send the email for this specific borrower
+            Mail::to($peminjam->email)->send(new MailPeminjamanAlatMisaStatus(
+                $status,
+                $alasanPenolakan,
+                $peminjam->name,
+                $peminjamDetails[$peminjam->id]
+            ));
+        }
+
+        $peminjamNames = PeminjamanAlatMisa::whereIn('id', $request->selected_requests)
+            ->with('peminjam')
+            ->get()
+            ->map(function ($peminjaman) {
+                return $peminjaman->peminjam->name;
+            })
+            ->unique()
+            ->implode(', ');
+
+        return redirect()->back()->with('success', 'Tindakan batch berhasil diproses untuk: ' . $peminjamNames);
     }
 }

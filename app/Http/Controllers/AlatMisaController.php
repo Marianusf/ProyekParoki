@@ -161,9 +161,9 @@ class AlatMisaController extends Controller
     }
 
     // Menampilkan alat misa dengan kondisi "baik" untuk pengguna peminjam
-    public function cekKetersediaan()
+    public function cekKetersediaanAlatMisa()
     {
-        $alatMisa = Alat_Misa::where('kondisi', 'baik')->get();
-        return view('layout.PeminjamView.LihatKetersediaanAlatMisa', compact('alatMisa'));
+        $alatmisa = Alat_Misa::where('kondisi', 'baik')->get();
+        return view('layout.AdminParamentaView.LihatKetersediaanAlatMisa', compact('alatmisa'));
     }
 }

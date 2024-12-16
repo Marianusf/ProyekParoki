@@ -4,8 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Status Peminjaman</title>
+    <title>Status Pengembalian Alat Misa</title>
     <style>
+        /* Gaya serupa dengan template sebelumnya */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -32,12 +33,10 @@
 
         .header.approved {
             background-color: #4CAF50;
-            /* Hijau untuk disetujui */
         }
 
         .header.rejected {
             background-color: #f44336;
-            /* Merah untuk ditolak */
         }
 
         .content {
@@ -87,28 +86,30 @@
 
 <body>
     <div class="container">
-        <div class="header {{ $status == 'disetujui' ? 'approved' : 'rejected' }}">
-            <h1>Status Peminjaman Alat Misa</h1>
+        <div class="header {{ $status == 'approved' ? 'approved' : 'rejected' }}">
+            <h1>Status Pengembalian Alat Misa</h1>
         </div>
 
         <div class="content">
             <p>Halo, {{ $peminjamName }}.</p>
 
-            @if ($status == 'disetujui')
-                <p class="status-approved">Selamat! Peminjaman Anda telah disetujui untuk alat misa berikut:</p>
+            @if ($status == 'approved')
+                <p>Terima kasih telah meminjam alat misa di Paroki Babadan.</p>
+                <p class="status-approved">Pengembalian Anda telah diterima untuk item berikut:</p>
             @else
-                <p class="status-rejected">Maaf, peminjaman Anda untuk alat misa berikut tidak disetujui:</p>
+                <p class="status-rejected">Maaf, pengembalian Anda tidak dapat diterima untuk item berikut:</p>
                 @if ($alasan)
                     <p class="reason">Alasan Penolakan: {{ $alasan }}</p>
+                    <p>Silakan melakukan permintaan pengembalian ulang, atau hubungi admin.</p>
                 @endif
             @endif
+
             <ul class="item-list">
-                @foreach ($alatmisa as $item)
-                    <li>{{ $item['nama_alat'] }} (Jumlah: {{ $item['jumlah'] }})</li>
-                @endforeach
+                <li>Nama Alat Misa: {{ $alatMisaDetails['nama_alat'] }}</li>
+                <li>Jumlah: {{ $alatMisaDetails['jumlah'] }}</li>
             </ul>
 
-            <p>Jika Anda memiliki pertanyaan lebih lanjut, silakan hubungi kami.</p>
+            <p>Jika Anda memiliki pertanyaan lebih lanjut, silakan hubungi kami melalui kontak admin.</p>
         </div>
 
         <div class="footer">

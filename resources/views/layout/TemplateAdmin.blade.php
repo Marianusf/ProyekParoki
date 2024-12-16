@@ -153,7 +153,7 @@
             <a href="{{ route('lihat.peminjam.aktif') }}"
                 class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('peminjamaktif') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-people-fill"></i>
-                <span class="text-[15px] ml-4 text-gray-200">Lihat Peminjam</span>
+                <span class="text-[15px] ml-4 text-gray-200">Lihat Peminjam Terdaftar</span>
             </a>
             <form action="{{ route('logout') }}" method="POST">
                 @csrf

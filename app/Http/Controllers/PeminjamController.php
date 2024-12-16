@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Alat_Misa;
 use App\Models\Peminjam;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Assets;
 
 
 class PeminjamController extends Controller
@@ -116,5 +118,15 @@ class PeminjamController extends Controller
             // Tangkap error dan tampilkan di session dengan pesan error
             return redirect()->route('lihatProfile')->withErrors(['error' => 'Terjadi kesalahan: ' . $e->getMessage()]);
         }
+    }
+    public function peminjamLihatKetersediaanAsset()
+    {
+        $assets = Assets::where('kondisi', 'baik')->get();
+        return view('layout.PeminjamView.LihatKetersediaan', compact('assets'));
+    }
+    public function peminjamLihatKetersediaanAlatMisa()
+    {
+        $alatmisa = Alat_Misa::where('kondisi', 'baik')->get();
+        return view('layout.PeminjamView.LihatKetersediaanAlatMisa', compact('alatmisa'));
     }
 }
