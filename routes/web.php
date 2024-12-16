@@ -206,8 +206,8 @@ Route::prefix('alat-misa')->group(function () {
 // Route::middleware(['auth:peminjam'])->group(function () {
 Route::post('/keranjang/tambah/alatmisa', [PeminjamanAlatMisaController::class, 'tambahKeKeranjangAlatMisa'])->name('keranjangAlatMisa.tambah');
 Route::get('/keranjangAlatMisa', [PeminjamanAlatMisaController::class, 'lihatKeranjangAlatMisa'])->name('lihatKeranjangAlatMisa');
-Route::post('/checkoutALatMisa', [PeminjamanAlatMisaController::class, 'prosesCheckoutAlatMisa'])->name('checkout');
-Route::get('/riwayat-peminjaman-alatmisa', [PeminjamanAlatMisaController::class, 'lihatRiwayatPeminjaman'])->name('riwayatPeminjamanAlatMisa');
+Route::post('/checkoutALatMisa', [PeminjamanAlatMisaController::class, 'prosesCheckoutAlatMisa'])->name('checkoutAlatMisa');
+Route::get('/riwayat-peminjaman-alatmisa', [PeminjamanAlatMisaController::class, 'lihatRiwayatPeminjamanAlatMisa'])->name('riwayatPeminjamanAlatMisa');
 // Menampilkan halaman peminjaman asset
 // Route untuk menampilkan halaman form peminjaman
 Route::get('/pinjam-alat-misa', [PeminjamanAlatMisaController::class, 'tampilPinjamAlatMisa'])->name('pinjam.alatmisa');

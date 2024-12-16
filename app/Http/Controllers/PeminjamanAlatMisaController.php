@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Peminjam;
 use App\Mail\MailPeminjamanAlatMisaStatus;
+use App\Models\PengembalianAlatMisa;
 use Illuminate\Support\Facades\Mail;
 
 class PeminjamanAlatMisaController extends Controller
@@ -313,5 +314,28 @@ class PeminjamanAlatMisaController extends Controller
             ->implode(', ');
 
         return redirect()->back()->with('success', 'Tindakan batch berhasil diproses untuk: ' . $peminjamNames);
+    }
+    public function lihatRiwayatPeminjamanAlatMisa()
+    {
+        // Ambil riwayat peminjaman untuk peminjam yang sedang login
+        $riwayatPeminjaman = PeminjamanAlatMisa::where('id_peminjam', auth()->guard('peminjam')->id())
+            ->with('alatmisa') // Mengambil informasi tentang asset yang dipinjam
+            ->get();
+
+        // Ambil riwayat pengembalian yang sesuai dengan riwayat peminjaman
+        $riwayatPengembalian = PengembalianAlatMisa::whereIn('peminjaman_id', $riwayatPeminjaman->pluck('id')->toArray())
+            ->whereNotNull('tanggal_pengembalian') // Memastikan hanya pengembalian yang sudah tercatat
+            ->with('peminjaman') // Mengambil informasi peminjaman yang terkait
+            ->get();
+
+        // Filter riwayat peminjaman yang sudah selesai (telah dikembalikan dan disetujui)
+        $riwayatSelesai = $riwayatPeminjaman->filter(function ($peminjaman) {
+            return $peminjaman->pengembalian &&
+                $peminjaman->pengembalian->status == 'approved' &&
+                $peminjaman->status_peminjaman == 'disetujui';
+        });
+
+        // Mengirimkan data ke view
+        return view('layout.PeminjamView.RiwayatPeminjamanAlatMisa', compact('riwayatPeminjaman', 'riwayatPengembalian', 'riwayatSelesai'));
     }
 }

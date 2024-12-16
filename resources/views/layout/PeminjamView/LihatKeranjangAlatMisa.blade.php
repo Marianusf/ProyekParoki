@@ -40,7 +40,7 @@
         @if ($keranjangItems->isEmpty())
             <p class="text-gray-500 text-center">Keranjang Anda kosong </p>
         @else
-            <form action="{{ route('checkout') }}" method="POST" id="checkoutForm">
+            <form action="{{ route('checkoutAlatMisa') }}" method="POST" id="checkoutForm">
                 @csrf
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
