@@ -112,6 +112,11 @@
                 </div>
                 <i class="bi bi-x ml-20 sm:ml-28 cursor-pointer" onclick="toggleSidebar()"></i>
             </div>
+            <a href="{{ route('peminjam.dashboard') }}"
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('admin.dashboard') ? 'bg-gray-700' : '' }}">
+                <i class="bi bi-house-door"></i>
+                <span class="text-[15px] ml-4 text-gray-200">Home</span>
+            </a>
             <hr class="my-2 text-gray-600">
 
             <!-- Grup Menu Peminjaman Ruangan -->

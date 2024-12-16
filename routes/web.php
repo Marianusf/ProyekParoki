@@ -14,6 +14,11 @@ use App\Http\Controllers\PeminjamController;
 use App\Http\Controllers\PengembalianController;
 use App\Http\Controllers\RuanganController;
 use App\Models\Alat_Misa;
+use App\Models\Peminjaman;
+use App\Models\PeminjamanRuangan;
+use App\Models\Peminjam;
+use App\Models\PeminjamanAlatMisa;
+use Carbon\Carbon;
 
 //peminjamanRuangan
 // Route untuk Sekretariat - Mengelola Permintaan Peminjaman
@@ -81,27 +86,51 @@ Route::post('/logout', function () {
     return redirect('/login');
 })->name('logout');
 
-// Rute dengan middleware untuk admin dan sekretariat
-Route::middleware('auth:admin')->group(function () {
-    Route::get('/admin/dashboard', function () {
-        return view('layout.AdminView.HomeAdmin');
-    })->name('admin.dashboard');
 
-    Route::get('/sekretariat/dashboard', function () {
-        return view('layout.AdminSekretariatView.HomeAdminSekretariat');
-    })->name('sekretariat.dashboard');
-    Route::get('/paramenta/dashboard', function () {
-        return view('layout.AdminParamentaView.HomeAdminParamenta');
-    })->name('paramenta.dashboard');
-
-    // Rute untuk memproses persetujuan akun peminjam hanya untuk admin
-    Route::post('/approve/{id}', [AuthController::class, 'approve'])->name('approve.peminjam');
-});
-
-// Rute dengan middleware untuk peminjam
 Route::middleware('auth:peminjam')->group(function () {
     Route::get('/peminjam/dashboard', function () {
-        return view('layout.PeminjamView.HomePeminjam');
+        // Ambil statistik peminjaman
+        $totalPeminjamanAktif = PeminjamanRuangan::where('status_peminjaman', 'disetujui')->count()
+            + PeminjamanAlatMisa::where('status_peminjaman', 'disetujui')->count()
+            + Peminjaman::where('status_peminjaman', 'disetujui')->count();
+
+        $totalPeminjamanSelesai = PeminjamanRuangan::where('status_peminjaman', 'selesai')->count()
+            + PeminjamanAlatMisa::where('status_peminjaman', 'selesai')->count()
+            + Peminjaman::where('status_peminjaman', 'selesai')->count();
+
+        // Hitung persentase jenis peminjaman
+        $jumlahRuangan = PeminjamanRuangan::count();
+        $jumlahAlat = PeminjamanAlatMisa::count();
+        $jumlahAsset = Peminjaman::count();
+
+        $totalSemuaPeminjaman = $jumlahRuangan + $jumlahAlat + $jumlahAsset;
+
+        $persenRuangan = $totalSemuaPeminjaman ? ($jumlahRuangan / $totalSemuaPeminjaman) * 100 : 0;
+        $persenAlat = $totalSemuaPeminjaman ? ($jumlahAlat / $totalSemuaPeminjaman) * 100 : 0;
+        $persenAsset = $totalSemuaPeminjaman ? ($jumlahAsset / $totalSemuaPeminjaman) * 100 : 0;
+        $pengingatPeminjaman = PeminjamanRuangan::with('ruangan') // Eager load relasi ruangan
+            ->where('status_peminjaman', 'disetujui')
+            ->whereDate('tanggal_selesai', '>=', now()) // Ambil yang masih valid
+            ->whereDate('tanggal_selesai', '<=', now()->addDays(3)) // Batas waktu 3 hari lagi
+            ->get()
+            ->map(function ($item) {
+                $tanggalPengembalian = Carbon::parse($item->tanggal_selesai);
+
+                return [
+                    'nama' => $item->ruangan->nama ?? 'Nama Ruangan Tidak Ditemukan',
+                    'tanggal_selesai' => $tanggalPengembalian,
+                    'sisa_waktu' => now()->diffForHumans($tanggalPengembalian, ['parts' => 2, 'syntax' => Carbon::DIFF_ABSOLUTE]),
+                ];
+            });
+        // Kirim data ke view
+        return view('layout.PeminjamView.HomePeminjam', compact(
+            'totalPeminjamanAktif',
+            'totalPeminjamanSelesai',
+            'persenRuangan',
+            'persenAlat',
+            'persenAsset',
+            'pengingatPeminjaman'
+        ));
     })->name('peminjam.dashboard');
 });
 
@@ -232,3 +261,80 @@ Route::post('/pengembalian-alat-misa/batch', [PengembalianAlatMisaController::cl
 Route::post('/pengembalian-alat-misa/approve/{id}', [PengembalianAlatMisaController::class, 'approve'])->name('pengembalianAlatMisa.approve');
 Route::post('/pengembalian-alat-misa/reject/{id}', [PengembalianAlatMisaController::class, 'reject'])->name('pengembalianAlatMisa.reject');
 Route::get('/admin/pengembalian-AlatMisa', [AdminController::class, 'adminLihatPermintaanPengembalianAlatMisa'])->name('admin.PermintaanPengembalianALatMisa');
+
+
+
+//untuk homepage
+Route::middleware('auth:admin')->group(function () {
+    // Admin Dashboard
+    Route::get('/admin/dashboard', function () {
+        // Statistik Dinamis
+        $persetujuanAkun = Peminjam::where('is_approved', 'false')->count();
+        $peminjamanAktif = Peminjaman::where('status_peminjaman', 'disetujui')->count();
+        $permintaanPeminjaman = Peminjaman::where('status_peminjaman', 'pending')->count();
+
+        // Data Grafik Peminjaman Bulanan
+        $peminjamanPerBulan = Peminjaman::selectRaw('MONTH(created_at) as bulan, COUNT(*) as total')
+            ->groupBy('bulan')
+            ->orderBy('bulan')
+            ->pluck('total', 'bulan');
+
+        // Kirim data ke view
+        return view('layout.AdminView.HomeAdmin', compact('persetujuanAkun', 'peminjamanAktif', 'permintaanPeminjaman', 'peminjamanPerBulan'));
+    })->name('admin.dashboard');
+
+    // Sekretariat Dashboard
+    Route::get('/sekretariat/dashboard', function () {
+        // Ambil data jumlah peminjaman ruangan per bulan
+        $dataBulanan = PeminjamanRuangan::selectRaw('MONTH(created_at) as bulan, COUNT(*) as total')
+            ->groupBy('bulan')
+            ->pluck('total', 'bulan');
+
+        // Inisialisasi semua bulan (1–12) dengan nilai 0
+        $dataLengkap = array_fill(1, 12, 0);
+
+        // Isi data sesuai bulan yang ada
+        foreach ($dataBulanan as $bulan => $total) {
+            $dataLengkap[$bulan] = $total;
+        }
+
+        // Kirim data ke view
+        return view('layout.AdminSekretariatView.HomeAdminSekretariat', [
+            'persetujuanRuangan' => PeminjamanRuangan::where('status_peminjaman', 'pending')->count(),
+            'peminjamanAktifRuangan' => PeminjamanRuangan::where('status_peminjaman', 'disetujui')->count(),
+            'totalPermintaanRuangan' => PeminjamanRuangan::count(),
+            'peminjamanRuanganBulanan' => $dataLengkap
+        ]);
+    })->name('sekretariat.dashboard');
+
+    // Admin Paramenta Dashboard
+    Route::get('/paramenta/dashboard', function () {
+        // Statistik Dinamis untuk Peminjaman Alat Misa
+        $persetujuanAlat = PeminjamanAlatMisa::where('status_peminjaman', 'pending')->count();
+        $peminjamanAktifAlat = PeminjamanAlatMisa::where('status_peminjaman', 'disetujui')->count();
+        $totalPermintaanAlat = PeminjamanAlatMisa::count();
+
+        // Data Grafik Peminjaman Alat Misa Bulanan
+        $peminjamanAlatBulanan = PeminjamanAlatMisa::selectRaw('MONTH(created_at) as bulan, COUNT(*) as total')
+            ->groupBy('bulan')
+            ->orderBy('bulan')
+            ->pluck('total', 'bulan');
+
+        // Normalisasi Data Bulanan (1-12) dengan nilai 0 jika kosong
+        $dataLengkap = array_fill(1, 12, 0);
+        foreach ($peminjamanAlatBulanan as $bulan => $total) {
+            $dataLengkap[$bulan] = $total;
+        }
+
+        // Kirim data ke view
+        return view('layout.AdminParamentaView.HomeAdminParamenta', [
+            'persetujuanAlat' => $persetujuanAlat,
+            'peminjamanAktifAlat' => $peminjamanAktifAlat,
+            'totalPermintaanAlat' => $totalPermintaanAlat,
+            'peminjamanAlatBulanan' => $dataLengkap
+        ]);
+    })->name('paramenta.dashboard');
+
+    // Rute untuk memproses persetujuan akun peminjam
+    Route::post('/approve/{id}', [AuthController::class, 'approve'])->name('approve.peminjam');
+});
