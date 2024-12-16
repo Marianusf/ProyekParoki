@@ -100,9 +100,6 @@ class AuthController extends Controller
         return redirect()->back()->with('error', 'Username atau Password Anda Salah!');
     }
 
-
-
-
     public function showLinkRequestForm()
     {
         return view('auth.passwords.email');

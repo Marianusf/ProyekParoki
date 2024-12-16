@@ -1,11 +1,15 @@
-@extends('layout.TemplateAdmin')
+@extends('layout.TemplateAdminSekretariat')
 
-@section('title', 'PermintaanAktivasiAkun')
+@section('title', 'Permintaan Aktivasi Akun')
 
 @section('content')
-    <section class="p-6 bg-blue-100 min-h-screen">
+    <section class="p-6 bg-gray-100 min-h-screen">
         <div class="container mx-auto">
-            <h2 class="text-2xl font-semibold text-gray-700 mb-4">Daftar Peminjam yang Belum Disetujui</h2>
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-bold text-gray-800">Daftar Peminjam yang Belum Disetujui</h2>
+            </div>
+            <!-- SweetAlert untuk Notifikasi -->
             @if (session('success'))
                 <script>
                     Swal.fire({
@@ -17,66 +21,85 @@
                 </script>
             @endif
 
-            @if (session('message'))
-                <script>
-                    Swal.fire({
-                        icon: 'info',
-                        title: 'PESAN:',
-                        text: '{{ session('message') }}',
-                        confirmButtonText: 'OK'
-                    });
-                </script>
-            @endif
-
             @if (session('error'))
                 <script>
                     Swal.fire({
                         icon: 'error',
-                        title: 'Error:',
+                        title: 'Error!',
                         text: '{{ session('error') }}',
                         confirmButtonText: 'OK'
                     });
                 </script>
             @endif
 
-            <div class="overflow-x-auto overflow-y-auto max-h-[500px] bg-white shadow-md rounded-lg">
-                <table class="min-w-full bg-white border border-gray-200 rounded-lg">
-                    <thead>
-                        <tr class="w-full bg-blue-600 text-white uppercase text-sm leading-normal">
-                            <th class="py-3 px-6 text-left">Nama</th>
-                            <th class="py-3 px-6 text-left">Email</th>
-                            <th class="py-3 px-6 text-left">Tanggal Lahir</th>
-                            <th class="py-3 px-6 text-left">Alamat</th>
-                            <th class="py-3 px-6 text-left">Nomor Telepon</th>
-                            <th class="py-3 px-6 text-left">Lingkungan</th>
-                            <th class="py-3 px-6 text-left">Waktu Permintaan</th>
-                            <th class="py-3 px-6 text-center">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-gray-700 text-sm font-light">
-                        @foreach ($pendingRequest as $peminjam)
-                            <tr class="border-b border-gray-200 hover:bg-gray-100">
-                                <td class="py-3 px-6 text-left whitespace-nowrap">{{ $peminjam->name }}</td>
-                                <td class="py-3 px-6 text-left">{{ $peminjam->email }}</td>
-                                <td class="py-3 px-6 text-left">{{ $peminjam->tanggal_lahir }}</td>
-                                <td class="py-3 px-6 text-left">{{ $peminjam->alamat }}</td>
-                                <td class="py-3 px-6 text-left">{{ $peminjam->nomor_telepon }}</td>
-                                <td class="py-3 px-6 text-left">{{ $peminjam->lingkungan }}</td>
-                                <td class="py-3 px-6 text-left">{{ $peminjam->created_at }}</td>
-                                <td class="py-3 px-6 text-center">
-                                    <form class="setujuForm" method="POST"
-                                        action="{{ route('approve.peminjam', $peminjam->id) }}">
-                                        @csrf
-                                        <button type="button"
-                                            class="setujuButton bg-green-500 text-white py-1 px-3 rounded hover:bg-green-700">Setujui</button>
-                                        <button type="button"
-                                            class="tolakButton bg-red-500 text-white py-1 px-3 rounded hover:bg-red-700 ml-2">Tolak</button>
-                                    </form>
-                                </td>
+            @if ($errors->any())
+                <script>
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Terjadi Kesalahan!',
+                        text: '{{ implode(', ', $errors->all()) }}',
+                        confirmButtonText: 'OK'
+                    });
+                </script>
+            @endif
+            <!-- Table Section -->
+            <div class="overflow-x-auto bg-white shadow-lg rounded-lg">
+                <button onclick="window.location.reload();"
+                    class="bg-transparent text-blue-500 hover:text-blue-700 p-2 rounded-full transition duration-200 ease-in-out"
+                    title="Refresh halaman">
+                    <i class="fas fa-sync-alt text-xl"></i> <!-- Ikon refresh -->
+                </button>
+                @if ($pendingRequest->count() > 0)
+                    <table class="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden">
+                        <!-- Table Header -->
+                        <thead class="bg-blue-600 text-white text-sm uppercase">
+                            <tr>
+                                <th class="py-3 px-6 text-left">Nama</th>
+                                <th class="py-3 px-6 text-left">Email</th>
+                                <th class="py-3 px-6 text-left">Tanggal Lahir</th>
+                                <th class="py-3 px-6 text-left">Alamat</th>
+                                <th class="py-3 px-6 text-left">Nomor Telepon</th>
+                                <th class="py-3 px-6 text-left">Lingkungan</th>
+                                <th class="py-3 px-6 text-left">Waktu Permintaan</th>
+                                <th class="py-3 px-6 text-center">Aksi</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+                        <!-- Table Body -->
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            @foreach ($pendingRequest as $peminjam)
+                                <tr class="hover:bg-gray-100 transition duration-200">
+                                    <td class="py-4 px-6 text-gray-700 font-medium">{{ $peminjam->name }}</td>
+                                    <td class="py-4 px-6 text-gray-600">{{ $peminjam->email }}</td>
+                                    <td class="py-4 px-6 text-gray-600">{{ $peminjam->tanggal_lahir }}</td>
+                                    <td class="py-4 px-6 text-gray-600">{{ $peminjam->alamat }}</td>
+                                    <td class="py-4 px-6 text-gray-600">{{ $peminjam->nomor_telepon }}</td>
+                                    <td class="py-4 px-6 text-gray-600">{{ $peminjam->lingkungan }}</td>
+                                    <td class="py-4 px-6 text-gray-600">{{ $peminjam->created_at }}</td>
+                                    <!-- Action Buttons -->
+                                    <td class="py-4 px-6 text-center">
+                                        <div class="flex justify-center space-x-2">
+                                            <form method="POST" action="{{ route('approve.peminjam', $peminjam->id) }}">
+                                                @csrf
+                                                <button type="button"
+                                                    class="setujuButton bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition duration-200">
+                                                    Setujui
+                                                </button>
+                                                <button type="button"
+                                                    class="tolakButton bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-200">
+                                                    Tolak
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @else
+                    <div class="p-6 text-center">
+                        <h3 class="text-gray-600 text-lg">Belum ada permintaan aktivasi akun.</h3>
+                    </div>
+                @endif
             </div>
         </div>
     </section>
@@ -85,73 +108,66 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const setujuButtons = document.querySelectorAll('.setujuButton');
-            const tolakButtons = document.querySelectorAll('.tolakButton');
-
-            // Event untuk tombol Setujui
-            setujuButtons.forEach((button) => {
+            // Event untuk Setujui Button
+            document.querySelectorAll('.setujuButton').forEach(button => {
                 button.addEventListener('click', function(event) {
                     event.preventDefault();
-                    const setujuForm = button.closest('form');
+                    const form = button.closest('form');
 
                     Swal.fire({
-                        title: "Apakah anda Yakin?",
-                        text: "Apakah Yakin Akan Setujui Pendaftaran Akun Ini?",
-                        icon: "warning",
+                        title: 'Yakin Setujui?',
+                        text: 'Akun ini akan disetujui.',
+                        icon: 'warning',
                         showCancelButton: true,
-                        confirmButtonColor: "#3085d6",
-                        cancelButtonColor: "#d33",
-                        confirmButtonText: "Ya, Setujui!"
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Ya, Setujui!'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            setujuForm.submit();
+                            form.submit();
                         }
                     });
                 });
             });
 
-            // Event untuk tombol Tolak
-            tolakButtons.forEach((button) => {
+            // Event untuk Tolak Button
+            document.querySelectorAll('.tolakButton').forEach(button => {
                 button.addEventListener('click', function(event) {
                     event.preventDefault();
-                    const setujuForm = button.closest('form');
+                    const form = button.closest('form');
 
                     Swal.fire({
-                        title: "Tolak Pendaftaran",
+                        title: 'Tolak Akun',
                         input: 'textarea',
-                        inputPlaceholder: 'Alasan penolakan...',
+                        inputPlaceholder: 'Tuliskan alasan penolakan...',
                         showCancelButton: true,
-                        confirmButtonText: 'Kirim Penolakan',
+                        confirmButtonText: 'Kirim',
                         cancelButtonText: 'Batal',
                         inputValidator: (value) => {
                             if (!value) {
-                                return 'Anda harus memberikan alasan!';
+                                return 'Alasan harus diisi!';
                             }
                         }
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            const reason = result.value;
-
-                            // Send rejection email via AJAX
-                            fetch(`/peminjam/tolak/${setujuForm.getAttribute('action').split('/').pop()}`, {
+                            // Lakukan pengiriman data alasan penolakan
+                            fetch(`/peminjam/tolak/${form.getAttribute('action').split('/').pop()}`, {
                                     method: 'POST',
                                     headers: {
                                         'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                        'Content-Type': 'application/json',
+                                        'Content-Type': 'application/json'
                                     },
                                     body: JSON.stringify({
-                                        reason
-                                    }),
+                                        reason: result.value
+                                    })
                                 })
                                 .then(response => response.json())
                                 .then(data => {
                                     if (data.success) {
-                                        Swal.fire('Sukses!',
-                                            'Email penolakan telah dikirim.',
-                                            'success');
+                                        Swal.fire('Sukses!', 'Akun ditolak.', 'success')
+                                            .then(() => location.reload());
                                     } else {
-                                        Swal.fire('Gagal!',
-                                            'Terjadi kesalahan saat mengirim email.',
+                                        Swal.fire('Error!', 'Gagal mengirim data.',
                                             'error');
                                     }
                                 });
