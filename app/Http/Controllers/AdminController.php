@@ -7,8 +7,11 @@ namespace App\Http\Controllers;
 use App\Models\Peminjam;
 use App\Models\Peminjaman;
 use App\Models\PeminjamanAlatMisa;
+use App\Models\PeminjamanRuangan;
 use App\Models\Pengembalian;
 use App\Models\PengembalianAlatMisa;
+use Carbon\Carbon;
+
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -100,5 +103,36 @@ class AdminController extends Controller
             })->get();
 
         return view('layout.AdminParamentaView.LihatRiwayatPeminjamanAlatMisa', compact('peminjaman', 'pengembalian', 'selesai'));
+    }
+
+
+    public function LihatRiwayatPeminjamanRuangan()
+    {
+        // Ambil semua data peminjaman dengan relasi ruangan dan peminjam
+        $peminjaman = PeminjamanRuangan::with(['ruangan', 'peminjam'])->get();
+
+        // Tandai setiap peminjaman dengan status berdasarkan tanggal
+        $peminjaman->map(function ($item) {
+            $waktuMulai = Carbon::parse($item->tanggal_mulai);
+            $waktuSelesai = Carbon::parse($item->tanggal_selesai);
+
+            if ($item->status_peminjaman === 'disetujui') {
+                if (Carbon::now()->between($waktuMulai, $waktuSelesai)) {
+                    $item->status = 'Sedang Aktif'; // Sedang dalam pemakaian
+                } elseif (Carbon::now()->greaterThan($waktuSelesai)) {
+                    $item->status = 'Selesai'; // Waktu selesai telah lewat
+                } else {
+                    $item->status = 'Akan Datang'; // Peminjaman sudah disetujui, belum dimulai
+                }
+            } elseif ($item->status_peminjaman === 'pending') {
+                $item->status = 'Pending'; // Menunggu persetujuan
+            } else {
+                $item->status = 'Ditolak'; // Peminjaman ditolak
+            }
+
+            return $item;
+        });
+
+        return view('layout.AdminSekretariatView.LihatRiwayatPeminjamanRuangan', compact('peminjaman'));
     }
 }

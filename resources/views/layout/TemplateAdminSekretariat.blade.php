@@ -139,7 +139,12 @@
             <a href="{{ route('cekKetersediaanRuangan') }}"
                 class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('cekKetersediaanRuangan') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-eye-fill"></i>
-                <span class="text-[15px] ml-4 text-gray-200">Cek Ketersediaan Ruangan</span>
+                <span class="text-[15px] ml-4 text-gray-200">Daftar Ketersediaan Ruangan</span>
+            </a>
+            <a href="{{ route('lihat.riwayat.peminjaman-ruangan') }}"
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('lihat.riwayat.peminjaman-ruangan') ? 'bg-gray-700' : '' }}">
+                <i class="bi bi-clock-history"></i>
+                <span class="text-[15px] ml-4 text-gray-200">Riwayat Peminjaman Ruangan</span>
             </a>
             <hr class="my-4 text-gray-600">
             <a href="{{ route('lihat.peminjam.aktif.bysekretariat') }}"
