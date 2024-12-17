@@ -112,6 +112,11 @@
                 </div>
                 <i class="bi bi-x ml-20 sm:ml-28 cursor-pointer" onclick="toggleSidebar()"></i>
             </div>
+            <a href="{{ route('peminjam.dashboard') }}"
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('admin.dashboard') ? 'bg-gray-700' : '' }}">
+                <i class="bi bi-house-door"></i>
+                <span class="text-[15px] ml-4 text-gray-200">Home</span>
+            </a>
             <hr class="my-2 text-gray-600">
 
             <!-- Grup Menu Peminjaman Ruangan -->
@@ -120,6 +125,16 @@
                 class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('ruangan') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-building"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Ruangan</span>
+            </a>
+            <a href="{{ route('peminjam.ketersediaanRuangan') }}"
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('peminjam.ketersediaanRuangan') ? 'bg-gray-700' : '' }}">
+                <i class="bi bi-door-open"></i> <!-- Icon untuk Ketersediaan Ruangan -->
+                <span class="text-[15px] ml-4 text-gray-200">Daftar Ruangan Tersedia</span>
+            </a>
+            <a href="{{ route('riwayatPeminjamanRuangan') }}"
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('riwayatPeminjamanRuangan') ? 'bg-gray-700' : '' }}">
+                <i class="bi bi-clock-history"></i>
+                <span class="text-[15px] ml-4 text-gray-200">Riwayat Peminjaman Ruangan</span>
             </a>
 
 
@@ -133,12 +148,12 @@
             <a href="{{ route('lihatKeranjang') }}"
                 class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('lihatKeranjang') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-cart"></i>
-                <span class="text-[15px] ml-4 text-gray-200">Keranjang</span>
+                <span class="text-[15px] ml-4 text-gray-200">Keranjang Asset</span>
             </a>
             <a href="{{ route('peminjam.ketersediaanAsset') }}"
                 class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('peminjam.ketersediaanAsset') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-file-earmark-text"></i>
-                <span class="text-[15px] ml-4 text-gray-200">Daftar Aset Tersedia</span>
+                <span class="text-[15px] ml-4 text-gray-200">Daftar Asset Tersedia</span>
             </a>
             <a href="{{ route('pengembalian.form') }}"
                 class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('pengembalian.form') ? 'bg-gray-700' : '' }}">
@@ -148,7 +163,7 @@
             <a href="{{ route('riwayatPeminjaman') }}"
                 class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('riwayatPeminjaman') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-clock-history"></i>
-                <span class="text-[15px] ml-4 text-gray-200">Riwayat Peminjaman</span>
+                <span class="text-[15px] ml-4 text-gray-200">Riwayat Peminjaman Asset</span>
             </a>
 
 
@@ -174,10 +189,10 @@
                 <i class="bi bi-arrow-counterclockwise"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Pengembalian</span>
             </a>
-            <a href=""
-                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('riwayatPeminjamanMisa') ? 'bg-gray-700' : '' }}">
+            <a href="{{ route('riwayatPeminjamanAlatMisa') }}"
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('riwayatPeminjamanAlatMisa') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-clock-history"></i>
-                <span class="text-[15px] ml-4 text-gray-200">Riwayat</span>
+                <span class="text-[15px] ml-4 text-gray-200">Riwayat Alat Misa</span>
             </a>
 
             <hr class="my-4 text-gray-600">

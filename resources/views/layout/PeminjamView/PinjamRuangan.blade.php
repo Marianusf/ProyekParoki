@@ -1,5 +1,5 @@
 @extends('layout.TemplatePeminjam')
-
+@section('title', 'Pinjam Ruangan')
 @section('content')
     <div class="container mx-auto p-6">
         @if (session('sweet-alert'))
@@ -41,14 +41,6 @@
             </script>
         @endif
 
-        <!-- Tabs Navigasi -->
-        <div class="tabs flex justify-center space-x-4 mb-8">
-            <button onclick="switchTab('form')" id="tab-form"
-                class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">Ajukan Peminjaman</button>
-            <button onclick="switchTab('history')" id="tab-history"
-                class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition">Histori
-                Peminjaman</button>
-        </div>
         <button onclick="window.location.reload();"
             class="bg-transparent text-blue-500 hover:text-blue-700 p-2 rounded-full transition duration-200 ease-in-out"
             title="Refresh halaman">
@@ -140,61 +132,7 @@
 
         </div>
 
-        <!-- Histori Peminjaman -->
-        <div id="history-tab" class="tab-content hidden">
-            <h2 class="text-2xl font-semibold text-center text-gray-800 mb-8">Histori Peminjaman Ruangan</h2>
-            <div class="overflow-x-auto bg-white shadow-md rounded-lg">
-                <table class="table-auto w-full text-left text-gray-800">
-                    <thead class="bg-gray-200 text-gray-600 uppercase">
-                        <tr>
-                            <th class="px-4 py-2">Ruangan</th>
-                            <th class="px-4 py-2">Tanggal Mulai</th>
-                            <th class="px-4 py-2">Tanggal Selesai</th>
-                            <th class="px-4 py-2">Durasi</th>
-                            <th class="px-4 py-2">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($historiSelesai as $item)
-                            <tr class="border-t hover:bg-gray-100">
-                                <td class="px-4 py-2">{{ $item->ruangan->nama }}</td>
-                                <td class="px-4 py-2">
-                                    {{ \Carbon\Carbon::parse($item->tanggal_mulai)->format('d M Y H:i') }}
-                                </td>
-                                <td class="px-4 py-2">
-                                    {{ \Carbon\Carbon::parse($item->tanggal_selesai)->format('d M Y H:i') }}</td>
-                                <td class="px-4 py-2">
-                                    @php
-                                        $mulai = \Carbon\Carbon::parse($item->tanggal_mulai);
-                                        $selesai = \Carbon\Carbon::parse($item->tanggal_selesai);
-                                        $totalMenit = $mulai->diffInMinutes($selesai);
-                                        $hari = floor($totalMenit / 1440);
-                                        $jam = floor(($totalMenit % 1440) / 60);
-                                        $menit = $totalMenit % 60;
-                                        $durasi =
-                                            $hari > 0
-                                                ? "$hari hari $jam jam"
-                                                : ($jam > 0
-                                                    ? "$jam jam $menit menit"
-                                                    : "$menit menit");
-                                    @endphp
-                                    {{ $durasi }}
-                                </td>
-                                <td class="px-4 py-2">
-                                    @if ($item->status_peminjaman === 'selesai')
-                                        <span class="text-green-500">SELESAI</span>
-                                    @elseif ($item->status === 'rejected')
-                                        <span class="text-red-500">Ditolak</span>
-                                    @else
-                                        <span class="text-yellow-500">Menunggu Persetujuan</span>
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
+
     </div>
 
     <!-- FullCalendar -->
@@ -264,24 +202,6 @@
             calendar.render();
         });
 
-        function switchTab(tab) {
-            const formTab = document.getElementById('form-tab');
-            const historyTab = document.getElementById('history-tab');
-            const tabForm = document.getElementById('tab-form');
-            const tabHistory = document.getElementById('tab-history');
-
-            if (tab === 'form') {
-                formTab.classList.remove('hidden');
-                historyTab.classList.add('hidden');
-                tabForm.classList.add('bg-blue-500', 'text-white');
-                tabHistory.classList.remove('bg-blue-500', 'text-white');
-            } else {
-                formTab.classList.add('hidden');
-                historyTab.classList.remove('hidden');
-                tabHistory.classList.add('bg-blue-500', 'text-white');
-                tabForm.classList.remove('bg-blue-500', 'text-white');
-            }
-        }
         document.addEventListener('DOMContentLoaded', function() {
             const ruanganSelect = document.getElementById('ruangan_id');
             const fasilitasContainer = document.getElementById('fasilitas_container');

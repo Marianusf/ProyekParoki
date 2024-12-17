@@ -3,29 +3,38 @@
 @section('content')
     <div class="container mx-auto py-8">
         <h2 class="text-3xl font-bold mb-6 text-gray-800">Pengembalian Barang</h2>
-
-        <!-- Menampilkan Pesan Error -->
-        @if ($errors->any())
-            <div class="bg-red-500 text-white p-4 mb-4 rounded-md">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
+        <!-- SweetAlert2 Session Alerts -->
         @if (session('success'))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-                <strong class="font-bold">SUKSES: </strong>
-                <span class="block sm:inline">{{ session('success') }}</span>
-            </div>
+            <script>
+                Swal.fire({
+                    title: 'Berhasil!',
+                    text: "{{ session('success') }}",
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            </script>
         @endif
+
+        @if (session('error'))
+            <script>
+                Swal.fire({
+                    title: 'Error!',
+                    text: "{{ session('error') }}",
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            </script>
+        @endif
+
         @if (session('message'))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-                <strong class="font-bold">BERHASIL: </strong>
-                <span class="block sm:inline">{{ session('message') }}</span>
-            </div>
+            <script>
+                Swal.fire({
+                    title: 'Informasi',
+                    text: "{{ session('message') }}",
+                    icon: 'info',
+                    confirmButtonText: 'OK'
+                });
+            </script>
         @endif
 
 

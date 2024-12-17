@@ -65,7 +65,7 @@
                             <tr class="bg-white border-b hover:bg-gray-100 transition duration-150"
                                 data-type="riwayatPeminjaman">
                                 <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                                    {{ $peminjaman->asset->nama_barang }}</td>
+                                    {{ $peminjaman->alatmisa->nama_alat }}</td>
                                 <td class="px-6 py-4">{{ $peminjaman->jumlah }}</td>
                                 <td class="px-6 py-4">
                                     {{ \Carbon\Carbon::parse($peminjaman->created_at)->format('d F Y H:i') }}</td>
@@ -138,7 +138,7 @@
                             <tr class="bg-white border-b hover:bg-gray-100 transition duration-150"
                                 data-type="riwayatPengembalian">
                                 <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                                    {{ $pengembalian->peminjaman->asset->nama_barang }}</td>
+                                    {{ $pengembalian->peminjaman->alatmisa->nama_alat }}</td>
                                 <td class="px-6 py-4">{{ $pengembalian->peminjaman->jumlah }}</td>
                                 <td class="px-6 py-4">
                                     {{ \Carbon\Carbon::parse($pengembalian->created_at)->format('d F Y H:i') }}</td>

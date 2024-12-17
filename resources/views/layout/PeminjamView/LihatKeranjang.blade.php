@@ -4,37 +4,37 @@
     <div class="container mx-auto py-8">
         <h2 class="text-3xl font-bold mb-6 text-gray-800">Keranjang Peminjaman Anda</h2>
         @if (session('success'))
-    <script>
-        Swal.fire({
-            icon: 'success',
-            title: 'Sukses!',
-            text: '{{ session('success') }}',
-            confirmButtonText: 'OK'
-        });
-    </script>
-@endif
+            <script>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sukses!',
+                    text: '{{ session('success') }}',
+                    confirmButtonText: 'OK'
+                });
+            </script>
+        @endif
 
-@if (session('message'))
-    <script>
-        Swal.fire({
-            icon: 'info',
-            title: 'PESAN:',
-            text: '{{ session('message') }}',
-            confirmButtonText: 'OK'
-        });
-    </script>
-@endif
+        @if (session('message'))
+            <script>
+                Swal.fire({
+                    icon: 'info',
+                    title: 'PESAN:',
+                    text: '{{ session('message') }}',
+                    confirmButtonText: 'OK'
+                });
+            </script>
+        @endif
 
-@if (session('error'))
-    <script>
-        Swal.fire({
-            icon: 'error',
-            title: 'Error:',
-            text: '{{ session('error') }}',
-            confirmButtonText: 'OK'
-        });
-    </script>
-@endif
+        @if (session('error'))
+            <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error:',
+                    text: '{{ session('error') }}',
+                    confirmButtonText: 'OK'
+                });
+            </script>
+        @endif
 
         @if ($keranjangItems->isEmpty())
             <p class="text-gray-500 text-center">Keranjang Anda kosong </p>
@@ -84,6 +84,7 @@
                     <button type="button" onclick="confirmCheckout()"
                         class="bg-blue-600 text-white px-5 py-2 rounded-lg shadow hover:bg-blue-700 transition">Proses
                         Checkout</button>
+
                 </div>
             </form>
         @endif

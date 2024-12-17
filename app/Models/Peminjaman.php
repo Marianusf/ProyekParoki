@@ -35,7 +35,7 @@ class Peminjaman extends Model
     }
     public function pengembalian()
     {
-        return $this->hasOne(Pengembalian::class, 'peminjaman_id'); // Properly relate via peminjaman_id
+        return $this->hasOne(Pengembalian::class); // Properly relate via peminjaman_id
     }
     public function admin()
     {

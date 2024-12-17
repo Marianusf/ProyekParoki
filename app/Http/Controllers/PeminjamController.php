@@ -7,7 +7,9 @@ use App\Models\Peminjam;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Assets;
-
+use App\Models\Ruangan;
+use App\Models\PeminjamanRuangan;
+use Carbon\Carbon;
 
 class PeminjamController extends Controller
 {
@@ -128,5 +130,25 @@ class PeminjamController extends Controller
     {
         $alatmisa = Alat_Misa::where('kondisi', 'baik')->get();
         return view('layout.PeminjamView.LihatKetersediaanAlatMisa', compact('alatmisa'));
+    }
+    public function peminjamLihatKetersediaanRuangan()
+    {
+        $rooms = Ruangan::where('kondisi', 'baik')->get();
+
+        // Cek status peminjaman untuk setiap ruangan
+        $rooms = $rooms->map(function ($room) {
+            // Cari peminjaman yang valid untuk ruangan ini
+            $peminjaman = PeminjamanRuangan::where('ruangan_id', $room->id)
+                ->where('status_peminjaman', 'disetujui') // Hanya yang sudah diapprove
+                ->whereDate('tanggal_mulai', '<=', Carbon::now())
+                ->whereDate('tanggal_selesai', '>=', Carbon::now())
+                ->first();
+
+            // Tentukan status ruangan
+            $room->status_peminjaman = $peminjaman ? 'dipinjam' : 'tersedia';
+            return $room;
+        });
+
+        return view('layout.PeminjamView.LihatKetersediaanRuangan', compact('rooms'));
     }
 }

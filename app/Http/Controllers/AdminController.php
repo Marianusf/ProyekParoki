@@ -65,4 +65,40 @@ class AdminController extends Controller
 
         return view('layout.AdminParamentaView.PermintaanPengembalianAlatMisa', compact('pengembalianAlatMisa'));
     }
+    public function LihatRiwayatPeminjamanAsset()
+    {
+        // Data Peminjaman dengan status pending, disetujui, ditolak
+        $peminjaman = Peminjaman::with(['asset', 'peminjam'])
+            ->get();
+
+        // Data Pengembalian dengan status pending, disetujui, ditolak
+        $pengembalian = Pengembalian::with(['peminjaman.asset', 'peminjaman.peminjam'])
+            ->get();
+
+        // Data yang sudah selesai: Peminjaman disetujui + Pengembalian disetujui
+        $selesai = Pengembalian::with(['peminjaman.asset', 'peminjaman.peminjam'])
+            ->where('status', 'approved')
+            ->whereHas('peminjaman', function ($query) {
+                $query->where('status_peminjaman', 'disetujui');
+            })->get();
+
+        return view('layout.AdminView.LihatRiwayatPeminjamanAsset', compact('peminjaman', 'pengembalian', 'selesai'));
+    }
+    public function LihatRiwayatPeminjamanAlatMisa()
+    {
+        // Peminjaman Alat Misa
+        $peminjaman = PeminjamanAlatMisa::with(['alatMisa', 'peminjam'])->get();
+
+        // Pengembalian Alat Misa
+        $pengembalian = PengembalianAlatMisa::with(['peminjaman.alatMisa', 'peminjaman.peminjam'])->get();
+
+        // Peminjaman Selesai
+        $selesai = PengembalianAlatMisa::with(['peminjaman.alatMisa', 'peminjaman.peminjam'])
+            ->where('status', 'approved')
+            ->whereHas('peminjaman', function ($query) {
+                $query->where('status_peminjaman', 'disetujui');
+            })->get();
+
+        return view('layout.AdminParamentaView.LihatRiwayatPeminjamanAlatMisa', compact('peminjaman', 'pengembalian', 'selesai'));
+    }
 }

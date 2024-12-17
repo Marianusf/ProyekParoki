@@ -30,6 +30,8 @@ class PengembalianAlatMisa extends Model
         return $this->belongsTo(Admin::class, 'id_admin');
     }
 
+
+
     /**
      * Relasi ke tabel Peminjaman.
      * Setiap pengembalian terhubung ke peminjaman tertentu.
