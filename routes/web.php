@@ -18,6 +18,8 @@ use App\Models\Peminjaman;
 use App\Models\PeminjamanRuangan;
 use App\Models\Peminjam;
 use App\Models\PeminjamanAlatMisa;
+use App\Models\Pengembalian;
+use App\Models\PengembalianAlatMisa;
 use Carbon\Carbon;
 
 //peminjamanRuangan
@@ -86,32 +88,60 @@ Route::post('/logout', function () {
     return redirect('/login');
 })->name('logout');
 
-
 Route::middleware('auth:peminjam')->group(function () {
     Route::get('/peminjam/dashboard', function () {
-        // Ambil statistik peminjaman
-        $totalPeminjamanAktif = PeminjamanRuangan::where('status_peminjaman', 'disetujui')->count()
-            + PeminjamanAlatMisa::where('status_peminjaman', 'disetujui')->count()
-            + Peminjaman::where('status_peminjaman', 'disetujui')->count();
+        $user = Auth::guard('peminjam')->user(); // Ambil data pengguna yang sedang login
 
-        $totalPeminjamanSelesai = PeminjamanRuangan::where('status_peminjaman', 'selesai')->count()
-            + PeminjamanAlatMisa::where('status_peminjaman', 'selesai')->count()
-            + Peminjaman::where('status_peminjaman', 'selesai')->count();
+        // 1. Perbarui status peminjaman ruangan jika waktu sudah habis
+        PeminjamanRuangan::where('status_peminjaman', 'disetujui')
+            ->where('peminjam_id', $user->id)
+            ->whereDate('tanggal_selesai', '<', now()) // Jika tanggal selesai sudah lewat
+            ->update(['status_peminjaman' => 'selesai']);
 
-        // Hitung persentase jenis peminjaman
-        $jumlahRuangan = PeminjamanRuangan::count();
-        $jumlahAlat = PeminjamanAlatMisa::count();
-        $jumlahAsset = Peminjaman::count();
+        // 2. Hitung peminjaman aktif
+        $totalPeminjamanAktif = PeminjamanRuangan::where('status_peminjaman', 'disetujui')
+            ->where('peminjam_id', $user->id)
+            ->count()
+            + PeminjamanAlatMisa::where('status_peminjaman', 'disetujui')
+            ->where('id_peminjam', $user->id)
+            ->count()
+            + Peminjaman::where('status_peminjaman', 'disetujui')
+            ->where('id_peminjam', $user->id)
+            ->whereDoesntHave('pengembalian', function ($query) {
+                $query->where('status', 'approved');
+            }) // Filter yang belum ada pengembalian approved
+            ->count();
+
+        // 3. Hitung peminjaman selesai
+        $totalPeminjamanSelesai = PeminjamanRuangan::where('status_peminjaman', 'selesai')
+            ->where('peminjam_id', $user->id)
+            ->count()
+            + PeminjamanAlatMisa::where('status_peminjaman', 'selesai')
+            ->where('id_peminjam', $user->id)
+            ->count()
+            + Peminjaman::whereHas('pengembalian', function ($query) {
+                $query->where('status', 'approved');
+            })
+            ->where('id_peminjam', $user->id)
+            ->count();
+
+        // 4. Hitung persentase pemanfaatan
+        $jumlahRuangan = PeminjamanRuangan::where('peminjam_id', $user->id)->count();
+        $jumlahAlat = PeminjamanAlatMisa::where('id_peminjam', $user->id)->count();
+        $jumlahAsset = Peminjaman::where('id_peminjam', $user->id)->count();
 
         $totalSemuaPeminjaman = $jumlahRuangan + $jumlahAlat + $jumlahAsset;
 
         $persenRuangan = $totalSemuaPeminjaman ? ($jumlahRuangan / $totalSemuaPeminjaman) * 100 : 0;
         $persenAlat = $totalSemuaPeminjaman ? ($jumlahAlat / $totalSemuaPeminjaman) * 100 : 0;
         $persenAsset = $totalSemuaPeminjaman ? ($jumlahAsset / $totalSemuaPeminjaman) * 100 : 0;
-        $pengingatPeminjaman = PeminjamanRuangan::with('ruangan') // Eager load relasi ruangan
+
+        // 5. Pengingat peminjaman ruangan yang akan habis dalam 3 hari
+        $pengingatPeminjaman = PeminjamanRuangan::with('ruangan')
             ->where('status_peminjaman', 'disetujui')
-            ->whereDate('tanggal_selesai', '>=', now()) // Ambil yang masih valid
-            ->whereDate('tanggal_selesai', '<=', now()->addDays(3)) // Batas waktu 3 hari lagi
+            ->where('peminjam_id', $user->id)
+            ->whereDate('tanggal_selesai', '>=', now()) // Masih valid
+            ->whereDate('tanggal_selesai', '<=', now()->addDays(3)) // Akan selesai dalam 3 hari
             ->get()
             ->map(function ($item) {
                 $tanggalPengembalian = Carbon::parse($item->tanggal_selesai);
@@ -122,7 +152,8 @@ Route::middleware('auth:peminjam')->group(function () {
                     'sisa_waktu' => now()->diffForHumans($tanggalPengembalian, ['parts' => 2, 'syntax' => Carbon::DIFF_ABSOLUTE]),
                 ];
             });
-        // Kirim data ke view
+
+        // 6. Kirim data ke view
         return view('layout.PeminjamView.HomePeminjam', compact(
             'totalPeminjamanAktif',
             'totalPeminjamanSelesai',
@@ -133,6 +164,7 @@ Route::middleware('auth:peminjam')->group(function () {
         ));
     })->name('peminjam.dashboard');
 });
+
 
 // Rute untuk requests (memerlukan autentikasi admin)
 // Route::middleware('auth:admin')->group(function () {

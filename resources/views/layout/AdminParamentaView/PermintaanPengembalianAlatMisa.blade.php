@@ -5,13 +5,40 @@
     <div class="container mx-auto py-8">
         <h2 class="text-3xl font-bold text-gray-800 mb-6">Permintaan Pengembalian Alat Misa</h2>
 
-        <!-- Notifikasi -->
+        <!-- SweetAlert2 Session Alerts -->
         @if (session('success'))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-                <strong class="font-bold">Sukses!</strong>
-                <span class="block sm:inline">{{ session('success') }}</span>
-            </div>
+            <script>
+                Swal.fire({
+                    title: 'Berhasil!',
+                    text: "{{ session('success') }}",
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            </script>
         @endif
+
+        @if (session('error'))
+            <script>
+                Swal.fire({
+                    title: 'Error!',
+                    text: "{{ session('error') }}",
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            </script>
+        @endif
+
+        @if (session('message'))
+            <script>
+                Swal.fire({
+                    title: 'Informasi',
+                    text: "{{ session('message') }}",
+                    icon: 'info',
+                    confirmButtonText: 'OK'
+                });
+            </script>
+        @endif
+
 
         @if ($pengembalianAlatMisa->isEmpty())
             <p class="text-gray-600">Tidak ada permintaan pengembalian alat misa saat ini.</p>

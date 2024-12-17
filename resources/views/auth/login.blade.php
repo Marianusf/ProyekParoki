@@ -11,27 +11,40 @@
 
             <h2 class="font-bold text-3xl text-[#002D74] text-center mb-4">Login</h2>
 
+            <!-- SweetAlert2 Session Alerts -->
             @if (session('success'))
-                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4"
-                    role="alert">
-                    <strong class="font-bold">Sukses: </strong>
-                    <span class="block sm:inline">{{ session('success') }}</span>
-                </div>
-            @endif
-            @if (session('message'))
-                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4"
-                    role="alert">
-                    <strong class="font-bold">PESAN: </strong>
-                    <span class="block sm:inline">{{ session('message') }}</span>
-                </div>
+                <script>
+                    Swal.fire({
+                        title: 'Berhasil!',
+                        text: "{{ session('success') }}",
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+                </script>
             @endif
 
             @if (session('error'))
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                    <strong class="font-bold">Error: </strong>
-                    <span class="block sm:inline">{{ session('error') }}</span>
-                </div>
+                <script>
+                    Swal.fire({
+                        title: 'Error!',
+                        text: "{{ session('error') }}",
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                </script>
             @endif
+
+            @if (session('message'))
+                <script>
+                    Swal.fire({
+                        title: 'Informasi',
+                        text: "{{ session('message') }}",
+                        icon: 'info',
+                        confirmButtonText: 'OK'
+                    });
+                </script>
+            @endif
+
 
             <p class="text-sm mt-2 text-[#002D74] text-center">Sudah Punya Akun? Tinggal Login</p>
 

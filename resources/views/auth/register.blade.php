@@ -7,18 +7,39 @@
         <div
             class="bg-[#7cb1ff] rounded-2xl flex flex-col w-full p-20 shadow-lg transition-transform duration-300 transform hover:scale-105">
             @if ($errors->any())
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                    <strong class="font-bold">Pemberitahuan: </strong>
-                    <span class="block sm:inline">{{ $errors->first() }}</span>
-                </div>
+                <script>
+                    Swal.fire({
+                        title: 'Terjadi Kesalahan!',
+                        html: "{!! implode('<br>', $errors->all()) !!}",
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                </script>
             @endif
 
-            @if (session('message'))
-                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-                    <strong class="font-bold">Informasi: </strong>
-                    <span class="block sm:inline">{{ session('message') }}</span>
-                </div>
+            @if (session('success'))
+                <script>
+                    Swal.fire({
+                        title: 'Berhasil!',
+                        text: "{{ session('success') }}",
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+                </script>
             @endif
+
+            @if (session('error'))
+                <script>
+                    Swal.fire({
+                        title: 'Error!',
+                        text: "{{ session('error') }}",
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                </script>
+            @endif
+
+
             <h2 class="text-lg font-bold text-gray-800 mb-1">SISTEM PEMINJAMAN GEREJA BABADAN</h2>
             <p class="text-sm text-gray-500 mb-8">PAROKI ST PETRUS DAN PAULUS</p>
             <h2 class="font-bold text-4xl text-[#002D74] text-center mb-4">Registrasi</h2>

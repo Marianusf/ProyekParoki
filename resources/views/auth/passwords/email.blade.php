@@ -6,13 +6,14 @@
     <section class="flex items-center justify-center min-h-screen bg-[#7cb1ff]">
         <div
             class="bg-[#7cb1ff] rounded-2xl flex flex-col w-full p-20 shadow-lg transition-transform duration-300 transform hover:scale-105">
-            @if (session('status'))
+            <!-- SweetAlert2 Session Alerts -->
+            @if (session('success'))
                 <script>
                     Swal.fire({
-                        title: 'Sukses!',
-                        text: '{{ session('status') }}',
+                        title: 'Berhasil!',
+                        text: "{{ session('success') }}",
                         icon: 'success',
-                        confirmButtonText: 'Ok'
+                        confirmButtonText: 'OK'
                     });
                 </script>
             @endif
@@ -21,9 +22,20 @@
                 <script>
                     Swal.fire({
                         title: 'Error!',
-                        text: '{{ session('error') }}',
+                        text: "{{ session('error') }}",
                         icon: 'error',
-                        confirmButtonText: 'Ok'
+                        confirmButtonText: 'OK'
+                    });
+                </script>
+            @endif
+
+            @if (session('message'))
+                <script>
+                    Swal.fire({
+                        title: 'Informasi',
+                        text: "{{ session('message') }}",
+                        icon: 'info',
+                        confirmButtonText: 'OK'
                     });
                 </script>
             @endif

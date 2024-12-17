@@ -5,6 +5,39 @@
 @section('content')
     <div class="container mx-auto py-8">
         <h2 class="text-2xl font-semibold mb-6">Daftar Ketersediaan Alat Misa</h2>
+<!-- SweetAlert2 Session Alerts -->
+@if (session('success'))
+    <script>
+        Swal.fire({
+            title: 'Berhasil!',
+            text: "{{ session('success') }}",
+            icon: 'success',
+            confirmButtonText: 'OK'
+        });
+    </script>
+@endif
+
+@if (session('error'))
+    <script>
+        Swal.fire({
+            title: 'Error!',
+            text: "{{ session('error') }}",
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+    </script>
+@endif
+
+@if (session('message'))
+    <script>
+        Swal.fire({
+            title: 'Informasi',
+            text: "{{ session('message') }}",
+            icon: 'info',
+            confirmButtonText: 'OK'
+        });
+    </script>
+@endif
 
         <!-- Flash Message -->
         @if (session('success'))

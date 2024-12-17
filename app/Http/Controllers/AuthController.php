@@ -25,35 +25,36 @@ class AuthController extends Controller
             'email' => 'required|email|regex:/^[\w\.\-]+@gmail\.com$/i|unique:peminjam,email',
             'tanggal_lahir' => 'required|date',
             'alamat' => 'required|string',
-            'nomor_telepon' => 'required|numeric|digits_between:10,15', // Hanya angka
+            'nomor_telepon' => 'required|numeric|digits_between:10,15',
             'lingkungan' => 'required|string',
             'password' => [
                 'required',
                 'string',
                 'min:8',
                 'confirmed',
-                'regex:/^(?=.*[0-9]).{8,}$/', // Minimal 8 karakter dengan minimal 1 angka
+                'regex:/^(?=.*[0-9]).{8,}$/',
             ],
         ], [
             'email.unique' => 'Email ini sudah terdaftar, silakan gunakan email lain.',
             'name.required' => 'Nama Anda wajib untuk diisi!!',
-            'email.required' => 'Email Anda wajib diisi !',
-            'tanggal_lahir' => 'Tanggal Lahir Wajib Untuk diisi!!',
-            'nomor_telepon' => 'Nomor Telepon Anda Wajib Diisi dengan Angka 10-15 digit !',
-            'lingkungan' => 'Nama lingkungan Wajib Untuk diisi dengan benar!',
-            'password' => 'Password Minimal Memiliki 8 Karakter dengan Kombinasi Angka Minimal Satu',
-            'email.email' => 'Format email tidak valid. example@gmail.com',
-            'password.confirmed' => 'Konfirmasi kata sandi tidak sama !!',
+            'password.required' => 'Password Anda wajib untuk diisi!!',
+            'email.required' => 'Email Anda wajib diisi!',
+            'tanggal_lahir.required' => 'Tanggal lahir wajib diisi!!',
+            'nomor_telepon.required' => 'Nomor Telepon wajib diisi dengan 10-15 digit angka!',
+            'lingkungan.required' => 'Nama lingkungan wajib diisi!',
+            'password.regex' => 'Password minimal 8 karakter dengan kombinasi angka minimal 1.',
+            'password.confirmed' => 'Konfirmasi password tidak sesuai!',
         ]);
 
-        // Hash password sebelum menyimpannya di database
+        // Hash password sebelum menyimpan
         $validated['password'] = Hash::make($validated['password']);
 
-        // Buat data baru di tabel `peminjam`
+        // Simpan ke database
         peminjam::create($validated);
 
-        return redirect()->back()->with('message', 'Permintaan Registrasi berhasil !,Silahkan Lihat Gmail untuk Informasi Lebih Lanjut');
+        return redirect()->back()->with('success', 'Permintaan Registrasi berhasil! Silakan cek Gmail Anda.');
     }
+
 
     public function login(Request $request)
     {
