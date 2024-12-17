@@ -217,6 +217,7 @@ Route::get('/riwayat-peminjaman', [PeminjamanController::class, 'lihatRiwayatPem
 Route::get('/pinjam-asset', [PeminjamanController::class, 'tampilPinjamAsset'])->name('pinjam.asset');
 Route::get('/peminjam/ketersediaan-asset', [PeminjamController::class, 'peminjamLihatKetersediaanAsset'])->name('peminjam.ketersediaanAsset');
 Route::get('/peminjam/ketersediaan-alatMisa', [PeminjamController::class, 'peminjamLihatKetersediaanAlatMisa'])->name('peminjam.ketersediaanAlatMisa');
+Route::get('/peminjam/ketersediaan-ruangan', [PeminjamController::class, 'peminjamLihatKetersediaanRuangan'])->name('peminjam.ketersediaanRuangan');
 
 // });
 
