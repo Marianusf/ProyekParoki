@@ -42,7 +42,7 @@ Route::get('ruangan/create', [RuanganController::class, 'create'])->name('ruanga
 Route::post('ruanganStore', [RuanganController::class, 'store'])->name('ruangan.store');
 Route::get('ruangan/{ruangan}/edit', [RuanganController::class, 'edit'])->name('ruangan.edit');
 Route::put('ruangan/{ruangan}', [RuanganController::class, 'update'])->name('ruangan.update');
-
+Route::get('/riwayat-peminjaman-ruangan', [PeminjamanRuanganController::class, 'lihatRiwayatPeminjamanRuangan'])->name('riwayatPeminjamanRuangan');
 Route::get('lihatSemuaRuangan', [RuanganController::class, 'lihatSemuaRuangan'])->name('lihatSemuaRuangan');
 Route::get('cekKetersediaanRuangan', [RuanganController::class, 'cekKetersediaanRuangan'])->name('cekKetersediaanRuangan');
 // Route untuk menghapus ruangan

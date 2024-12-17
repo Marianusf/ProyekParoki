@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\MailPeminjamanStatus;
 use App\Mail\MailPeminjamanStatusRuangan;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+
 
 class PeminjamanRuanganController extends Controller
 {
@@ -291,5 +291,22 @@ class PeminjamanRuanganController extends Controller
 
         // Kirim email pemberitahuan status
         Mail::to($email)->send(new MailPeminjamanStatusRuangan($status, $peminjamName, $alasanPenolakan, $ruanganDetails));
+    }
+
+
+    public function lihatRiwayatPeminjamanRuangan()
+    {
+        $riwayatPeminjaman = PeminjamanRuangan::with('ruangan') // Eager load relasi ruangan
+            ->orderBy('tanggal_mulai', 'desc')
+            ->get()
+            ->map(function ($peminjaman) {
+                // Tambahkan status selesai otomatis jika waktu peminjaman telah lewat
+                if ($peminjaman->status_peminjaman == 'disetujui' && Carbon::now()->gt($peminjaman->tanggal_selesai)) {
+                    $peminjaman->status_peminjaman = 'selesai';
+                }
+                return $peminjaman;
+            });
+
+        return view('layout.PeminjamView.RiwayatPeminjamanRuangan', compact('riwayatPeminjaman'));
     }
 }
