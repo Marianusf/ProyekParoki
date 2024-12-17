@@ -112,7 +112,7 @@
             <div class="p-2.5 mt-1 flex items-center">
                 <img src="{{ asset('/logo.png') }}" alt="Logo Paroki Babadan" class="w-10 h-10 rounded-full">
                 <div class="ml-5">
-                    <div class="text-base font-medium text-white">Admin</div>
+                    <div class="text-base font-medium text-white">Admin Utama</div>
                     <div class="text-sm font-medium text-gray-400">Paroki Babadan</div>
                 </div>
                 <i class="bi bi-x ml-auto cursor-pointer" onclick="toggleSidebar()"></i>
@@ -131,7 +131,7 @@
             <a href="{{ route('lihatPermintaanPeminjaman') }}"
                 class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('lihatPermintaanPeminjaman') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-check-square-fill"></i>
-                <span class="text-[15px] ml-4 text-gray-200">Persetujuan Peminjaman</span>
+                <span class="text-[15px] ml-4 text-gray-200">Persetujuan Peminjaman Aset</span>
             </a>
             <a href="{{ route('admin.PermintaanPengembalianAsset') }}"
                 class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('admin.PermintaanPengembalianAsset') ? 'bg-gray-700' : '' }}">
