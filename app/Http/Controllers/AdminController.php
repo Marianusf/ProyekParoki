@@ -84,4 +84,21 @@ class AdminController extends Controller
 
         return view('layout.AdminView.LihatRiwayatPeminjamanAsset', compact('peminjaman', 'pengembalian', 'selesai'));
     }
+    public function LihatRiwayatPeminjamanAlatMisa()
+    {
+        // Peminjaman Alat Misa
+        $peminjaman = PeminjamanAlatMisa::with(['alatMisa', 'peminjam'])->get();
+
+        // Pengembalian Alat Misa
+        $pengembalian = PengembalianAlatMisa::with(['peminjaman.alatMisa', 'peminjaman.peminjam'])->get();
+
+        // Peminjaman Selesai
+        $selesai = PengembalianAlatMisa::with(['peminjaman.alatMisa', 'peminjaman.peminjam'])
+            ->where('status', 'approved')
+            ->whereHas('peminjaman', function ($query) {
+                $query->where('status_peminjaman', 'disetujui');
+            })->get();
+
+        return view('layout.AdminParamentaView.LihatRiwayatPeminjamanAlatMisa', compact('peminjaman', 'pengembalian', 'selesai'));
+    }
 }

@@ -1,13 +1,13 @@
-@extends('layout.TemplateAdmin')
+@extends('layout.TemplateAdminParamenta')
 
-@section('title', 'Riwayat Peminjaman Asset')
+@section('title', 'Riwayat Peminjaman Alat Misa')
 
 @section('content')
+
     <div class="container mx-auto py-8">
         <h1 class="text-3xl font-semibold mb-6 flex items-center">
-            <i class="fas fa-history mr-2"></i> RIWAYAT PEMINJAMAN ASSET DAN BARANG
+            <i class="fas fa-history mr-2"></i> RIWAYAT PEMINJAMAN ALAT MISA
         </h1>
-        <!-- Tabs Navigation -->
         <div class="flex justify-center mb-6">
             <div class="bg-gray-100 p-1 rounded-lg shadow-lg inline-flex">
                 <button class="tab-btn active px-6 py-2 rounded-l-lg flex items-center bg-blue-500 text-white"
@@ -31,6 +31,8 @@
                 class="p-3 pl-10 border border-gray-300 rounded-full w-full focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-md">
             <i class="fas fa-search absolute left-4 top-3.5 text-gray-400"></i>
         </div>
+
+
         <!-- Tab Content: Peminjaman -->
         <div id="peminjamanContent" class="tab-content">
             <div class="overflow-x-auto max-h-[400px] border rounded-lg">
@@ -56,7 +58,7 @@
                     <tbody>
                         @foreach ($peminjaman as $item)
                             <tr class="hover:bg-gray-100">
-                                <td class="px-4 py-2">{{ $item->asset->nama_barang }}</td>
+                                <td class="px-4 py-2">{{ $item->alatMisa->nama_alat }}</td>
                                 <td class="px-4 py-2">{{ $item->jumlah }}</td>
                                 <td class="px-4 py-2">{{ $item->peminjam->name }}</td>
                                 <td class="px-4 py-2 ">
@@ -109,7 +111,7 @@
                     <tbody>
                         @foreach ($pengembalian as $item)
                             <tr class="hover:bg-gray-100">
-                                <td class="px-4 py-2">{{ $item->peminjaman->asset->nama_barang }}</td>
+                                <td class="px-4 py-2">{{ $item->peminjaman->alatMisa->nama_alat }}</td>
                                 <td class="px-4 py-2">{{ $item->peminjaman->jumlah }}</td>
                                 <td class="px-4 py-2">{{ $item->peminjaman->peminjam->name }}</td>
                                 <td class="px-4 py-2 ">
@@ -191,7 +193,7 @@
                                 }
                             @endphp
                             <tr class="hover:bg-gray-100">
-                                <td class="px-4 py-2">{{ $item->peminjaman->asset->nama_barang }}</td>
+                                <td class="px-4 py-2">{{ $item->peminjaman->alatMisa->nama_alat }}</td>
                                 <td class="px-4 py-2">{{ $item->peminjaman->jumlah }}</td>
                                 <td class="px-4 py-2">{{ $item->peminjaman->peminjam->name }}</td>
                                 <td class="px-4 py-2">

@@ -19,9 +19,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
         integrity="sha512-Kfw6bRRXLgXjOd+7Kf4Yx8qEzHGGw5FZZDdJx/0SGpBrlgqeycZTArbJm/MJlyZ5ATh8WlhjZGvj7ZwQ3NA76g=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.0/dist/sweetalert2.all.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-KfwQ4T91FQmNZ5SRA6d8b6ozV00JwQx6Z/BHdBmyM6sk4EUvsVoRwhPyK78iA61UO0APcFXk5sKPn7Em79/5KQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-dlFJSlZQvD1vRC2/Qw7sQ6WdBKP0pB/rChtZ01fG07FaP4E98oUWEW3CbNCBqWjRbGC6K6Vw5BlFPOmM/8DaFw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <style>
         body {
@@ -147,6 +153,11 @@
                 class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('lihatKetersediaanAlatMisa') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-eye-fill"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Cek Ketersediaan Alat Misa</span>
+            </a>
+            <a href="{{ route('lihat.riwayat.peminjaman-alatmisa') }}"
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('lihat.riwayat.peminjaman-alatmisa') ? 'bg-gray-700' : '' }}">
+                <i class="bi bi-clock-history"></i>
+                <span class="text-[15px] ml-4 text-gray-200">Riwayat Peminjaman Ruangan</span>
             </a>
             <hr class="my-4 text-gray-600">
             <a href="{{ route('lihat.peminjam.aktif.byparamenta') }}"
