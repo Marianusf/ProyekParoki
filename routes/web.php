@@ -230,7 +230,9 @@ Route::post('/peminjaman/batch-action', [PeminjamanController::class, 'batchActi
 // });
 Route::get('/admin/peminjamanasset', [AdminController::class, 'lihatPermintaanPeminjaman'])->name('lihatPermintaanPeminjaman');
 Route::get('/ketersediaan-asset', [AssetController::class, 'cekKetersediaanAsset'])->name('ketersediaanAsset');
-
+Route::get('/admin-lihatriwayat-peminjaman-asset', [AdminController::class, 'LihatRiwayatPeminjamanAsset'])->name('lihat.riwayat.peminjaman-asset');
+Route::get('/admin-lihatriwayat-peminjaman-alatmisa', [AdminController::class, 'LihatRiwayatPeminjamanAlatMisa'])->name('lihat.riwayat.peminjaman-alatmisa');
+Route::get('/admin-lihatriwayat-peminjaman-ruangan', [AdminController::class, 'LihatRiwayatPeminjamanRuangan'])->name('lihat.riwayat.peminjaman-ruangan');
 
 //proses pengembalian
 Route::get('/pengembalian/form', [PengembalianController::class, 'showPengembalianForm'])->name('pengembalian.form');

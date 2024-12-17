@@ -41,6 +41,11 @@ class peminjam extends Authenticatable
     // Relasi ke peminjaman
     public function peminjaman()
     {
-        return $this->hasMany(Peminjaman::class, 'id_peminjam');
+        return $this->hasMany(Peminjaman::class, 'id_peminjaman');
+    }
+    // Relasi ke peminjaman
+    public function pengembalian()
+    {
+        return $this->hasMany(pengembalian::class);
     }
 }

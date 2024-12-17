@@ -206,6 +206,43 @@
                 button.parentElement.remove();
                 updateJson();
             };
+            window.addDetail = function() {
+                // Ambil semua baris detail yang ada
+                const rows = document.querySelectorAll('#detail-container .flex');
+
+                // Cek apakah semua baris sudah diisi
+                for (let row of rows) {
+                    const namaDetail = row.querySelector('.nama-detail-input').value.trim();
+                    const jumlahDetail = row.querySelector('.jumlah-input').value.trim();
+                    if (!namaDetail || !jumlahDetail) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Baris Belum Lengkap!',
+                            text: 'Harap isi Nama Detail dan Jumlah pada baris sebelumnya sebelum menambahkan detail baru.',
+                            confirmButtonText: 'OK'
+                        });
+                        return; // Hentikan eksekusi jika ada baris yang belum lengkap
+                    }
+                }
+
+                // Tambahkan baris baru jika semua baris sudah lengkap
+                const index = Date.now();
+                const row = document.createElement('div');
+                row.className = 'flex items-center gap-2 mb-2';
+                row.id = `row-${index}`;
+                row.innerHTML = `
+        <input type="text" name="detail_alat[${index}][nama_detail]" placeholder="Nama Detail" 
+            class="nama-detail-input border rounded p-2 w-1/2">
+        <input type="number" name="detail_alat[${index}][jumlah]" placeholder="Jumlah" 
+            class="jumlah-input border rounded p-2 w-1/4" min="1">
+        <button type="button" onclick="removeDetail(this)" class="text-red-500 hover:text-red-700">Hapus</button>
+    `;
+                detailContainer.appendChild(row);
+
+                // Tambahkan event listener untuk memperbarui JSON saat input diubah
+                row.querySelectorAll('input').forEach(input => input.addEventListener('input', updateJson));
+                updateJson();
+            };
 
             // SweetAlert konfirmasi submit
             document.getElementById('submit-btn').addEventListener('click', function(event) {

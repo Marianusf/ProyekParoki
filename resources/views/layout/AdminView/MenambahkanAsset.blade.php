@@ -4,8 +4,11 @@
 
 @section('content')
     <div class="container mx-auto px-6 py-8">
-        <h2 class="text-3xl font-semibold text-center mb-8 text-gray-800">{{ isset($asset) ? 'Edit Asset' : 'Tambah Asset' }}
+        <h2 class="text-3xl font-semibold text-center mb-8 text-gray-800">
+            {{ isset($asset) ? 'Edit Asset' : 'Tambah Asset' }}
         </h2>
+
+        <!-- Notifikasi -->
         @if (session('success'))
             <script>
                 Swal.fire({
@@ -16,59 +19,48 @@
                 });
             </script>
         @endif
-
-        @if (session('message'))
-            <script>
-                Swal.fire({
-                    icon: 'info',
-                    title: 'PESAN:',
-                    text: '{{ session('message') }}',
-                    confirmButtonText: 'OK'
-                });
-            </script>
-        @endif
-
         @if (session('error'))
             <script>
                 Swal.fire({
                     icon: 'error',
-                    title: 'Error:',
+                    title: 'Error',
                     text: '{{ session('error') }}',
                     confirmButtonText: 'OK'
                 });
             </script>
         @endif
 
-
-
+        <!-- Form Asset -->
         <form action="{{ isset($asset) ? route('asset.update', $asset->id) : route('asset.store') }}" method="POST"
-            enctype="multipart/form-data">
+            enctype="multipart/form-data"
+            class="bg-white rounded-lg shadow-md p-8 space-y-6 transition-all duration-300 hover:shadow-lg">
             @csrf
             @if (isset($asset))
                 @method('PUT')
             @endif
 
-            <!-- Nama Barang -->
-            <div class="mb-6">
-                <label for="nama_barang" class="block text-sm font-medium text-gray-700">Nama Barang</label>
-                <input type="text"
-                    class="mt-2 block w-full border-2 border-gray-300 rounded-md p-3 text-gray-700 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                    id="nama_barang" name="nama_barang" value="{{ old('nama_barang', $asset->nama_barang ?? '') }}"
-                    required>
+            <!-- Input Nama Barang -->
+            <div>
+                <label for="nama_barang" class="block text-sm font-medium text-gray-700">
+                    <i class="fas fa-box-open mr-2 text-blue-500"></i> Nama Barang
+                </label>
+                <input type="text" id="nama_barang" name="nama_barang"
+                    value="{{ old('nama_barang', $asset->nama_barang ?? '') }}"
+                    class="mt-2 w-full rounded-lg border-gray-300 p-3 shadow-sm focus:ring-2 focus:ring-blue-500"
+                    placeholder="Masukkan nama barang" required>
                 @error('nama_barang')
-                    <p class="text-red-500 text-xs mt-2">{{ $message }}</p>
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                 @enderror
             </div>
 
-            <!-- Jenis Barang -->
-            <div class="mb-6">
-                <label for="jenis_barang" class="block text-sm font-medium text-gray-700">Jenis Barang</label>
-                <select
-                    class="mt-2 block w-full border-2 border-gray-300 rounded-md p-3 text-gray-700 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                    id="jenis_barang" name="jenis_barang" required>
-                    <option value="" disabled
-                        {{ old('jenis_barang', $asset->jenis_barang ?? '') == '' ? 'selected' : '' }}>Pilih Jenis Barang
-                    </option>
+            <!-- Dropdown Jenis Barang -->
+            <div>
+                <label for="jenis_barang" class="block text-sm font-medium text-gray-700">
+                    <i class="fas fa-tags mr-2 text-blue-500"></i> Jenis Barang
+                </label>
+                <select id="jenis_barang" name="jenis_barang"
+                    class="mt-2 w-full rounded-lg border-gray-300 p-3 shadow-sm focus:ring-2 focus:ring-blue-500" required>
+                    <option value="" disabled selected>Pilih jenis barang</option>
                     <option value="elektronik"
                         {{ old('jenis_barang', $asset->jenis_barang ?? '') == 'elektronik' ? 'selected' : '' }}>Elektronik
                     </option>
@@ -76,9 +68,8 @@
                         {{ old('jenis_barang', $asset->jenis_barang ?? '') == 'furniture' ? 'selected' : '' }}>Furniture
                     </option>
                     <option value="rumah tangga"
-                        {{ old('jenis_barang', $asset->jenis_barang ?? '') == 'rumahtangga' ? 'selected' : '' }}>Rumah
-                        Tangga
-                    </option>
+                        {{ old('jenis_barang', $asset->jenis_barang ?? '') == 'rumah tangga' ? 'selected' : '' }}>Rumah
+                        Tangga</option>
                     <option value="alat tulis kantor"
                         {{ old('jenis_barang', $asset->jenis_barang ?? '') == 'alat tulis kantor' ? 'selected' : '' }}>Alat
                         Tulis Kantor</option>
@@ -89,29 +80,26 @@
                         {{ old('jenis_barang', $asset->jenis_barang ?? '') == 'lainnya' ? 'selected' : '' }}>Lainnya
                     </option>
                 </select>
-                @error('jenis_barang')
-                    <p class="text-red-500 text-xs mt-2">{{ $message }}</p>
-                @enderror
             </div>
 
             <!-- Jumlah Barang -->
-            <div class="mb-6">
-                <label for="jumlah_barang" class="block text-sm font-medium text-gray-700">Jumlah Barang</label>
-                <input type="number"
-                    class="mt-2 block w-full border-2 border-gray-300 rounded-md p-3 text-gray-700 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                    id="jumlah_barang" name="jumlah_barang" value="{{ old('jumlah_barang', $asset->jumlah_barang ?? '') }}"
+            <div>
+                <label for="jumlah_barang" class="block text-sm font-medium text-gray-700">
+                    <i class="fas fa-sort-numeric-up mr-2 text-blue-500"></i> Jumlah Barang
+                </label>
+                <input type="number" id="jumlah_barang" name="jumlah_barang"
+                    class="mt-2 w-full rounded-lg border-gray-300 p-3 shadow-sm focus:ring-2 focus:ring-blue-500"
+                    value="{{ old('jumlah_barang', $asset->jumlah_barang ?? '') }}" placeholder="Masukkan jumlah barang"
                     required>
-                @error('jumlah_barang')
-                    <p class="text-red-500 text-xs mt-2">{{ $message }}</p>
-                @enderror
             </div>
 
             <!-- Kondisi Barang -->
-            <div class="mb-6">
-                <label for="kondisi" class="block text-sm font-medium text-gray-700">Kondisi Barang</label>
-                <select
-                    class="mt-2 block w-full border-2 border-gray-300 rounded-md p-3 text-gray-700 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                    id="kondisi" name="kondisi" required>
+            <div>
+                <label for="kondisi" class="block text-sm font-medium text-gray-700">
+                    <i class="fas fa-wrench mr-2 text-blue-500"></i> Kondisi Barang
+                </label>
+                <select id="kondisi" name="kondisi"
+                    class="mt-2 w-full rounded-lg border-gray-300 p-3 shadow-sm focus:ring-2 focus:ring-blue-500">
                     <option value="baik" {{ old('kondisi', $asset->kondisi ?? '') == 'baik' ? 'selected' : '' }}>Baik
                     </option>
                     <option value="rusak" {{ old('kondisi', $asset->kondisi ?? '') == 'rusak' ? 'selected' : '' }}>Rusak
@@ -120,43 +108,37 @@
                         {{ old('kondisi', $asset->kondisi ?? '') == 'perlu perbaikan' ? 'selected' : '' }}>Perlu Perbaikan
                     </option>
                 </select>
-                @error('kondisi')
-                    <p class="text-red-500 text-xs mt-2">{{ $message }}</p>
-                @enderror
             </div>
 
-
-            <!-- Deskripsi Barang -->
-            <div class="mb-6">
-                <label for="deskripsi" class="block text-sm font-medium text-gray-700">Deskripsi Barang</label>
-                <textarea
-                    class="mt-2 block w-full border-2 border-gray-300 rounded-md p-3 text-gray-700 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                    id="deskripsi" name="deskripsi" rows="4" required>{{ old('deskripsi', $asset->deskripsi ?? '') }}</textarea>
-                @error('deskripsi')
-                    <p class="text-red-500 text-xs mt-2">{{ $message }}</p>
-                @enderror
+            <!-- Deskripsi -->
+            <div>
+                <label for="deskripsi" class="block text-sm font-medium text-gray-700">
+                    <i class="fas fa-align-left mr-2 text-blue-500"></i> Deskripsi Barang
+                </label>
+                <textarea id="deskripsi" name="deskripsi" rows="4"
+                    class="mt-2 w-full rounded-lg border-gray-300 p-3 shadow-sm focus:ring-2 focus:ring-blue-500"
+                    placeholder="Jelaskan kondisi barang">{{ old('deskripsi', $asset->deskripsi ?? '') }}</textarea>
             </div>
 
-            <!-- Gambar Barang -->
-            <div class="mb-6">
-                <label for="gambar" class="block text-sm font-medium text-gray-700">Gambar Barang</label>
-                <input type="file"
-                    class="mt-2 block w-full border-2 border-gray-300 rounded-md p-3 text-gray-700 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                    id="gambar" name="gambar" accept="image/*" onchange="previewImage(event)">
-
+            <!-- Gambar -->
+            <div>
+                <label for="gambar" class="block text-sm font-medium text-gray-700">
+                    <i class="fas fa-image mr-2 text-blue-500"></i> Upload Gambar
+                </label>
+                <input type="file" id="gambar" name="gambar"
+                    class="mt-2 w-full border-2 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"
+                    onchange="previewImage(event)">
                 <div class="mt-4">
-                    <p class="text-sm text-gray-600">Pratinjau Gambar:</p>
                     <img id="preview"
                         src="{{ isset($asset) && $asset->gambar ? asset('storage/' . $asset->gambar) : '' }}"
-                        alt="Pratinjau Gambar"
-                        class="mt-2 rounded-md w-48 h-auto {{ isset($asset) && $asset->gambar ? 'block' : 'hidden' }}">
+                        alt="Pratinjau Gambar" class="rounded-lg shadow w-48 {{ isset($asset) ? '' : 'hidden' }}">
                 </div>
             </div>
 
             <!-- Tombol Submit -->
-            <div class="mb-6">
+            <div>
                 <button type="submit"
-                    class="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                    class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition duration-300">
                     {{ isset($asset) ? 'Update Asset' : 'Tambah Asset' }}
                 </button>
             </div>
@@ -165,29 +147,19 @@
 
     <script>
         function previewImage(event) {
-            const input = event.target;
             const preview = document.getElementById('preview');
+            const file = event.target.files[0];
 
-            if (input.files && input.files[0]) {
+            if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     preview.src = e.target.result;
-                    preview.style.display = 'block';
+                    preview.classList.remove('hidden');
                 };
-                reader.readAsDataURL(input.files[0]);
+                reader.readAsDataURL(file);
             } else {
-                preview.src = '';
-                preview.style.display = 'none';
+                preview.classList.add('hidden');
             }
-        }
-
-        function addFasilitas() {
-            const wrapper = document.getElementById('fasilitas-wrapper');
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.name = 'fasilitas[]';
-            input.placeholder = 'Masukkan fasilitas';
-            wrapper.appendChild(input);
         }
     </script>
 @endsection
