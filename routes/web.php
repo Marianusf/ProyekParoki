@@ -77,7 +77,7 @@ Route::get('/register', function () {
 Route::post('/register', [AuthController::class, 'register'])->name('register');
 
 // Rute untuk login
-Route::get('/login', function () {
+Route::get('/', function () {
     return view('auth.login');
 })->name('login.form');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
