@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Keranjang;
 use App\Models\Peminjaman;
-use App\Models\Peminjam;
+use App\Models\peminjam;
 use App\Models\Assets;
 use App\Mail\MailPeminjamanStatus;
 use App\Models\Pengembalian;
@@ -145,7 +145,7 @@ class PeminjamanController extends Controller
         }
 
         // Kirim email ke peminjam
-        $peminjam = Peminjam::findOrFail($peminjaman->id_peminjam);
+        $peminjam = peminjam::findOrFail($peminjaman->id_peminjam);
         $assetName = $asset->nama_barang; // Nama aset
         Mail::to($peminjam->email)->send(new MailPeminjamanStatus(
             'disetujui', // Status peminjaman
@@ -185,7 +185,7 @@ class PeminjamanController extends Controller
         }
 
         // Send the email after rejecting
-        $peminjam = Peminjam::findOrFail($peminjaman->id_peminjam);
+        $peminjam = peminjam::findOrFail($peminjaman->id_peminjam);
         $assetName = $asset->nama_barang; // Asset name
         Mail::to($peminjam->email)->send(new MailPeminjamanStatus(
             'ditolak', // Status peminjaman
@@ -269,7 +269,7 @@ class PeminjamanController extends Controller
 
         // Step 3: Send individual emails to each borrower
         foreach ($peminjamDetails as $peminjamId => $assetDetailsForPeminjam) {
-            $peminjam = Peminjam::find($peminjamId);
+            $peminjam = peminjam::find($peminjamId);
             $status = $validated['action'] === 'approve' ? 'disetujui' : 'ditolak';
             $alasanPenolakan = $validated['action'] === 'reject' ? $request->alasan_penolakan : null;
 

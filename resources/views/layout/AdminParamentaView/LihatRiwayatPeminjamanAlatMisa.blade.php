@@ -312,4 +312,5 @@
             });
         });
     </script>
+
 @endsection

@@ -19,7 +19,7 @@
                         echo 'Malam';
                     }
                 @endphp
-                <span class="text-blue-600">{{ Auth::guard('peminjam')->user()->name }}</span>,
+                <span class="text-blue-600">{{ Auth::guard('admin')->user()->nama }}</span>,
                 Selamat Datang di Sistem Peminjaman Asset Gereja Babadan!
             </h2>
 

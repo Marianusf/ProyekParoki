@@ -22,7 +22,7 @@ class KeranjangAlatMisa extends Model
     // Relasi ke peminjam
     public function peminjam()
     {
-        return $this->belongsTo(Peminjam::class, 'id_peminjam');
+        return $this->belongsTo(peminjam::class, 'id_peminjam');
     }
 
     // Relasi ke alat misa

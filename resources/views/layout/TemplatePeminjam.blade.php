@@ -103,8 +103,11 @@
         <div class="text-gray-100 text-sm sm:text-md">
             <!-- Bagian Profil -->
             <div class="p-2.5 mt-1 flex items-center">
-                <img src="{{ Auth::guard('peminjam')->user()->poto_profile ? asset('storage/' . Auth::guard('peminjam')->user()->poto_profile) : asset('default.jpg') }}"
+                <img src="{{ Auth::guard('peminjam')->user()->poto_profile
+                    ? asset('storage/' . Auth::guard('peminjam')->user()->poto_profile)
+                    : asset('default.jpg') }}"
                     alt="Foto Profil" class="w-10 h-10 rounded-full">
+
                 <div class="ml-5">
                     <div class="text-base font-medium text-white">{{ Auth::guard('peminjam')->user()->name }}</div>
                     <div class="text-sm font-medium text-gray-400">{{ Auth::guard('peminjam')->user()->lingkungan }}

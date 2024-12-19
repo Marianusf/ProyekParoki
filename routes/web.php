@@ -14,6 +14,7 @@ use App\Http\Controllers\PeminjamController;
 use App\Http\Controllers\PengembalianController;
 use App\Http\Controllers\RuanganController;
 use App\Models\Alat_Misa;
+use App\Models\Assets;
 use App\Models\Peminjaman;
 use App\Models\PeminjamanRuangan;
 use App\Models\Peminjam;
@@ -76,11 +77,20 @@ Route::get('/register', function () {
 })->name('register.form');
 Route::post('/register', [AuthController::class, 'register'])->name('register');
 
-// Rute untuk login
+//
+// Menampilkan form login
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login.form');
+
+// Menangani proses login
 Route::post('/login', [AuthController::class, 'login'])->name('login');
+
+// Redirect root ("/") ke halaman login
+Route::get('/', function () {
+    return redirect()->route('login.form');
+});
+
 
 // Rute untuk logout
 Route::post('/logout', function () {
@@ -304,9 +314,17 @@ Route::middleware('auth:admin')->group(function () {
     // Admin Dashboard
     Route::get('/admin/dashboard', function () {
         // Statistik Dinamis
-        $persetujuanAkun = Peminjam::where('is_approved', 'false')->count();
+        $persetujuanAkun = Peminjam::where('is_approved', false)->count();
         $peminjamanAktif = Peminjaman::where('status_peminjaman', 'disetujui')->count();
         $permintaanPeminjaman = Peminjaman::where('status_peminjaman', 'pending')->count();
+
+        // Data Baru
+        $totalPengguna = Peminjam::count(); // Total pengguna
+        $barangTersedia = Assets::where('kondisi', 'baik')->count(); // Barang tersedia (baik)
+        $barangDipinjam = Assets::where('kondisi', 'baik')->whereIn('id', function ($query) {
+            $query->select('id_asset')->from('peminjaman')->where('status_peminjaman', 'dipinjam');
+        })->count(); // Barang dipinjam (baik)
+        $peminjamanBulanIni = Peminjaman::whereMonth('created_at', now()->month)->count(); // Peminjaman bulan ini
 
         // Data Grafik Peminjaman Bulanan
         $peminjamanPerBulan = Peminjaman::selectRaw('MONTH(created_at) as bulan, COUNT(*) as total')
@@ -315,7 +333,16 @@ Route::middleware('auth:admin')->group(function () {
             ->pluck('total', 'bulan');
 
         // Kirim data ke view
-        return view('layout.AdminView.HomeAdmin', compact('persetujuanAkun', 'peminjamanAktif', 'permintaanPeminjaman', 'peminjamanPerBulan'));
+        return view('layout.AdminView.HomeAdmin', compact(
+            'persetujuanAkun',
+            'peminjamanAktif',
+            'permintaanPeminjaman',
+            'totalPengguna',
+            'barangTersedia',
+            'barangDipinjam',
+            'peminjamanBulanIni',
+            'peminjamanPerBulan'
+        ));
     })->name('admin.dashboard');
 
     // Sekretariat Dashboard

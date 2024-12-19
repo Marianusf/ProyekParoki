@@ -7,7 +7,7 @@ use App\Models\KeranjangAlatMisa;
 use App\Models\PeminjamanAlatMisa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Peminjam;
+use App\Models\peminjam;
 use App\Mail\MailPeminjamanAlatMisaStatus;
 use App\Models\PengembalianAlatMisa;
 use Illuminate\Support\Facades\Mail;
@@ -169,7 +169,7 @@ class PeminjamanAlatMisaController extends Controller
         }
 
         // Kirim email ke peminjam
-        $peminjam = Peminjam::findOrFail($peminjaman->id_peminjam);
+        $peminjam = peminjam::findOrFail($peminjaman->id_peminjam);
         $alatMisaName = $alatMisa->nama_alat; // Nama alat misa
         Mail::to($peminjam->email)->send(new MailPeminjamanAlatMisaStatus(
             'disetujui', // Status peminjaman
@@ -206,7 +206,7 @@ class PeminjamanAlatMisaController extends Controller
         }
 
         // Send the email after rejecting
-        $peminjam = Peminjam::findOrFail($peminjaman->id_peminjam);
+        $peminjam = peminjam::findOrFail($peminjaman->id_peminjam);
         Mail::to($peminjam->email)->send(new MailPeminjamanALatMisaStatus(
             'ditolak', // Status peminjaman
             $peminjaman->alasan_penolakan, // Kirimkan alasan penolakan yang sebenarnya
@@ -291,7 +291,7 @@ class PeminjamanAlatMisaController extends Controller
 
         // Step 3: Send individual emails to each borrower
         foreach ($peminjamDetails as $peminjamId => $assetDetailsForPeminjam) {
-            $peminjam = Peminjam::find($peminjamId);
+            $peminjam = peminjam::find($peminjamId);
             $status = $validated['action'] === 'approve' ? 'disetujui' : 'ditolak';
             $alasanPenolakan = $validated['action'] === 'reject' ? $request->alasan_penolakan : null;
 

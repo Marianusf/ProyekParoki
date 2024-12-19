@@ -77,7 +77,7 @@ class AuthController extends Controller
         }
 
         // Jika bukan admin atau sekretariat, cek peminjam
-        $borrower = Peminjam::where('email', $request->email)->first();
+        $borrower = peminjam::where('email', $request->email)->first();
 
         if ($borrower && Hash::check($request->password, $borrower->password)) {
             if (!$borrower->is_approved) {
@@ -173,7 +173,7 @@ class AuthController extends Controller
     public function showApprovalRequests() //untuk menampilkan bagian peminjam yang belum di acc
     {
         // Ambil data peminjam yang belum disetujui
-        $pendingRequest = Peminjam::where('is_approved', false)->get();
+        $pendingRequest = peminjam::where('is_approved', false)->get();
 
         // kirim data untuk menampilkan view yang belum di acc akunnya
         return view('layout.AdminView.LihatPermintaanAkun', ['pendingRequest' => $pendingRequest]);
@@ -182,7 +182,7 @@ class AuthController extends Controller
     public function approve($id)
     {
         // Cari peminjam berdasarkan ID
-        $peminjam = Peminjam::findOrFail($id);
+        $peminjam = peminjam::findOrFail($id);
 
         // Update status peminjam menjadi approved (misal, `is_approved` jadi `1`)
         $peminjam->is_approved = 1;
@@ -196,7 +196,7 @@ class AuthController extends Controller
     public function rejectAccount(Request $request, $id) //untuk proses penolakan akun
     {
         // Find the borrower
-        $peminjam = Peminjam::findOrFail($id);
+        $peminjam = peminjam::findOrFail($id);
 
         // Send rejection email
         Mail::to($peminjam->email)->send(new MailPenolakanAkun($request->reason));
