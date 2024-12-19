@@ -1,4 +1,4 @@
-@extends('layout.TemplateAdminSekretariat')
+@extends('layout.TemplateAdmin')
 
 @section('title', 'Permintaan Aktivasi Akun')
 

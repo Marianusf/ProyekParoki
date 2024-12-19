@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PeminjamanRuangan;
 use App\Models\Ruangan;
-use App\Models\Peminjam;
+use App\Models\peminjam;
 use App\Models\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

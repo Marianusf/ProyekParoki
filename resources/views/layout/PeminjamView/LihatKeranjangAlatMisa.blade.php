@@ -46,7 +46,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach ($keranjangItems as $item)
                         <div class="border p-4 rounded-lg shadow-md bg-white relative">
-                            <h4 class="text-lg font-semibold text-blue-700 mb-2">{{ $item->nama_alat }}</h4>
+                            <h4 class="text-lg font-semibold text-blue-700 mb-2">{{ $item->alatMisa->nama_alat }}</h4>
                             <p class="text-sm text-gray-500 mb-1">Jumlah: {{ $item->jumlah }}</p>
                             <p class="text-sm text-gray-500 mb-1">Tanggal Peminjaman: <span
                                     class="font-medium">{{ \Carbon\Carbon::parse($item->tanggal_peminjaman)->format('d M Y') }}</span>

@@ -15,7 +15,8 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <title>@yield('title', 'Authentication')</title>
-    @vite('resources/css/app.css') <!-- Memuat Tailwind CSS -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
 </head>
 
 <body class="bg-[#7cb1ff] min-h-screen flex flex-col">

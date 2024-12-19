@@ -124,7 +124,7 @@
             </div>
             <hr class="my-2 text-gray-600">
             <a href="{{ route('paramenta.dashboard') }}"
-                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('admin.dashboard') ? 'bg-gray-700' : '' }}">
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('paramenta.dashboard') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-house-door"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Home</span>
             </a>
@@ -135,17 +135,17 @@
                 <span class="text-[15px] ml-4 text-gray-200">Persetujuan Peminjaman Alat Misa</span>
             </a>
             <a href="{{ route('admin.PermintaanPengembalianALatMisa') }}"
-                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('admin.PermintaanPengembalianAsset') ? 'bg-gray-700' : '' }}">
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('admin.PermintaanPengembalianALatMisa') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-arrow-return-left"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Persetujuan Pengembalian Alat Misa</span>
             </a>
             <a href="{{ route('alat_misa.create') }}"
-                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('admin/asset/tambah') ? 'bg-gray-700' : '' }}">
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('alat_misa.create') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-plus-circle"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Tambah Alat Misa</span>
             </a>
             <a href="{{ route('alat_misa.index') }}"
-                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('admin/asset') ? 'bg-gray-700' : '' }}">
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('alat_misa.index') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-list-ul"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Lihat Alat Misa</span>
             </a>
@@ -161,7 +161,7 @@
             </a>
             <hr class="my-4 text-gray-600">
             <a href="{{ route('lihat.peminjam.aktif.byparamenta') }}"
-                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('lihat.peminjam.aktif.byparamenta') ? 'bg-gray-700' : '' }}">
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('lihat.peminjam.aktif.byparamenta') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-people-fill"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Lihat Peminjam Terdaftar</span>
             </a>

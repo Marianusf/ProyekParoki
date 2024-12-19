@@ -4,7 +4,9 @@
 
 @section('content')
     <div class="container mx-auto py-8">
-        <h2 class="text-2xl font-semibold mb-6">Daftar Ketersediaan Asset</h2>
+        <h2 class="text-2xl font-semibold mb-6 text-gray-800">Daftar Ketersediaan Asset</h2>
+
+        <!-- Session Alerts -->
         @if (session('success'))
             <script>
                 Swal.fire({
@@ -41,6 +43,13 @@
             </script>
         @endif
 
+        <!-- Search Bar -->
+        <div class="mb-4">
+            <input type="text" id="searchInput" placeholder="Cari berdasarkan nama barang..."
+                class="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <!-- Asset Table -->
         <div class="overflow-x-auto overflow-y-auto max-h-[500px] bg-white shadow-md rounded-lg">
             <table class="min-w-full table-auto">
                 <thead>
@@ -52,9 +61,9 @@
                         <th class="px-6 py-3">Status</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="assetTable">
                     @foreach ($assets as $asset)
-                        <tr class="border-b">
+                        <tr class="border-b hover:bg-gray-50">
                             <td class="px-6 py-4 text-sm text-gray-800">{{ $asset->nama_barang }}</td>
                             <td class="py-6 px-4 text-sm">
                                 @if ($asset->gambar)
@@ -78,6 +87,17 @@
                 </tbody>
             </table>
         </div>
-
     </div>
+
+    <script>
+        // Filter table rows based on search input
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const searchText = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#assetTable tr');
+            rows.forEach(row => {
+                const itemName = row.querySelector('td:first-child').textContent.toLowerCase();
+                row.style.display = itemName.includes(searchText) ? '' : 'none';
+            });
+        });
+    </script>
 @endsection

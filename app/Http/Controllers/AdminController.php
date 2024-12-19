@@ -4,7 +4,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Peminjam;
+use App\Models\peminjam;
 use App\Models\Peminjaman;
 use App\Models\PeminjamanAlatMisa;
 use App\Models\PeminjamanRuangan;
@@ -28,7 +28,7 @@ class AdminController extends Controller
     public function listPeminjamAktifbyparamenta()
     {
         // Mengambil data peminjam yang sudah disetujui (is_approved = true)
-        $peminjam = Peminjam::where('is_approved', true)->get();
+        $peminjam = peminjam::where('is_approved', true)->get();
 
         // Menampilkan view khusus untuk daftar peminjam aktif di lokasi baru
         return view('layout.AdminParamentaView.LihatPeminjamAktif', compact('peminjam'));
@@ -36,7 +36,7 @@ class AdminController extends Controller
     public function listPeminjamAktifbysekretariat()
     {
         // Mengambil data peminjam yang sudah disetujui (is_approved = true)
-        $peminjam = Peminjam::where('is_approved', true)->get();
+        $peminjam = peminjam::where('is_approved', true)->get();
 
         // Menampilkan view khusus untuk daftar peminjam aktif di lokasi baru
         return view('layout.AdminSekretariatView.LihatPeminjamAktif', compact('peminjam'));

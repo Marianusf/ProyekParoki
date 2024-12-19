@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alat_Misa;
-use App\Models\Peminjam;
+use App\Models\peminjam;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Assets;
@@ -32,7 +32,7 @@ class PeminjamController extends Controller
         $peminjamId = auth('peminjam')->id();
 
         // Cari data peminjam berdasarkan ID
-        $peminjam = Peminjam::find($peminjamId);
+        $peminjam = peminjam::find($peminjamId);
 
         // Jika tidak ditemukan, kembalikan pesan error
         if (!$peminjam) {

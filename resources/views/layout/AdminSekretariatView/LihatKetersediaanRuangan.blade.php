@@ -1,4 +1,4 @@
-@extends('layout.TemplatePeminjam')
+@extends('layout.TemplateAdminSekretariat')
 
 @section('title', 'Daftar Ruangan')
 

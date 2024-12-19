@@ -127,17 +127,17 @@
             </a>
 
             <a href="{{ route('ruangan.create') }}"
-                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('ruangan.create') ? 'bg-gray-700' : '' }}">
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('ruangan.create') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-plus-circle"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Tambah Ruangan</span>
             </a>
             <a href="{{ route('lihatSemuaRuangan') }}"
-                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('lihatSemuaRuangan') ? 'bg-gray-700' : '' }}">
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('lihatSemuaRuangan') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-list-ul"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Lihat Semua Ruangan</span>
             </a>
             <a href="{{ route('cekKetersediaanRuangan') }}"
-                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('cekKetersediaanRuangan') ? 'bg-gray-700' : '' }}">
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('cekKetersediaanRuangan') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-eye-fill"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Daftar Ketersediaan Ruangan</span>
             </a>
@@ -148,7 +148,7 @@
             </a>
             <hr class="my-4 text-gray-600">
             <a href="{{ route('lihat.peminjam.aktif.bysekretariat') }}"
-                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::is('lihat.peminjam.aktif.bysekretariat') ? 'bg-gray-700' : '' }}">
+                class="p-2.5 mt-2 flex items-center px-4 duration-300 cursor-pointer hover:bg-gray-700 {{ Request::routeIs('lihat.peminjam.aktif.bysekretariat') ? 'bg-gray-700' : '' }}">
                 <i class="bi bi-people-fill"></i>
                 <span class="text-[15px] ml-4 text-gray-200">Lihat Peminjam Terdaftar</span>
             </a>

@@ -34,7 +34,7 @@ class Pengembalian extends Model
 
     public function peminjam()
     {
-        return $this->belongsTo(Peminjam::class);
+        return $this->belongsTo(peminjam::class);
     }
     public function admin()
     {
